@@ -7,6 +7,6 @@ target 'Access News Reader' do
 
   # Pods for Access News Reader
   pod 'Firebase/Core'
-  pod 'FirebaseUI'
+#  pod 'FirebaseUI'
 
 end
