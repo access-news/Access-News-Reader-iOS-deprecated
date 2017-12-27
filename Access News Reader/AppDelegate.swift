@@ -8,17 +8,23 @@
 
 import UIKit
 import Firebase
+import FirebaseAuthUI
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    fileprivate(set) var authUI: FUIAuth?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
 
         FirebaseApp.configure()
+        self.authUI = FUIAuth.defaultAuthUI()
+        self.authUI?.delegate = self
+
+        self.window?.rootViewController = self.authUI?.authViewController()
+        self.window?.makeKeyAndVisible()
 
         return true
     }
@@ -44,7 +50,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
 }
 
+extension AppDelegate: FUIAuthDelegate {
+    func authUI(_ authUI: FUIAuth, didSignInWith user: User?, error: Error?) {
+        print(".......delegate called.......")
+    }
+}
