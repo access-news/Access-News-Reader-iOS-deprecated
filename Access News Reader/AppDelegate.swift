@@ -23,7 +23,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.authUI = FUIAuth.defaultAuthUI()
         self.authUI?.delegate = self
 
-        self.window?.rootViewController = self.authUI?.authViewController()
+        let rootViewController = FUIEmailEntryViewController(authUI: self.authUI!)
+        self.window?.rootViewController =
+            UINavigationController(rootViewController: rootViewController)
         self.window?.makeKeyAndVisible()
 
         return true
