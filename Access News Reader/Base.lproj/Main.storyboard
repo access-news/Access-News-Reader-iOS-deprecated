@@ -45,13 +45,26 @@
                     <view key="view" contentMode="scaleToFill" id="phx-pj-SUR">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hKY-nj-Ss1">
+                                <rect key="frame" x="264" y="60" width="95" height="86"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Log Out"/>
+                                <connections>
+                                    <action selector="logOut:" destination="Lh6-1Z-7RF" eventType="touchUpInside" id="WY8-P1-na4"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" red="0.86639630879999996" green="1" blue="0.59237770710000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="lg1-Cp-R6N"/>
                     </view>
+                    <connections>
+                        <outlet property="logOutButton" destination="hKY-nj-Ss1" id="LI1-v1-2kX"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QgT-Sg-QRU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="812" y="134"/>
+            <point key="canvasLocation" x="812" y="133.5832083958021"/>
         </scene>
     </scenes>
 </document>

@@ -8,17 +8,27 @@
 
 import UIKit
 import Firebase
+import FirebaseAuth
+import FirebaseAuthUI
+
+// TODO:
+//      * refactor and DRY up
+//      * remove implicitly unwrapped optionals (these were used to speed things
+//        up, but fairly unsafe)
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    var authUI: FUIAuth?
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
 
         FirebaseApp.configure()
+        self.authUI = FUIAuth.defaultAuthUI()
+        authUI?.delegate = self
 
         if UserDefaults.standard.bool(forKey: Constants.userLoggedIn) {
             let storyboard = UIStoryboard(name: "Main", bundle: .main)
@@ -55,3 +65,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+extension AppDelegate: FUIAuthDelegate {
+    func authUI(_ authUI: FUIAuth, didSignInWith user: User?, error: Error?) {
+        if error != nil {
+            fatalError()
+        }
+        if user != nil {
+            UserDefaults.standard.set(true, forKey: Constants.userLoggedIn)
+
+            let storyboard = UIStoryboard(name: "Main", bundle: .main)
+            let vc = storyboard.instantiateViewController(withIdentifier: "MainViewController")
+            self.window?.rootViewController = vc
+            self.window?.makeKeyAndVisible()
+        }
+    }
+
+
+}

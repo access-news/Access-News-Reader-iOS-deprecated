@@ -38,10 +38,8 @@ class LoginViewController: UIViewController {
     */
     @IBOutlet weak var loginButton: UIButton!
     @IBAction func loginButtonTapped(_ sender: Any) {
-        let authUI = FUIAuth.defaultAuthUI()
-        authUI?.delegate = self
 
-        let rootVC = FUIPasswordSignInViewController(authUI: authUI!, email: nil)
+        let rootVC = FUIPasswordSignInViewController(authUI: FUIAuth.defaultAuthUI()!, email: nil)
         let navVC = UINavigationController(rootViewController: rootVC)
         self.present(navVC, animated: true, completion: nil)
     }
@@ -60,15 +58,4 @@ class LoginViewController: UIViewController {
 
 }
 
-extension LoginViewController: FUIAuthDelegate {
-    func authUI(_ authUI: FUIAuth, didSignInWith user: User?, error: Error?) {
-        if error != nil {
-            fatalError()
-        }
-        if user != nil {
-            UserDefaults.standard.set(true, forKey: Constants.userLoggedIn)
-        }
-    }
 
-
-}

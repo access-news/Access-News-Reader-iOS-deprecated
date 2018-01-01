@@ -7,8 +7,30 @@
 //
 
 import UIKit
+import Firebase
+import FirebaseAuth
+import FirebaseAuthUI
 
 class MainViewController: UIViewController {
+
+    @IBOutlet weak var logOutButton: UIButton!
+    @IBAction func logOut(_ sender: Any) {
+
+        // Not using any social identity providers, so this is unnecessary.
+        /*
+        do {
+            try FUIAuth.defaultAuthUI()!.signOut()
+        } catch {
+            print("error while logging out")
+        }
+        */
+
+        UserDefaults.standard.set(false, forKey: Constants.userLoggedIn)
+
+        let storyboard = UIStoryboard.init(name: "Main", bundle: .main)
+        let vc = storyboard.instantiateInitialViewController()
+        self.present(vc!, animated: true, completion: nil)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
