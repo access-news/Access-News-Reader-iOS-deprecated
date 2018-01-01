@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  LoginViewController.swift
 //  Access News Reader
 //
 //  Created by Society for the Blind on 12/14/17.
@@ -11,7 +11,7 @@ import Firebase
 import FirebaseAuth
 import FirebaseAuthUI
 
-class ViewController: UIViewController {
+class LoginViewController: UIViewController {
 
     /* Tapping the login button will ask user for email & password
 
@@ -60,7 +60,7 @@ class ViewController: UIViewController {
 
 }
 
-extension ViewController: FUIAuthDelegate {
+extension LoginViewController: FUIAuthDelegate {
     func authUI(_ authUI: FUIAuth, didSignInWith user: User?, error: Error?) {
         if error != nil {
             fatalError()
