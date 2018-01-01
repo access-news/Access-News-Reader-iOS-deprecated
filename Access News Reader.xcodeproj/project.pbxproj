@@ -16,7 +16,34 @@
 		D92B8AF41FE321EE006C5736 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D92B8AF31FE321EE006C5736 /* GoogleService-Info.plist */; };
 		D9455E021FF9D62F00A0F9A7 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9455E011FF9D62F00A0F9A7 /* Constants.swift */; };
 		D9455E041FF9D84B00A0F9A7 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9455E031FF9D84B00A0F9A7 /* MainViewController.swift */; };
+		D9455E0C1FFA87C600A0F9A7 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9455E0B1FFA87C600A0F9A7 /* ShareViewController.swift */; };
+		D9455E0F1FFA87C600A0F9A7 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D9455E0D1FFA87C600A0F9A7 /* MainInterface.storyboard */; };
+		D9455E131FFA87C600A0F9A7 /* Access News Uploader.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = D9455E091FFA87C600A0F9A7 /* Access News Uploader.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D9455E111FFA87C600A0F9A7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D92B8ACF1FE2F90A006C5736 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D9455E081FFA87C600A0F9A7;
+			remoteInfo = "Access News Uploader";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D9455E171FFA87C600A0F9A7 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				D9455E131FFA87C600A0F9A7 /* Access News Uploader.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0F91C5A3003CDD6DEE0E6972 /* Pods-Access News Reader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Access News Reader.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Access News Reader/Pods-Access News Reader.debug.xcconfig"; sourceTree = "<group>"; };
@@ -31,6 +58,10 @@
 		D92B8AF31FE321EE006C5736 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D9455E011FF9D62F00A0F9A7 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		D9455E031FF9D84B00A0F9A7 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		D9455E091FFA87C600A0F9A7 /* Access News Uploader.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Access News Uploader.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D9455E0B1FFA87C600A0F9A7 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		D9455E0E1FFA87C600A0F9A7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		D9455E101FFA87C600A0F9A7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FE9F87F6C19E3D77F76B2C4A /* Pods-Access News Reader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Access News Reader.release.xcconfig"; path = "Pods/Target Support Files/Pods-Access News Reader/Pods-Access News Reader.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -40,6 +71,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A4AE61A925CAC3B15694DEB /* Pods_Access_News_Reader.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D9455E061FFA87C600A0F9A7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,6 +105,7 @@
 			isa = PBXGroup;
 			children = (
 				D92B8AD91FE2F90A006C5736 /* Access News Reader */,
+				D9455E0A1FFA87C600A0F9A7 /* Access News Uploader */,
 				D92B8AD81FE2F90A006C5736 /* Products */,
 				305F4E3F78F25F578C20DE8F /* Pods */,
 				32898F9F46ADE4E704082108 /* Frameworks */,
@@ -77,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				D92B8AD71FE2F90A006C5736 /* Access News Reader.app */,
+				D9455E091FFA87C600A0F9A7 /* Access News Uploader.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -97,6 +137,16 @@
 			path = "Access News Reader";
 			sourceTree = "<group>";
 		};
+		D9455E0A1FFA87C600A0F9A7 /* Access News Uploader */ = {
+			isa = PBXGroup;
+			children = (
+				D9455E0B1FFA87C600A0F9A7 /* ShareViewController.swift */,
+				D9455E0D1FFA87C600A0F9A7 /* MainInterface.storyboard */,
+				D9455E101FFA87C600A0F9A7 /* Info.plist */,
+			);
+			path = "Access News Uploader";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -110,15 +160,34 @@
 				D92B8AD51FE2F90A006C5736 /* Resources */,
 				050BD439E304B42292730B8A /* [CP] Embed Pods Frameworks */,
 				10C0BDC2466AA6B3C656F2E7 /* [CP] Copy Pods Resources */,
+				D9455E171FFA87C600A0F9A7 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				D9455E121FFA87C600A0F9A7 /* PBXTargetDependency */,
 			);
 			name = "Access News Reader";
 			productName = "Access News Reader";
 			productReference = D92B8AD71FE2F90A006C5736 /* Access News Reader.app */;
 			productType = "com.apple.product-type.application";
+		};
+		D9455E081FFA87C600A0F9A7 /* Access News Uploader */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D9455E141FFA87C600A0F9A7 /* Build configuration list for PBXNativeTarget "Access News Uploader" */;
+			buildPhases = (
+				D9455E051FFA87C600A0F9A7 /* Sources */,
+				D9455E061FFA87C600A0F9A7 /* Frameworks */,
+				D9455E071FFA87C600A0F9A7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Access News Uploader";
+			productName = "Access News Uploader";
+			productReference = D9455E091FFA87C600A0F9A7 /* Access News Uploader.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -131,6 +200,10 @@
 				ORGANIZATIONNAME = "Society for the Blind";
 				TargetAttributes = {
 					D92B8AD61FE2F90A006C5736 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					D9455E081FFA87C600A0F9A7 = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
 					};
@@ -150,6 +223,7 @@
 			projectRoot = "";
 			targets = (
 				D92B8AD61FE2F90A006C5736 /* Access News Reader */,
+				D9455E081FFA87C600A0F9A7 /* Access News Uploader */,
 			);
 		};
 /* End PBXProject section */
@@ -163,6 +237,14 @@
 				D92B8AF41FE321EE006C5736 /* GoogleService-Info.plist in Resources */,
 				D92B8AE21FE2F90A006C5736 /* Assets.xcassets in Resources */,
 				D92B8AE01FE2F90A006C5736 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D9455E071FFA87C600A0F9A7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D9455E0F1FFA87C600A0F9A7 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,7 +323,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D9455E051FFA87C600A0F9A7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D9455E0C1FFA87C600A0F9A7 /* ShareViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D9455E121FFA87C600A0F9A7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D9455E081FFA87C600A0F9A7 /* Access News Uploader */;
+			targetProxy = D9455E111FFA87C600A0F9A7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		D92B8ADE1FE2F90A006C5736 /* Main.storyboard */ = {
@@ -258,6 +356,14 @@
 				D92B8AE41FE2F90A006C5736 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		D9455E0D1FFA87C600A0F9A7 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D9455E0E1FFA87C600A0F9A7 /* Base */,
+			);
+			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -374,6 +480,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0F91C5A3003CDD6DEE0E6972 /* Pods-Access News Reader.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
@@ -390,6 +497,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FE9F87F6C19E3D77F76B2C4A /* Pods-Access News Reader.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
@@ -397,6 +505,38 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.societyfortheblind.Access-News-Reader";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D9455E151FFA87C600A0F9A7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = "Access News Uploader/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.societyfortheblind.Access-News-Reader.Access-News-Uploader";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D9455E161FFA87C600A0F9A7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = "Access News Uploader/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.societyfortheblind.Access-News-Reader.Access-News-Uploader";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -419,6 +559,15 @@
 			buildConfigurations = (
 				D92B8AEA1FE2F90A006C5736 /* Debug */,
 				D92B8AEB1FE2F90A006C5736 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D9455E141FFA87C600A0F9A7 /* Build configuration list for PBXNativeTarget "Access News Uploader" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D9455E151FFA87C600A0F9A7 /* Debug */,
+				D9455E161FFA87C600A0F9A7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
