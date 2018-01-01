@@ -20,6 +20,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         FirebaseApp.configure()
 
+        if UserDefaults.standard.bool(forKey: Constants.userLoggedIn) {
+            let storyboard = UIStoryboard(name: "Main", bundle: .main)
+            let vc = storyboard.instantiateViewController(withIdentifier: "MainViewController")
+            self.window?.rootViewController = vc
+            self.window?.makeKeyAndVisible()
+        }
+
         return true
     }
 

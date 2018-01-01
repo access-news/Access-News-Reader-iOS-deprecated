@@ -62,7 +62,12 @@ class ViewController: UIViewController {
 
 extension ViewController: FUIAuthDelegate {
     func authUI(_ authUI: FUIAuth, didSignInWith user: User?, error: Error?) {
-        print("                27")
+        if error != nil {
+            fatalError()
+        }
+        if user != nil {
+            UserDefaults.standard.set(true, forKey: Constants.userLoggedIn)
+        }
     }
 
 

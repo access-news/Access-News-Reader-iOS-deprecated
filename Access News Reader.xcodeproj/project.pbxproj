@@ -14,6 +14,8 @@
 		D92B8AE21FE2F90A006C5736 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D92B8AE11FE2F90A006C5736 /* Assets.xcassets */; };
 		D92B8AE51FE2F90A006C5736 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D92B8AE31FE2F90A006C5736 /* LaunchScreen.storyboard */; };
 		D92B8AF41FE321EE006C5736 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D92B8AF31FE321EE006C5736 /* GoogleService-Info.plist */; };
+		D9455E021FF9D62F00A0F9A7 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9455E011FF9D62F00A0F9A7 /* Constants.swift */; };
+		D9455E041FF9D84B00A0F9A7 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9455E031FF9D84B00A0F9A7 /* MainViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +29,8 @@
 		D92B8AE41FE2F90A006C5736 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D92B8AE61FE2F90A006C5736 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D92B8AF31FE321EE006C5736 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		D9455E011FF9D62F00A0F9A7 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		D9455E031FF9D84B00A0F9A7 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		FE9F87F6C19E3D77F76B2C4A /* Pods-Access News Reader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Access News Reader.release.xcconfig"; path = "Pods/Target Support Files/Pods-Access News Reader/Pods-Access News Reader.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -82,7 +86,9 @@
 			children = (
 				D92B8ADA1FE2F90A006C5736 /* AppDelegate.swift */,
 				D92B8ADC1FE2F90A006C5736 /* ViewController.swift */,
+				D9455E011FF9D62F00A0F9A7 /* Constants.swift */,
 				D92B8ADE1FE2F90A006C5736 /* Main.storyboard */,
+				D9455E031FF9D84B00A0F9A7 /* MainViewController.swift */,
 				D92B8AE11FE2F90A006C5736 /* Assets.xcassets */,
 				D92B8AE31FE2F90A006C5736 /* LaunchScreen.storyboard */,
 				D92B8AF31FE321EE006C5736 /* GoogleService-Info.plist */,
@@ -230,6 +236,8 @@
 			files = (
 				D92B8ADD1FE2F90A006C5736 /* ViewController.swift in Sources */,
 				D92B8ADB1FE2F90A006C5736 /* AppDelegate.swift in Sources */,
+				D9455E021FF9D62F00A0F9A7 /* Constants.swift in Sources */,
+				D9455E041FF9D84B00A0F9A7 /* MainViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
