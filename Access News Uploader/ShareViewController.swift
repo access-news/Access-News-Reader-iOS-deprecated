@@ -11,6 +11,26 @@ import Social
 
 class ShareViewController: SLComposeServiceViewController {
 
+    lazy var publicationConfigurationItem: SLComposeSheetConfigurationItem = {
+        let item = SLComposeSheetConfigurationItem()!
+        item.title = "Publication:"
+        item.value = ""
+        item.tapHandler = { print("publication configuration item tapped") }
+        return item
+    }()
+
+    lazy var hoursConfigurationItem: SLComposeSheetConfigurationItem = {
+        let item = SLComposeSheetConfigurationItem()!
+        item.title = "Time spent reading:"
+        item.value = ""
+        item.tapHandler = { print("hours")}
+        return item
+    }()
+
+    override func presentationAnimationDidFinish() {
+        self.placeholder = "Send us a message!"
+    }
+
     override func isContentValid() -> Bool {
         // Do validation of contentText and/or NSExtensionContext attachments here
         return true
@@ -23,9 +43,15 @@ class ShareViewController: SLComposeServiceViewController {
         self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
     }
 
+    override func didSelectCancel() {
+
+    }
+
     override func configurationItems() -> [Any]! {
         // To add configuration options via table cells at the bottom of the sheet, return an array of SLComposeSheetConfigurationItem here.
-        return []
+        return [ publicationConfigurationItem
+               , hoursConfigurationItem
+               ]
     }
 
 }

@@ -31,6 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         authUI?.delegate = self
 
         if UserDefaults.standard.bool(forKey: Constants.userLoggedIn) {
+            print("\ntrue\n")
             let storyboard = UIStoryboard(name: "Main", bundle: .main)
             let vc = storyboard.instantiateViewController(withIdentifier: "MainViewController")
             self.window?.rootViewController = vc
@@ -81,4 +82,11 @@ extension AppDelegate: FUIAuthDelegate {
     }
 
 
+}
+
+// Implementing app delegate methods for share extension (upload)
+extension AppDelegate {
+    func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
+        //placeholder
+    }
 }
