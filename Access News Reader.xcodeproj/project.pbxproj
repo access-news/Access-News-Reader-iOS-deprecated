@@ -20,6 +20,8 @@
 		D9455E0C1FFA87C600A0F9A7 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9455E0B1FFA87C600A0F9A7 /* ShareViewController.swift */; };
 		D9455E0F1FFA87C600A0F9A7 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D9455E0D1FFA87C600A0F9A7 /* MainInterface.storyboard */; };
 		D9455E131FFA87C600A0F9A7 /* Access News Uploader.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = D9455E091FFA87C600A0F9A7 /* Access News Uploader.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D95067E31FFD3369002C617D /* PublicationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D95067E21FFD3369002C617D /* PublicationViewController.swift */; };
+		D95067E51FFD337E002C617D /* HoursViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D95067E41FFD337E002C617D /* HoursViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +65,8 @@
 		D9455E0B1FFA87C600A0F9A7 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		D9455E0E1FFA87C600A0F9A7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		D9455E101FFA87C600A0F9A7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D95067E21FFD3369002C617D /* PublicationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicationViewController.swift; sourceTree = "<group>"; };
+		D95067E41FFD337E002C617D /* HoursViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoursViewController.swift; sourceTree = "<group>"; };
 		FE9F87F6C19E3D77F76B2C4A /* Pods-Access News Reader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Access News Reader.release.xcconfig"; path = "Pods/Target Support Files/Pods-Access News Reader/Pods-Access News Reader.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -144,6 +148,8 @@
 				D9455E0B1FFA87C600A0F9A7 /* ShareViewController.swift */,
 				D9455E0D1FFA87C600A0F9A7 /* MainInterface.storyboard */,
 				D9455E101FFA87C600A0F9A7 /* Info.plist */,
+				D95067E21FFD3369002C617D /* PublicationViewController.swift */,
+				D95067E41FFD337E002C617D /* HoursViewController.swift */,
 			);
 			path = "Access News Uploader";
 			sourceTree = "<group>";
@@ -328,8 +334,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D95067E51FFD337E002C617D /* HoursViewController.swift in Sources */,
 				D9455E0C1FFA87C600A0F9A7 /* ShareViewController.swift in Sources */,
 				D93E53241FFAA7FE001D3493 /* Constants.swift in Sources */,
+				D95067E31FFD3369002C617D /* PublicationViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
