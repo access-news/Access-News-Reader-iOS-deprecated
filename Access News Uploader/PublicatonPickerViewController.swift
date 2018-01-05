@@ -7,8 +7,64 @@
 //
 
 import UIKit
+import Social
 
 class PublicationPickerViewController: UIViewController {
+
+    /* Implicitly unwrapped optionals are used, because these need to be set
+       set for proper functionality.
+
+     tl;dr
+       The tutorials that pertain to this specific view controller are:
+       * http://www.talkmobiledev.com/2017/01/22/create-a-custom-share-extension-in-swift/
+       * https://codewithchris.com/uipickerview-example/
+
+       The default share extension pop-up (`SLComposeServiceViewController`) can
+       be extended with extra choice menus (`SLComposeSheetConfigurationItem` or
+       configuration items; see `lazy var` declarations in `ShareViewController`).
+
+     The configuration item has 3 properties that are relevant here:
+
+     * title (to display what the menu is for)
+     * value (that will be updated with a new value after tapping this menu or
+              configuration item and choosing/inputing a new value in the subsequent
+              view)
+     * tapHandler
+       It, at least in this app, is used to instantiate and configure
+       the subsequent view controller when the menu choice is tapped,
+       that will provide the interface to choose a new value. In order
+       to exchange data between the view controllers, the stored
+       properties below need to be set:
+
+       * `delegate`             - to provide a callback
+       * `forConfigurationItem` - it is mostly used to DRY up the code (otherwise
+                                  a new delegate protocol would be necessary for
+                                  every menu choice view controller.
+
+     TODO:                        ^^^ is this assumption correct? ^^^
+     TODO: Am I creating a retention cycle as it is implemented right now?
+
+     UPDATE#1: Just realized that delegate may not even be necessary if I am
+             going to use `forConfigurationItem` because then the value can
+             be set directly.
+             Is this a bad idea?
+
+     UPDATE#2: So delegate IS needed (or passing `ShareViewController` instance
+               itself) as `popViewController` is not defined in this context. On
+               the other hand I also don't like the tight coupling by using
+               `forConfigurationItem` stored property.
+
+               -> Make use of `ShareViewController`'s (i.e., `SLComposeServiceViewController`'s)
+                  `configurationItems:` method?
+
+     UPDATE#3: (1) `popViewController` issues solved by adding `nextConfigurationItemViewController`
+                   to the `ConfigurationItemDelegate` protocol (now transitions
+                   can be customized)
+
+                (2) ???
+    */
+    var delegate: ConfigurationItemDelegate!
+//    var forConfigurationItem: SLComposeSheetConfigurationItem!
 
     lazy var publicationPicker: UIPickerView = {
         let frame = CGRect(
@@ -55,7 +111,25 @@ class PublicationPickerViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         self.title = "Choose a publication"
-        self.view.addSubview(publicationPicker)
+        self.view.addSubview(self.publicationPicker)
+
+//        self.publicationPicker.becomeFirstResponder()
+
+        let doneButton = UIBarButtonItem(title:   "Done"
+                                        , style:  .done
+                                        , target: self
+                                        , action: #selector(doneButtonClicked)
+                                        )
+        self.navigationItem.rightBarButtonItem = doneButton
+    }
+
+    @objc func doneButtonClicked() {
+
+        print("\nlofa\n")
+        // this is only stub - figure out how to get newValue here
+        // self.forConfigurationItem.value = newValue
+
+        self.delegate.nextConfigurationItemViewController()
     }
 
     override func didReceiveMemoryWarning() {

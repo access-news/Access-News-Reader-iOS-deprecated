@@ -22,6 +22,7 @@
 		D9455E131FFA87C600A0F9A7 /* Access News Uploader.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = D9455E091FFA87C600A0F9A7 /* Access News Uploader.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		D95067E31FFD3369002C617D /* PublicatonPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D95067E21FFD3369002C617D /* PublicatonPickerViewController.swift */; };
 		D95067E51FFD337E002C617D /* HoursViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D95067E41FFD337E002C617D /* HoursViewController.swift */; };
+		D956B0321FFFA0C500DCA685 /* ConfigurationItemDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D956B0311FFFA0C500DCA685 /* ConfigurationItemDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,7 @@
 		D9455E101FFA87C600A0F9A7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D95067E21FFD3369002C617D /* PublicatonPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicatonPickerViewController.swift; sourceTree = "<group>"; };
 		D95067E41FFD337E002C617D /* HoursViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoursViewController.swift; sourceTree = "<group>"; };
+		D956B0311FFFA0C500DCA685 /* ConfigurationItemDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationItemDelegate.swift; sourceTree = "<group>"; };
 		FE9F87F6C19E3D77F76B2C4A /* Pods-Access News Reader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Access News Reader.release.xcconfig"; path = "Pods/Target Support Files/Pods-Access News Reader/Pods-Access News Reader.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -146,6 +148,7 @@
 			isa = PBXGroup;
 			children = (
 				D9455E0B1FFA87C600A0F9A7 /* ShareViewController.swift */,
+				D956B0311FFFA0C500DCA685 /* ConfigurationItemDelegate.swift */,
 				D9455E0D1FFA87C600A0F9A7 /* MainInterface.storyboard */,
 				D9455E101FFA87C600A0F9A7 /* Info.plist */,
 				D95067E21FFD3369002C617D /* PublicatonPickerViewController.swift */,
@@ -335,6 +338,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D95067E51FFD337E002C617D /* HoursViewController.swift in Sources */,
+				D956B0321FFFA0C500DCA685 /* ConfigurationItemDelegate.swift in Sources */,
 				D9455E0C1FFA87C600A0F9A7 /* ShareViewController.swift in Sources */,
 				D93E53241FFAA7FE001D3493 /* Constants.swift in Sources */,
 				D95067E31FFD3369002C617D /* PublicatonPickerViewController.swift in Sources */,
