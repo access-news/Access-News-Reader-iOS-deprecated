@@ -117,8 +117,8 @@ class PublicationPickerViewController: UIViewController {
         self.title = "Choose a publication"
         self.view.addSubview(self.publicationPicker)
 
-        let doneButton = UIBarButtonItem(title:   "Done"
-                                        , style:  .done
+        let doneButton = UIBarButtonItem(title:   "Continue"
+                                        , style:  .plain
                                         , target: self
                                         , action: #selector(doneButtonClicked)
                                         )
@@ -128,7 +128,12 @@ class PublicationPickerViewController: UIViewController {
     @objc func doneButtonClicked() {
 
         self.forConfigurationItem.value = self.currentlyPicked
-        self.delegate.nextConfigurationItemViewController()
+
+        let vc = HoursViewController()
+        vc.delegate = self.delegate
+        self.delegate.continueReport()
+        (self.delegate as! SLComposeServiceViewController).pushConfigurationViewController(vc)
+//        self.delegate.nextConfigurationItemViewController()
     }
 
     override func didReceiveMemoryWarning() {

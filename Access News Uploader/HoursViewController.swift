@@ -7,13 +7,28 @@
 //
 
 import UIKit
+import Social
 
 class HoursViewController: UIViewController {
+
+    weak var delegate: ConfigurationItemDelegate!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        let doneButton = UIBarButtonItem(title:   "Done"
+            , style:  .done
+            , target: self
+            , action: #selector(doneButtonClicked)
+        )
+        self.navigationItem.rightBarButtonItem = doneButton
+    }
+
+    @objc func doneButtonClicked() {
+
+        (self.delegate as! SLComposeServiceViewController).popConfigurationViewController()
+        //        self.delegate.nextConfigurationItemViewController()
     }
 
     override func didReceiveMemoryWarning() {

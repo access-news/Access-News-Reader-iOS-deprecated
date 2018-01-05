@@ -33,10 +33,13 @@ class ShareViewController: SLComposeServiceViewController {
         return item
     }()
 
-    var publicationPickerData: [String] = ["Safeway ads", "Walmart ads", "Ferndale Enterprise"]
+    // Using IUO because this has to be set and the method `configurationItems:`
+    // used to set it always returns a value.
+    var configurationItemsAsSegues: [SLComposeSheetConfigurationItem]!
 
     override func presentationAnimationDidFinish() {
         self.placeholder = "Send us a message!"
+        self.configurationItemsAsSegues = self.configurationItems() as! [SLComposeSheetConfigurationItem]
     }
 
     override func isContentValid() -> Bool {
@@ -65,19 +68,25 @@ class ShareViewController: SLComposeServiceViewController {
 }
 
 extension ShareViewController: ConfigurationItemDelegate {
+    func continueReport() {
 
-    func updateValue(newValue: String, of configItem: SLComposeSheetConfigurationItem) {
-        configItem.value = newValue
     }
 
-    func nextConfigurationItemViewController() {
-        /* TODO
-         Instead of simply popping the current config item's view controller,
-         would be transition to the other conditionally? By that I mean that
-         because both are mandatory, starting with either one would transition
-         to the next, creating a workflow. Don't sweat too much on it.
-        */
-        self.popConfigurationViewController()
+
+//    func updateValue(newValue: String, of configItem: SLComposeSheetConfigurationItem) {
+//        configItem.value = newValue
+//    }
+
+//    func c() {
+//        /* TODO
+//         Instead of simply popping the current config item's view controller,
+//         would be transition to the other conditionally? By that I mean that
+//         because both are mandatory, starting with either one would transition
+//         to the next, creating a workflow. Don't sweat too much on it.
+//        */
+////        self.popConfigurationViewController()
+//        let vc = HoursViewController()
+//        self.pushConfigurationViewController(vc)
     }
-}
+
 
