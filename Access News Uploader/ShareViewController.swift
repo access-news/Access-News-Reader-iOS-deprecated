@@ -11,31 +11,63 @@ import Social
 
 class ShareViewController: SLComposeServiceViewController {
 
-    lazy var publicationConfigurationItem: SLComposeSheetConfigurationItem = {
-        let item = SLComposeSheetConfigurationItem()!
-        item.title = "Publication:"
-        item.value = ""
-        item.tapHandler = {
-            let publicationPickerViewController = PublicationPickerViewController()
-            publicationPickerViewController.delegate             = self
-            publicationPickerViewController.forConfigurationItem = item
-
-            self.pushConfigurationViewController(publicationPickerViewController)
-        }
-        return item
-    }()
-
-    lazy var hoursConfigurationItem: SLComposeSheetConfigurationItem = {
-        let item = SLComposeSheetConfigurationItem()!
-        item.title = "Time spent reading:"
-        item.value = ""
-        item.tapHandler = { print("hours")}
-        return item
-    }()
+//    lazy var publicationConfigurationItem: SLComposeSheetConfigurationItem = {
+//        let item = SLComposeSheetConfigurationItem()!
+//        item.title = "Publication:"
+//        item.value = ""
+//        item.tapHandler = {
+//            let publicationPickerViewController = PublicationPickerViewController()
+//            publicationPickerViewController.delegate             = self
+//            // TODO: Remove coupling.
+//            publicationPickerViewController.forConfigurationItem = item
+//
+//            self.pushConfigurationViewController(publicationPickerViewController)
+//        }
+//        return item
+//    }()
+//
+//    lazy var hoursConfigurationItem: SLComposeSheetConfigurationItem = {
+//        let item = SLComposeSheetConfigurationItem()!
+//        item.title = "Time spent reading:"
+//        item.value = ""
+//        item.tapHandler = { print("hours")}
+//        return item
+//    }()
 
     // Using IUO because this has to be set and the method `configurationItems:`
     // used to set it always returns a value.
     var configurationItemsAsSegues: [SLComposeSheetConfigurationItem]!
+    
+    func makeConfigurationItem
+        ( title:          String
+        , viewController: ConfigurationItemViewController
+        )
+        -> SLComposeSheetConfigurationItem
+    {
+        let item = SLComposeSheetConfigurationItem()!
+        item.title      = title
+        item.value      = ""
+        item.tapHandler =
+            configurationItemTapHandler( viewController:    viewController
+                                       , configurationItem: item
+                                       )
+        return item
+    }
+
+    func configurationItemTapHandler
+        ( viewController:    ConfigurationItemViewController
+        , configurationItem: SLComposeSheetConfigurationItem
+        )
+        -> SLComposeSheetConfigurationItemTapHandler
+    {
+        func tapHandler() {
+            viewController.delegate             = self
+            viewController.forConfigurationItem = configurationItem
+
+            self.pushConfigurationViewController(viewController)
+        }
+        return tapHandler
+    }
 
     override func presentationAnimationDidFinish() {
         self.placeholder = "Send us a message!"
@@ -61,15 +93,33 @@ class ShareViewController: SLComposeServiceViewController {
 
     override func configurationItems() -> [Any]! {
         // To add configuration options via table cells at the bottom of the sheet, return an array of SLComposeSheetConfigurationItem here.
-        return [ publicationConfigurationItem
-               , hoursConfigurationItem
-               ]
+//        return [ publicationConfigurationItem
+//               , hoursConfigurationItem
+//               ]
+        return
+            [ makeConfigurationItem( title:          "Publication:"
+                                   , viewController: PublicationPickerViewController()
+                                   )
+            , makeConfigurationItem( title:          "Time spent reading:"
+                                   , viewController: HoursViewController()
+                                   )
+            ]
     }
 }
 
 extension ShareViewController: ConfigurationItemDelegate {
-    func continueReport() {
 
+    /* TODO Get rid of coupling.
+
+       The current solution is less then ideal, because `configurationItemsAsSegues`
+       is used and it is defined in `ShareViewController`. Using a protocol should
+       mean that it is agnostic about what construct is adopting it.
+
+       Anyhow, if this works, figure out a way to clean this up.
+    */
+    func continueReport() {
+        // 1 keep popping configureationitemsassegues
+        // 2 popvc when it is empty
     }
 
 

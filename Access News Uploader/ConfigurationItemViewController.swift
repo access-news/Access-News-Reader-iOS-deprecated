@@ -1,34 +1,23 @@
 //
-//  HoursViewController.swift
+//  ConfigurationItemViewController.swift
 //  Access News Uploader
 //
-//  Created by Society for the Blind on 1/3/18.
+//  Created by Society for the Blind on 1/5/18.
 //  Copyright © 2018 Society for the Blind. All rights reserved.
 //
 
 import UIKit
 import Social
 
-class HoursViewController: ConfigurationItemViewController {
+class ConfigurationItemViewController: UIViewController {
 
-//    weak var delegate: ConfigurationItemDelegate!
+    weak var delegate: ConfigurationItemDelegate!
+    weak var forConfigurationItem: SLComposeSheetConfigurationItem!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        let doneButton = UIBarButtonItem(title:   "Done"
-            , style:  .done
-            , target: self
-            , action: #selector(doneButtonClicked)
-        )
-        self.navigationItem.rightBarButtonItem = doneButton
-    }
-
-    @objc func doneButtonClicked() {
-
-        (self.delegate as! SLComposeServiceViewController).popConfigurationViewController()
-        //        self.delegate.nextConfigurationItemViewController()
     }
 
     override func didReceiveMemoryWarning() {

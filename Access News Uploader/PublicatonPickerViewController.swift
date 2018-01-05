@@ -9,7 +9,7 @@
 import UIKit
 import Social
 
-class PublicationPickerViewController: UIViewController {
+class PublicationPickerViewController: ConfigurationItemViewController {
 
     var currentlyPicked: String = ""
 
@@ -67,8 +67,8 @@ class PublicationPickerViewController: UIViewController {
                     typelevel sorcery with enums and associated types etc., but
                     have to have this up and running sooner rather than later.
     */
-    weak var delegate: ConfigurationItemDelegate!
-    weak var forConfigurationItem: SLComposeSheetConfigurationItem!
+//    weak var delegate: ConfigurationItemDelegate!
+//    weak var forConfigurationItem: SLComposeSheetConfigurationItem!
 
     lazy var publicationPicker: UIPickerView = {
         let frame = CGRect(
