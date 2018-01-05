@@ -15,7 +15,10 @@ class ShareViewController: SLComposeServiceViewController {
         let item = SLComposeSheetConfigurationItem()!
         item.title = "Publication:"
         item.value = ""
-        item.tapHandler = { print("publication configuration item tapped") }
+        item.tapHandler = {
+            let publicationPickerViewController = PublicationPickerViewController()
+            self.pushConfigurationViewController(publicationPickerViewController)
+        }
         return item
     }()
 
@@ -26,6 +29,8 @@ class ShareViewController: SLComposeServiceViewController {
         item.tapHandler = { print("hours")}
         return item
     }()
+
+    var publicationPickerData: [String] = ["Safeway ads", "Walmart ads", "Ferndale Enterprise"]
 
     override func presentationAnimationDidFinish() {
         self.placeholder = "Send us a message!"
@@ -53,29 +58,4 @@ class ShareViewController: SLComposeServiceViewController {
                , hoursConfigurationItem
                ]
     }
-
-}
-
-extension ShareViewController: UIPickerViewDelegate {
-
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        //
-        return nil
-    }
-
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        //
-    }
-}
-
-extension ShareViewController: UIPickerViewDataSource {
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        <#code#>
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        <#code#>
-    }
-    
-
 }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PublicationViewController: UIViewController {
+class PublicationPickerViewController: UIViewController {
 
     lazy var publicationPicker: UIPickerView = {
         let frame = CGRect(
@@ -21,8 +21,13 @@ class PublicationViewController: UIViewController {
         let picker = UIPickerView(frame: frame)
         picker.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
+        picker.delegate   = self
+        picker.dataSource = self
+
         return picker
     }()
+
+    var pickerData: [String] = ["Safeway ads", "Walmart ads", "Ferndale Enterprise"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,7 +55,7 @@ class PublicationViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         self.title = "Choose a publication"
-        
+        self.view.addSubview(publicationPicker)
     }
 
     override func didReceiveMemoryWarning() {
@@ -68,5 +73,29 @@ class PublicationViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+
+}
+
+extension PublicationPickerViewController: UIPickerViewDelegate {
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return pickerData[row]
+    }
+
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        //
+    }
+}
+
+extension PublicationPickerViewController: UIPickerViewDataSource {
+
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return pickerData.count
+    }
+
 
 }
