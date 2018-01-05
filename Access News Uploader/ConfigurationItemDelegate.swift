@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Social
 
-protocol ConfigurationItemDelegate {
+protocol ConfigurationItemDelegate: class{
     func updateValue(newValue: String, of configItem: SLComposeSheetConfigurationItem)
 
     func nextConfigurationItemViewController()

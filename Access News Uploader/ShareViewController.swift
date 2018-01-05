@@ -18,7 +18,7 @@ class ShareViewController: SLComposeServiceViewController {
         item.tapHandler = {
             let publicationPickerViewController = PublicationPickerViewController()
             publicationPickerViewController.delegate             = self
-//            publicationPickerViewController.forConfigurationItem = item
+            publicationPickerViewController.forConfigurationItem = item
 
             self.pushConfigurationViewController(publicationPickerViewController)
         }

@@ -11,6 +11,8 @@ import Social
 
 class PublicationPickerViewController: UIViewController {
 
+    var currentlyPicked: String = ""
+
     /* Implicitly unwrapped optionals are used, because these need to be set
        set for proper functionality.
 
@@ -61,10 +63,12 @@ class PublicationPickerViewController: UIViewController {
                    to the `ConfigurationItemDelegate` protocol (now transitions
                    can be customized)
 
-                (2) ???
+                (2) Stayed with `forConfigurationItem` for now. There may be some
+                    typelevel sorcery with enums and associated types etc., but
+                    have to have this up and running sooner rather than later.
     */
-    var delegate: ConfigurationItemDelegate!
-//    var forConfigurationItem: SLComposeSheetConfigurationItem!
+    weak var delegate: ConfigurationItemDelegate!
+    weak var forConfigurationItem: SLComposeSheetConfigurationItem!
 
     lazy var publicationPicker: UIPickerView = {
         let frame = CGRect(
@@ -113,8 +117,6 @@ class PublicationPickerViewController: UIViewController {
         self.title = "Choose a publication"
         self.view.addSubview(self.publicationPicker)
 
-//        self.publicationPicker.becomeFirstResponder()
-
         let doneButton = UIBarButtonItem(title:   "Done"
                                         , style:  .done
                                         , target: self
@@ -125,10 +127,7 @@ class PublicationPickerViewController: UIViewController {
 
     @objc func doneButtonClicked() {
 
-        print("\nlofa\n")
-        // this is only stub - figure out how to get newValue here
-        // self.forConfigurationItem.value = newValue
-
+        self.forConfigurationItem.value = self.currentlyPicked
         self.delegate.nextConfigurationItemViewController()
     }
 
@@ -156,8 +155,9 @@ extension PublicationPickerViewController: UIPickerViewDelegate {
         return pickerData[row]
     }
 
+
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        //
+        self.currentlyPicked = pickerData[row]
     }
 }
 
