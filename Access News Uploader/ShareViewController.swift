@@ -37,7 +37,29 @@ class ShareViewController: SLComposeServiceViewController {
     // Using IUO because this has to be set and the method `configurationItems:`
     // used to set it always returns a value.
     var configurationItemsAsSegues: [SLComposeSheetConfigurationItem]!
+
+    override func presentationAnimationDidFinish() {
+        self.placeholder = "Send us a message!"
+//        self.configurationItemsAsSegues = self.configurationItems() as! [SLComposeSheetConfigurationItem]
+    }
+
+    override func isContentValid() -> Bool {
+        // Do validation of contentText and/or NSExtensionContext attachments here
+        return true
+    }
+
+    override func didSelectPost() {
+        // This is called after the user selects Post. Do the upload of contentText and/or NSExtensionContext attachments.
     
+        // Inform the host that we're done, so it un-blocks its UI. Note: Alternatively you could call super's -didSelectPost, which will similarly complete the extension context.
+        self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
+    }
+
+    // TODO: Is there anything that needs to be cleaned up?
+//    override func didSelectCancel() {
+//
+//    }
+
     func makeConfigurationItem
         ( title:          String
         , viewController: ConfigurationItemViewController
@@ -64,32 +86,38 @@ class ShareViewController: SLComposeServiceViewController {
             viewController.delegate             = self
             viewController.forConfigurationItem = configurationItem
 
+            let arr = self.configurationItems() as! [SLComposeSheetConfigurationItem]
+
+            self.configurationItemsAsSegues =
+                self.putTappedConfigurationItemFirstInArray(
+                    tappedItem:         configurationItem
+                  , configurationItems: arr
+                  )
+
             self.pushConfigurationViewController(viewController)
         }
         return tapHandler
     }
 
-    override func presentationAnimationDidFinish() {
-        self.placeholder = "Send us a message!"
-        self.configurationItemsAsSegues = self.configurationItems() as! [SLComposeSheetConfigurationItem]
-    }
+    func putTappedConfigurationItemFirstInArray
+        ( tappedItem:             SLComposeSheetConfigurationItem
+        , configurationItems arr: [SLComposeSheetConfigurationItem]
+        )
+        -> [SLComposeSheetConfigurationItem]
+    {
+        let tappedItemIndex = arr.index { (elem) -> Bool
+                                          in
+                                          elem.title == tappedItem.title
+                                        }
 
-    override func isContentValid() -> Bool {
-        // Do validation of contentText and/or NSExtensionContext attachments here
-        return true
-    }
+        guard let tix = tappedItemIndex else { return [] }
 
-    override func didSelectPost() {
-        // This is called after the user selects Post. Do the upload of contentText and/or NSExtensionContext attachments.
-    
-        // Inform the host that we're done, so it un-blocks its UI. Note: Alternatively you could call super's -didSelectPost, which will similarly complete the extension context.
-        self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
-    }
+        var result = arr
+        result.remove(at: tix)
+        result.insert(tappedItem, at: 0)
 
-    // TODO: Is there anything that needs to be cleaned up?
-//    override func didSelectCancel() {
-//
-//    }
+        return result
+    }
 
     override func configurationItems() -> [Any]! {
         // To add configuration options via table cells at the bottom of the sheet, return an array of SLComposeSheetConfigurationItem here.
