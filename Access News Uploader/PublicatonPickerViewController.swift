@@ -71,15 +71,8 @@ class PublicationPickerViewController: ConfigurationItemViewController {
 //    weak var forConfigurationItem: SLComposeSheetConfigurationItem!
 
     lazy var publicationPicker: UIPickerView = {
-        let frame = CGRect(
-            x: self.view.frame.minX,
-            y: self.view.frame.minY,
-            width:  self.view.frame.width,
-            height: self.view.frame.height
-        )
 
-        let picker = UIPickerView(frame: frame)
-        picker.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        let picker = self.createView(from: UIPickerView.self)
 
         picker.delegate   = self
         picker.dataSource = self

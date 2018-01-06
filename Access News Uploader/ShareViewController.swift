@@ -152,7 +152,7 @@ extension ShareViewController: ConfigurationItemDelegate {
         // 2 popvc when it is empty
 
         if self.configurationItemsOrderedByInitialTap.count != 0 {
-
+            
         }
     }
 
