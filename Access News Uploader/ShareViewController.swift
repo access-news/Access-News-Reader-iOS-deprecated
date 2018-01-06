@@ -36,7 +36,9 @@ class ShareViewController: SLComposeServiceViewController {
 
     // Using IUO because this has to be set and the method `configurationItems:`
     // used to set it always returns a value.
-    var configurationItemsAsSegues: [SLComposeSheetConfigurationItem]!
+    // It also cannot be set within `configurationItems:` because its order depends
+    // on which configuration item has been clicked first.
+    var configurationItemsOrderedByInitialTap: [SLComposeSheetConfigurationItem]!
 
     override func presentationAnimationDidFinish() {
         self.placeholder = "Send us a message!"
@@ -60,7 +62,7 @@ class ShareViewController: SLComposeServiceViewController {
 //
 //    }
 
-    func makeConfigurationItem
+    private func makeConfigurationItem
         ( title:          String
         , viewController: ConfigurationItemViewController
         )
@@ -70,15 +72,15 @@ class ShareViewController: SLComposeServiceViewController {
         item.title      = title
         item.value      = ""
         item.tapHandler =
-            configurationItemTapHandler( viewController:    viewController
-                                       , configurationItem: item
+            configurationItemTapHandler( for:      item
+                                       , usedWith: viewController
                                        )
         return item
     }
 
-    func configurationItemTapHandler
-        ( viewController:    ConfigurationItemViewController
-        , configurationItem: SLComposeSheetConfigurationItem
+    private func configurationItemTapHandler
+        ( for configurationItem:   SLComposeSheetConfigurationItem
+        , usedWith viewController: ConfigurationItemViewController
         )
         -> SLComposeSheetConfigurationItemTapHandler
     {
@@ -88,7 +90,7 @@ class ShareViewController: SLComposeServiceViewController {
 
             let arr = self.configurationItems() as! [SLComposeSheetConfigurationItem]
 
-            self.configurationItemsAsSegues =
+            self.configurationItemsOrderedByInitialTap =
                 self.putTappedConfigurationItemFirstInArray(
                     tappedItem:         configurationItem
                   , configurationItems: arr
@@ -99,7 +101,7 @@ class ShareViewController: SLComposeServiceViewController {
         return tapHandler
     }
 
-    func putTappedConfigurationItemFirstInArray
+    private func putTappedConfigurationItemFirstInArray
         ( tappedItem:             SLComposeSheetConfigurationItem
         , configurationItems arr: [SLComposeSheetConfigurationItem]
         )
@@ -148,6 +150,10 @@ extension ShareViewController: ConfigurationItemDelegate {
     func continueReport() {
         // 1 keep popping configureationitemsassegues
         // 2 popvc when it is empty
+
+        if self.configurationItemsOrderedByInitialTap.count != 0 {
+
+        }
     }
 
 
