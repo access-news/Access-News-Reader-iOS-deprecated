@@ -54,8 +54,8 @@ class PublicationPickerViewController: ConfigurationItemViewController {
                the other hand I also don't like the tight coupling by using
                `forConfigurationItem` stored property.
 
-               -> Make use of `ShareViewController`'s (i.e., `SLComposeServiceViewController`'s)
-                  `configurationItems:` method?
+               -> Make use of `ShareViewController`'s (i.e.,
+                  `SLComposeServiceViewController`'s) configurationItems:` method?
 
      UPDATE#3: (1) `popViewController` issues solved by adding `nextConfigurationItemViewController`
                    to the `ConfigurationItemDelegate` protocol (now transitions
@@ -78,7 +78,25 @@ class PublicationPickerViewController: ConfigurationItemViewController {
         return picker
     }()
 
+    /* TODO
+       Make this an enum? Or is a simple array enough here?
+    */
+    /* TODO
+       Volunteers should only see there assigned publications. (This will
+       probably change after the complete overhaul of TR2.)
+
+         I think this should be taken care of in
+         * Userdefaults
+
+           Pointers:
+           see MainViewController and
+           https://www.makeschool.com/online-courses/tutorials/build-a-photo-sharing-app-9f153781-8df0-4909-8162-bb3b3a2f7a81/keeping-users-logged-in
+
+         * firebase realtime database
+           https://www.makeschool.com/online-courses/tutorials/build-a-photo-sharing-app-9f153781-8df0-4909-8162-bb3b3a2f7a81/managing-user-accounts
+    */
     var pickerData: [String] = ["Safeway ads", "Walmart ads", "Ferndale Enterprise"]
+
     lazy var currentlyPicked = self.pickerData[0]
 
     override func viewDidLoad() {
@@ -88,8 +106,8 @@ class PublicationPickerViewController: ConfigurationItemViewController {
          Figure out what the difference is between `text` and `insertText`.
 
          * `text`       is defined by UITextView whereas
-         * `insertText` is declared by the UIKeyInput protocol (that is adopted by
-         UIResponder, but the fact is never mentioned in the docs)
+         * `insertText` is declared by the UIKeyInput protocol (that is adopted
+           by UIResponder, but the fact is never mentioned in the docs)
 
          See the tutorial and a related SO thread where I commented:
          (1) http://www.talkmobiledev.com/2017/01/22/create-a-custom-share-extension-in-swift/
@@ -148,12 +166,22 @@ class PublicationPickerViewController: ConfigurationItemViewController {
 
 extension PublicationPickerViewController: UIPickerViewDelegate {
 
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    func pickerView
+        ( _            pickerView: UIPickerView
+        , titleForRow  row:        Int
+        , forComponent component:  Int
+        )
+        -> String?
+    {
         return pickerData[row]
     }
 
-
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    func pickerView
+        (_             pickerView: UIPickerView
+        , didSelectRow row:        Int
+        , inComponent  component:  Int
+        )
+    {
         self.currentlyPicked = pickerData[row]
     }
 }
@@ -164,9 +192,12 @@ extension PublicationPickerViewController: UIPickerViewDataSource {
         return 1
     }
 
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func pickerView
+        (_                        pickerView: UIPickerView
+        , numberOfRowsInComponent component:  Int
+        )
+        -> Int
+    {
         return pickerData.count
     }
-
-
 }
