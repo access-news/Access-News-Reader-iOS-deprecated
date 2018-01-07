@@ -26,10 +26,8 @@ class HoursViewController: ConfigurationItemViewController {
     }
 
     @objc func doneButtonClicked() {
-
-        self.delegate.continueReport(newValue: "27")
-//        (self.delegate as! SLComposeServiceViewController).popConfigurationViewController()
-        //        self.delegate.nextConfigurationItemViewController()
+        self.delegate.updateValue("27")
+        self.delegate.backToMain()
     }
 
     override func didReceiveMemoryWarning() {

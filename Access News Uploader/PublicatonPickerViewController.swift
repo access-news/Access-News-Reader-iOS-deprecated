@@ -11,63 +11,6 @@ import Social
 
 class PublicationPickerViewController: ConfigurationItemViewController {
 
-    /* Implicitly unwrapped optionals are used, because these need to be set
-       set for proper functionality.
-
-     tl;dr
-       The tutorials that pertain to this specific view controller are:
-       * http://www.talkmobiledev.com/2017/01/22/create-a-custom-share-extension-in-swift/
-       * https://codewithchris.com/uipickerview-example/
-
-       The default share extension pop-up (`SLComposeServiceViewController`) can
-       be extended with extra choice menus (`SLComposeSheetConfigurationItem` or
-       configuration items; see `lazy var` declarations in `ShareViewController`).
-
-     The configuration item has 3 properties that are relevant here:
-
-     * title (to display what the menu is for)
-     * value (that will be updated with a new value after tapping this menu or
-              configuration item and choosing/inputing a new value in the subsequent
-              view)
-     * tapHandler
-       It, at least in this app, is used to instantiate and configure
-       the subsequent view controller when the menu choice is tapped,
-       that will provide the interface to choose a new value. In order
-       to exchange data between the view controllers, the stored
-       properties below need to be set:
-
-       * `delegate`             - to provide a callback
-       * `forConfigurationItem` - it is mostly used to DRY up the code (otherwise
-                                  a new delegate protocol would be necessary for
-                                  every menu choice view controller.
-
-     TODO:                        ^^^ is this assumption correct? ^^^
-     TODO: Am I creating a retention cycle as it is implemented right now?
-
-     UPDATE#1: Just realized that delegate may not even be necessary if I am
-             going to use `forConfigurationItem` because then the value can
-             be set directly.
-             Is this a bad idea?
-
-     UPDATE#2: So delegate IS needed (or passing `ShareViewController` instance
-               itself) as `popViewController` is not defined in this context. On
-               the other hand I also don't like the tight coupling by using
-               `forConfigurationItem` stored property.
-
-               -> Make use of `ShareViewController`'s (i.e.,
-                  `SLComposeServiceViewController`'s) configurationItems:` method?
-
-     UPDATE#3: (1) `popViewController` issues solved by adding `nextConfigurationItemViewController`
-                   to the `ConfigurationItemDelegate` protocol (now transitions
-                   can be customized)
-
-                (2) Stayed with `forConfigurationItem` for now. There may be some
-                    typelevel sorcery with enums and associated types etc., but
-                    have to have this up and running sooner rather than later.
-    */
-//    weak var delegate: ConfigurationItemDelegate!
-//    weak var forConfigurationItem: SLComposeSheetConfigurationItem!
-
     lazy var publicationPicker: UIPickerView = {
 
         let picker = self.createView(from: UIPickerView.self)
@@ -102,32 +45,11 @@ class PublicationPickerViewController: ConfigurationItemViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        /* TODO:
-         Figure out what the difference is between `text` and `insertText`.
-
-         * `text`       is defined by UITextView whereas
-         * `insertText` is declared by the UIKeyInput protocol (that is adopted
-           by UIResponder, but the fact is never mentioned in the docs)
-
-         See the tutorial and a related SO thread where I commented:
-         (1) http://www.talkmobiledev.com/2017/01/22/create-a-custom-share-extension-in-swift/
-         (2) https://stackoverflow.com/questions/2792589/uitextview-insert-text-in-the-textview-text
-
-         (1) uses `insertText` on a UITextView instance and later calls
-         `becomeFirstResponder` on it, so I guess UIKeyInput has to do with it
-         based on its description:
-
-         > When instances of this subclass are the first responder,
-         > the system keyboard is displayed. Only a small subset of
-         > the available keyboards and languages are available to
-         > classes that adopt this protocol.
-         */
-
         // Do any additional setup after loading the view.
         self.title = "Choose a publication"
         self.view.addSubview(self.publicationPicker)
 
-        let doneButton = UIBarButtonItem(title:   "Continue"
+        let doneButton = UIBarButtonItem(title:   "Done"
                                         , style:  .plain
                                         , target: self
                                         , action: #selector(doneButtonClicked)
@@ -136,14 +58,8 @@ class PublicationPickerViewController: ConfigurationItemViewController {
     }
 
     @objc func doneButtonClicked() {
-
-//        self.forConfigurationItem.value = self.currentlyPicked
-
-//        let vc = HoursViewController()
-//        vc.delegate = self.delegate
-        self.delegate.continueReport(newValue: self.currentlyPicked)
-//        (self.delegate as! SLComposeServiceViewController).pushConfigurationViewController(vc)
-//        self.delegate.nextConfigurationItemViewController()
+        self.delegate.updateValue(self.currentlyPicked)
+        self.delegate.backToMain()
     }
 
     override func didReceiveMemoryWarning() {
@@ -201,3 +117,88 @@ extension PublicationPickerViewController: UIPickerViewDataSource {
         return pickerData.count
     }
 }
+
+/* HISTORICAL NOTES FOR delegate AND forConfigurationItem (may help later)
+   ======================================================
+
+ Implicitly unwrapped optionals are used, because these need to be set
+ set for proper functionality.
+
+ //    weak var delegate: ConfigurationItemDelegate!
+ //    weak var forConfigurationItem: SLComposeSheetConfigurationItem!
+
+ tl;dr
+ The tutorials that pertain to this specific view controller are:
+ * http://www.talkmobiledev.com/2017/01/22/create-a-custom-share-extension-in-swift/
+ * https://codewithchris.com/uipickerview-example/
+
+ The default share extension pop-up (`SLComposeServiceViewController`) can
+ be extended with extra choice menus (`SLComposeSheetConfigurationItem` or
+ configuration items; see `lazy var` declarations in `ShareViewController`).
+
+ The configuration item has 3 properties that are relevant here:
+
+ * title (to display what the menu is for)
+ * value (that will be updated with a new value after tapping this menu or
+ configuration item and choosing/inputing a new value in the subsequent
+ view)
+ * tapHandler
+ It, at least in this app, is used to instantiate and configure
+ the subsequent view controller when the menu choice is tapped,
+ that will provide the interface to choose a new value. In order
+ to exchange data between the view controllers, the stored
+ properties below need to be set:
+
+ * `delegate`             - to provide a callback
+ * `forConfigurationItem` - it is mostly used to DRY up the code (otherwise
+ a new delegate protocol would be necessary for
+ every menu choice view controller.
+
+ TODO:                        ^^^ is this assumption correct? ^^^
+ TODO: Am I creating a retention cycle as it is implemented right now?
+
+ UPDATE#1: Just realized that delegate may not even be necessary if I am
+ going to use `forConfigurationItem` because then the value can
+ be set directly.
+ Is this a bad idea?
+
+ UPDATE#2: So delegate IS needed (or passing `ShareViewController` instance
+ itself) as `popViewController` is not defined in this context. On
+ the other hand I also don't like the tight coupling by using
+ `forConfigurationItem` stored property.
+
+ -> Make use of `ShareViewController`'s (i.e.,
+ `SLComposeServiceViewController`'s) configurationItems:` method?
+
+ UPDATE#3: (1) `popViewController` issues solved by adding `nextConfigurationItemViewController`
+ to the `ConfigurationItemDelegate` protocol (now transitions
+ can be customized)
+
+ (2) Stayed with `forConfigurationItem` for now. There may be some
+ typelevel sorcery with enums and associated types etc., but
+ have to have this up and running sooner rather than later.
+ */
+
+/* HISTORICAL NOTES #2
+ ===================
+
+ Figure out what the difference is between `text` and `insertText`.
+
+ * `text`       is defined by UITextView whereas
+ * `insertText` is declared by the UIKeyInput protocol (that is adopted
+ by UIResponder, but the fact is never mentioned in the docs)
+
+ See the tutorial and a related SO thread where I commented:
+ (1) http://www.talkmobiledev.com/2017/01/22/create-a-custom-share-extension-in-swift/
+ (2) https://stackoverflow.com/questions/2792589/uitextview-insert-text-in-the-textview-text
+
+ (1) uses `insertText` on a UITextView instance and later calls
+ `becomeFirstResponder` on it, so I guess UIKeyInput has to do with it
+ based on its description:
+
+ > When instances of this subclass are the first responder,
+ > the system keyboard is displayed. Only a small subset of
+ > the available keyboards and languages are available to
+ > classes that adopt this protocol.
+ */
+
