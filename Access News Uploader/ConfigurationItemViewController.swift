@@ -48,6 +48,32 @@ class ConfigurationItemViewController: UIViewController {
              2. `respond:to:` does not work because properties have to
                 conform to objective-c (or something along those lines)
     */
+    /* TODO-3:
+
+        I assumed below that protocol inheritance works the same as for classes, but
+        it doesn't seems so. When using `NSObjectProtocol` first (instead of `Protocol`)
+        it doesn't work.
+
+        UPDATE: I switched branches, and coming back the compiler errors,
+                so this must be some weird dynamic code loading behaviour
+                Xcode.
+
+        Line 81 works, but for some reason it doesn't allow calling its
+        `delegate` property. Tried calling it dynamically with selector-
+        using methods (`perform`, `conform:to:`) but no joy.
+
+        Look into #keyPath and key-value coding (see Neuburg books and links
+        below).
+
+        + https://stackoverflow.com/questions/24245262/call-a-method-from-a-string-in-swift
+        + key-value coding programming guide
+          https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueCoding/BasicPrinciples.html#//apple_ref/doc/uid/20002170-BAJEAIEE
+        + https://stackoverflow.com/questions/40705591/class-does-not-conform-nsobjectprotocol/40705627
+        + https://stackoverflow.com/questions/38920184/swift-protocol-inheritance
+        + https://stackoverflow.com/questions/38007881/swift-protocol-to-require-properties-as-protocol
+        + https://stackoverflow.com/questions/29058814/protocol-inheritance-delegates-in-swift
+     
+     */
     func createView
         < View:       UIView
         , Delegate:   Protocol
@@ -66,7 +92,9 @@ class ConfigurationItemViewController: UIViewController {
         let view = viewType.init(frame: frame)
         view.autoresizingMask = [ .flexibleWidth, .flexibleHeight ]
 
-        type(of: self).conforms(to: delegate)
+        if type(of: self).conforms(to: delegate) == true {
+
+        }
 //        if (  delegate != nil
 //           && self.conforms(to: UIPickerViewDelegate.self)) {
 //

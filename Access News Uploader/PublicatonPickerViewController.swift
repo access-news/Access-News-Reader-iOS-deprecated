@@ -13,9 +13,9 @@ class PublicationPickerViewController: ConfigurationItemViewController {
 
     lazy var publicationPicker: UIPickerView = {
 
-        let picker = self.createView(from: UIPickerView.self)
+        let picker = self.createView(from: UIPickerView.self, delegate: UIPickerViewDelegate.self)
 
-        picker.delegate   = self
+//        picker.delegate   = self
         picker.dataSource = self
 
         return picker
