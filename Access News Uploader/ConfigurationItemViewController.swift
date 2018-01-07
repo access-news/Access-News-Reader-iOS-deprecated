@@ -48,15 +48,29 @@ class ConfigurationItemViewController: UIViewController {
              2. `respond:to:` does not work because properties have to
                 conform to objective-c (or something along those lines)
     */
-    func createView<View: UIView>(from view:  View.Type) -> View
+    func createView
+        < View:       UIView
+        , Delegate:   Protocol
+//        , DataSource: NSObjectProtocol
+        >
+        ( from viewType: View.Type
+        , delegate:      Delegate
+//        , dataSource:    DataSource.Type?
+        ) -> View
     {
         let frame = CGRect( x:      self.view.frame.minX
                           , y:      self.view.frame.minY
                           , width:  self.view.frame.width
                           , height: self.view.frame.height
                           )
-        let view = View.init(frame: frame)
+        let view = viewType.init(frame: frame)
         view.autoresizingMask = [ .flexibleWidth, .flexibleHeight ]
+
+        type(of: self).conforms(to: delegate)
+//        if (  delegate != nil
+//           && self.conforms(to: UIPickerViewDelegate.self)) {
+//
+//        }
 
         return view
     }
