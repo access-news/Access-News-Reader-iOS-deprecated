@@ -18,6 +18,8 @@ class ConfigurationItemViewController: UIViewController {
        the configuration item's row).
 
      TODO-1: Figure out why this is is working.
+     UPDATE: This may have been an Xcode dynamic code loading issue, because
+             compiler issues disappeared after switching between branches.
 
              The original implementation was
              `func createView<View: UIView>(from view: View) -> View`

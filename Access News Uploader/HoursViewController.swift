@@ -17,11 +17,19 @@ class HoursViewController: ConfigurationItemViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+
+/* ===========================================================================
+ TODO: DRY up:
+
+ This block is the same for any configuration item. How could this be
+ moved up to ConfigurationItemViewController? The button pushes the
+ new value back to main interface. */
+
         let doneButton = UIBarButtonItem(title:   "Done"
-            , style:  .done
-            , target: self
-            , action: #selector(doneButtonClicked)
-        )
+                                        , style:  .done
+                                        , target: self
+                                        , action: #selector(doneButtonClicked)
+                                        )
         self.navigationItem.rightBarButtonItem = doneButton
     }
 
@@ -29,6 +37,8 @@ class HoursViewController: ConfigurationItemViewController {
         self.delegate.updateValue("27")
         self.delegate.backToMain()
     }
+/* ===========================================================================*/
+
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

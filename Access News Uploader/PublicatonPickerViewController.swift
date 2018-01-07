@@ -15,15 +15,17 @@ class PublicationPickerViewController: ConfigurationItemViewController {
 
         let picker = self.createView(from: UIPickerView.self)
 
+        /* TODO
+           Figure out how to move this to the `createView` method. See
+           "how-to-assign-delegate-to-dynamically-generated-view" branch
+           initial work, but I needed to move on.
+        */
         picker.delegate   = self
         picker.dataSource = self
 
         return picker
     }()
 
-    /* TODO
-       Make this an enum? Or is a simple array enough here?
-    */
     /* TODO
        Volunteers should only see there assigned publications. (This will
        probably change after the complete overhaul of TR2.)
@@ -38,6 +40,9 @@ class PublicationPickerViewController: ConfigurationItemViewController {
          * firebase realtime database
            https://www.makeschool.com/online-courses/tutorials/build-a-photo-sharing-app-9f153781-8df0-4909-8162-bb3b3a2f7a81/managing-user-accounts
     */
+    /* TODO
+       Make this an enum? Or is a simple array enough here?
+     */
     var pickerData: [String] = ["Safeway ads", "Walmart ads", "Ferndale Enterprise"]
 
     lazy var currentlyPicked = self.pickerData[0]
@@ -49,8 +54,15 @@ class PublicationPickerViewController: ConfigurationItemViewController {
         self.title = "Choose a publication"
         self.view.addSubview(self.publicationPicker)
 
+/* ===========================================================================
+   TODO: DRY up:
+
+   This block is the same for any configuration item. How could this be
+   moved up to ConfigurationItemViewController? The button pushes the
+   new value back to main interface. */
+
         let doneButton = UIBarButtonItem(title:   "Done"
-                                        , style:  .plain
+                                        , style:  .done
                                         , target: self
                                         , action: #selector(doneButtonClicked)
                                         )
@@ -61,6 +73,7 @@ class PublicationPickerViewController: ConfigurationItemViewController {
         self.delegate.updateValue(self.currentlyPicked)
         self.delegate.backToMain()
     }
+/* ===========================================================================*/
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
