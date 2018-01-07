@@ -11,6 +11,6 @@ import UIKit
 
 protocol ConfigurationItemDelegate: class {
 //    func updateValue(newValue: String, of configItem: SLComposeSheetConfigurationItem)
-
-    func continueReport()
+    func startReport()
+    func continueReport(newValue: String)
 }

@@ -34,11 +34,29 @@ class ShareViewController: SLComposeServiceViewController {
 //        return item
 //    }()
 
+    typealias ConfigurationTuple =
+        ( itemTitle:         String
+        , viewController:    ConfigurationItemViewController
+        , configurationItem: SLComposeSheetConfigurationItem
+        )
+
     // Using IUO because this has to be set and the method `configurationItems:`
     // used to set it always returns a value.
     // It also cannot be set within `configurationItems:` because its order depends
     // on which configuration item has been clicked first.
-    var configurationItemsOrderedByInitialTap: [SLComposeSheetConfigurationItem]!
+    lazy var configurationTuples =
+        [ makeConfigurationItemTuple(
+            itemTitle:      "Publication:",
+            viewController: PublicationPickerViewController()
+            )
+        , makeConfigurationItemTuple(
+            itemTitle:      "Time spent reading:",
+            viewController: HoursViewController()
+            )
+    ]
+
+    var nextConfigurationTuples:    [ConfigurationTuple]!
+    var previousConfigurationTuple: ConfigurationTuple!
 
     override func presentationAnimationDidFinish() {
         self.placeholder = "Send us a message!"
@@ -62,20 +80,20 @@ class ShareViewController: SLComposeServiceViewController {
 //
 //    }
 
-    private func makeConfigurationItem
-        ( title:          String
+    private func makeConfigurationItemTuple
+        ( itemTitle:      String
         , viewController: ConfigurationItemViewController
         )
-        -> SLComposeSheetConfigurationItem
+        -> ConfigurationTuple
     {
         let item = SLComposeSheetConfigurationItem()!
-        item.title      = title
+        item.title      = itemTitle
         item.value      = ""
         item.tapHandler =
             configurationItemTapHandler( for:      item
                                        , usedWith: viewController
                                        )
-        return item
+        return (itemTitle, viewController, item)
     }
 
     private func configurationItemTapHandler
@@ -88,37 +106,30 @@ class ShareViewController: SLComposeServiceViewController {
             viewController.delegate             = self
             viewController.forConfigurationItem = configurationItem
 
-            let arr = self.configurationItems() as! [SLComposeSheetConfigurationItem]
-
-            self.configurationItemsOrderedByInitialTap =
-                self.putTappedConfigurationItemFirstInArray(
-                    tappedItem:         configurationItem
-                  , configurationItems: arr
-                  )
-
-            self.pushConfigurationViewController(viewController)
+            self.reorderNextConfigurationTuples(configurationItem)
+            self.startReport()
         }
         return tapHandler
     }
 
-    private func putTappedConfigurationItemFirstInArray
-        ( tappedItem:             SLComposeSheetConfigurationItem
-        , configurationItems arr: [SLComposeSheetConfigurationItem]
-        )
-        -> [SLComposeSheetConfigurationItem]
+    private func reorderNextConfigurationTuples
+        (_ tappedItem: SLComposeSheetConfigurationItem)
     {
-        let tappedItemIndex = arr.index { (elem) -> Bool
-                                          in
-                                          elem.title == tappedItem.title
-                                        }
+        /* Using IUO because this always returns an index.
+           ( Every configuration item has been initialized in `configurationTuples`
+           ( and this function is called in a configuration item's taphandler
+           ( that hands its own containing configuration item as tappedItem.
+           ( Full circle.
+        */
+        self.nextConfigurationTuples = self.configurationTuples
 
-        guard let tix = tappedItemIndex else { return [] }
+        let tappedItemIndex =
+            self.nextConfigurationTuples.index(
+                where: { $0.itemTitle == tappedItem.title }
+                )!
 
-        var result = arr
-        result.remove(at: tix)
-        result.insert(tappedItem, at: 0)
-
-        return result
+        let removedTuple = self.nextConfigurationTuples.remove(at: tappedItemIndex)
+        self.nextConfigurationTuples.insert(removedTuple, at: 0)
     }
 
     override func configurationItems() -> [Any]! {
@@ -126,33 +137,39 @@ class ShareViewController: SLComposeServiceViewController {
 //        return [ publicationConfigurationItem
 //               , hoursConfigurationItem
 //               ]
-        return
-            [ makeConfigurationItem( title:          "Publication:"
-                                   , viewController: PublicationPickerViewController()
-                                   )
-            , makeConfigurationItem( title:          "Time spent reading:"
-                                   , viewController: HoursViewController()
-                                   )
-            ]
+        return self.configurationTuples.map { $0.configurationItem }
+
     }
 }
 
 extension ShareViewController: ConfigurationItemDelegate {
 
-    /* TODO Get rid of coupling.
+    func startReport() {
+        self.previousConfigurationTuple =
+            self.nextConfigurationTuples.removeFirst()
 
-       The current solution is less then ideal, because `configurationItemsAsSegues`
-       is used and it is defined in `ShareViewController`. Using a protocol should
-       mean that it is agnostic about what construct is adopting it.
+        self.pushConfigurationViewController(
+            self.previousConfigurationTuple.viewController
+        )
+    }
 
-       Anyhow, if this works, figure out a way to clean this up.
-    */
-    func continueReport() {
-        // 1 keep popping configureationitemsassegues
-        // 2 popvc when it is empty
+    func continueReport(newValue: String) {
 
-        if self.configurationItemsOrderedByInitialTap.count != 0 {
+        self.previousConfigurationTuple.configurationItem.value = newValue
+
+        if self.nextConfigurationTuples.count != 0 {
+
+            self.previousConfigurationTuple =
+                self.nextConfigurationTuples.removeFirst()
+
+            let nextViewController =
+                self.previousConfigurationTuple.viewController
+            nextViewController.delegate = self
+
+            self.pushConfigurationViewController(nextViewController)
             
+        } else {
+            self.popConfigurationViewController()
         }
     }
 

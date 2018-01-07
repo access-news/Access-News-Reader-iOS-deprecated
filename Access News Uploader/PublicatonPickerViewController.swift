@@ -11,8 +11,6 @@ import Social
 
 class PublicationPickerViewController: ConfigurationItemViewController {
 
-    var currentlyPicked: String = ""
-
     /* Implicitly unwrapped optionals are used, because these need to be set
        set for proper functionality.
 
@@ -81,6 +79,7 @@ class PublicationPickerViewController: ConfigurationItemViewController {
     }()
 
     var pickerData: [String] = ["Safeway ads", "Walmart ads", "Ferndale Enterprise"]
+    lazy var currentlyPicked = self.pickerData[0]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -120,12 +119,12 @@ class PublicationPickerViewController: ConfigurationItemViewController {
 
     @objc func doneButtonClicked() {
 
-        self.forConfigurationItem.value = self.currentlyPicked
+//        self.forConfigurationItem.value = self.currentlyPicked
 
-        let vc = HoursViewController()
-        vc.delegate = self.delegate
-        self.delegate.continueReport()
-        (self.delegate as! SLComposeServiceViewController).pushConfigurationViewController(vc)
+//        let vc = HoursViewController()
+//        vc.delegate = self.delegate
+        self.delegate.continueReport(newValue: self.currentlyPicked)
+//        (self.delegate as! SLComposeServiceViewController).pushConfigurationViewController(vc)
 //        self.delegate.nextConfigurationItemViewController()
     }
 

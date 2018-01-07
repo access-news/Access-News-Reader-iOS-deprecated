@@ -27,7 +27,8 @@ class HoursViewController: ConfigurationItemViewController {
 
     @objc func doneButtonClicked() {
 
-        (self.delegate as! SLComposeServiceViewController).popConfigurationViewController()
+        self.delegate.continueReport(newValue: "27")
+//        (self.delegate as! SLComposeServiceViewController).popConfigurationViewController()
         //        self.delegate.nextConfigurationItemViewController()
     }
 
