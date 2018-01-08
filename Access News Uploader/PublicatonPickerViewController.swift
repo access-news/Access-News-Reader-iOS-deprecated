@@ -51,15 +51,16 @@ class PublicationPickerViewController: ConfigurationItemViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        self.title = "Choose a publication"
-        self.view.addSubview(self.publicationPicker)
 
 /* ===========================================================================
-   TODO: DRY up:
+ TODO: DRY up:
 
-   This block is the same for any configuration item. How could this be
-   moved up to ConfigurationItemViewController? The button pushes the
-   new value back to main interface. */
+ This block is the same for any configuration item. How could this be
+ moved up to ConfigurationItemViewController? The button pushes the
+ new value back to main interface. */
+        
+        self.title = "Choose a publication"
+        self.view.addSubview(self.publicationPicker)
 
         let doneButton = UIBarButtonItem(title:   "Done"
                                         , style:  .done

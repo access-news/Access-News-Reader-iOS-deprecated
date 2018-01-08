@@ -11,7 +11,14 @@ import Social
 
 class HoursViewController: ConfigurationItemViewController {
 
-//    weak var delegate: ConfigurationItemDelegate!
+    lazy var durationPicker: UIDatePicker = {
+
+        let picker = self.createView(from: UIDatePicker.self)
+        picker.datePickerMode = .countDownTimer
+        picker.minuteInterval = 5
+
+        return picker
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +32,9 @@ class HoursViewController: ConfigurationItemViewController {
  moved up to ConfigurationItemViewController? The button pushes the
  new value back to main interface. */
 
+        self.title = "Time spent reading?"
+        self.view.addSubview(durationPicker)
+
         let doneButton = UIBarButtonItem(title:   "Done"
                                         , style:  .done
                                         , target: self
@@ -34,7 +44,16 @@ class HoursViewController: ConfigurationItemViewController {
     }
 
     @objc func doneButtonClicked() {
-        self.delegate.updateValue("27")
+
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.hour, .minute]
+        formatter.unitsStyle = .abbreviated
+
+        let durationInSeconds = durationPicker.countDownDuration
+        guard let durationString = formatter.string(from: durationInSeconds)
+            else { return }
+
+        self.delegate.updateValue(durationString)
         self.delegate.backToMain()
     }
 /* ===========================================================================*/
