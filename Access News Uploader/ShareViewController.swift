@@ -9,6 +9,20 @@
 import UIKit
 import Social
 
+/* TODO - Restrict to audio files only (i.e. m4a)
+   https://developer.apple.com/library/content/documentation/General/Conceptual/ExtensibilityPG/ExtensionScenarios.html#//apple_ref/doc/uid/TP40014214-CH21-SW8
+ */
+
+/* TODO - Check whether user is authenticated.
+
+          This would require sharing information with the main app.
+ */
+
+/* TODO - Volunteers should only see their assigned publications.
+
+          See TODO in PublicationPickerViewController.
+ */
+
 class ShareViewController: SLComposeServiceViewController {
 
     typealias ConfigurationTuple =

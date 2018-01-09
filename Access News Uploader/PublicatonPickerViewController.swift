@@ -26,7 +26,7 @@ class PublicationPickerViewController: ConfigurationItemViewController {
         return picker
     }()
 
-    /* TODO
+    /* TODO(#sharing)
        Volunteers should only see there assigned publications. (This will
        probably change after the complete overhaul of TR2.)
 
