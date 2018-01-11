@@ -67,6 +67,9 @@ class ShareViewController: SLComposeServiceViewController {
         // Inform the host that we're done, so it un-blocks its UI.
         // Note: Alternatively you could call super's -didSelectPost,
         // which will similarly complete the extension context.
+
+        // p ((self.extensionContext?.inputItems[0] as! NSExtensionItem).attachments?.first as! NSItemProvider).loadFileRepresentation(forTypeIdentifier: "public.jpeg") { url, error in if let u = url { print("\n\(u)\n") }}  
+
         self.extensionContext!.completeRequest(
             returningItems:    [],
             completionHandler: nil

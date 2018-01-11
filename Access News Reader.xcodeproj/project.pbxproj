@@ -24,6 +24,10 @@
 		D95067E51FFD337E002C617D /* HoursViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D95067E41FFD337E002C617D /* HoursViewController.swift */; };
 		D956B0321FFFA0C500DCA685 /* ConfigurationItemDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D956B0311FFFA0C500DCA685 /* ConfigurationItemDelegate.swift */; };
 		D956B03420003C0800DCA685 /* ConfigurationItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D956B03320003C0800DCA685 /* ConfigurationItemViewController.swift */; };
+		D982B75F2007B7590064B6FE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D982B75E2007B7590064B6FE /* GoogleService-Info.plist */; };
+		D982B7632007B85D0064B6FE /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; fileRef = D982B7622007B85D0064B6FE /* FirebaseCore */; };
+		D982B7652007B8870064B6FE /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; fileRef = D982B7642007B8860064B6FE /* FirebaseAuth */; };
+		E8FDEC105CFCBECB4C7F46C1 /* Pods_Access_News_Reader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D982B7612007B77B0064B6FE /* Pods_Access_News_Reader.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +75,10 @@
 		D95067E41FFD337E002C617D /* HoursViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoursViewController.swift; sourceTree = "<group>"; };
 		D956B0311FFFA0C500DCA685 /* ConfigurationItemDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationItemDelegate.swift; sourceTree = "<group>"; };
 		D956B03320003C0800DCA685 /* ConfigurationItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationItemViewController.swift; sourceTree = "<group>"; };
+		D982B75E2007B7590064B6FE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Documents/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		D982B7612007B77B0064B6FE /* Pods_Access_News_Reader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_Access_News_Reader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D982B7622007B85D0064B6FE /* FirebaseCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = FirebaseCore; path = Pods/FirebaseCore; sourceTree = "<group>"; };
+		D982B7642007B8860064B6FE /* FirebaseAuth */ = {isa = PBXFileReference; lastKnownFileType = folder; name = FirebaseAuth; path = Pods/FirebaseAuth; sourceTree = "<group>"; };
 		FE9F87F6C19E3D77F76B2C4A /* Pods-Access News Reader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Access News Reader.release.xcconfig"; path = "Pods/Target Support Files/Pods-Access News Reader/Pods-Access News Reader.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -80,6 +88,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A4AE61A925CAC3B15694DEB /* Pods_Access_News_Reader.framework in Frameworks */,
+				E8FDEC105CFCBECB4C7F46C1 /* Pods_Access_News_Reader.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -87,6 +96,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D982B7652007B8870064B6FE /* FirebaseAuth in Frameworks */,
+				D982B7632007B85D0064B6FE /* FirebaseCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,6 +116,9 @@
 		32898F9F46ADE4E704082108 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D982B7642007B8860064B6FE /* FirebaseAuth */,
+				D982B7622007B85D0064B6FE /* FirebaseCore */,
+				D982B7612007B77B0064B6FE /* Pods_Access_News_Reader.framework */,
 				A90FC11762C15309122EA314 /* Pods_Access_News_Reader.framework */,
 			);
 			name = Frameworks;
@@ -149,6 +163,7 @@
 		D9455E0A1FFA87C600A0F9A7 /* Access News Uploader */ = {
 			isa = PBXGroup;
 			children = (
+				D982B75E2007B7590064B6FE /* GoogleService-Info.plist */,
 				D9455E0B1FFA87C600A0F9A7 /* ShareViewController.swift */,
 				D956B03320003C0800DCA685 /* ConfigurationItemViewController.swift */,
 				D956B0311FFFA0C500DCA685 /* ConfigurationItemDelegate.swift */,
@@ -258,6 +273,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D9455E0F1FFA87C600A0F9A7 /* MainInterface.storyboard in Resources */,
+				D982B75F2007B7590064B6FE /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -273,12 +289,16 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-Access News Reader/Pods-Access News Reader-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
+				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -293,7 +313,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Access News Reader/Pods-Access News Reader-resources.sh",
-				$PODS_CONFIGURATION_BUILD_DIR/FirebaseUI/FirebaseAuthUI.bundle,
+				"$PODS_CONFIGURATION_BUILD_DIR/FirebaseUI/FirebaseAuthUI.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
