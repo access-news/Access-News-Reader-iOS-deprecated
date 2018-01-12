@@ -8,7 +8,6 @@
 
 import UIKit
 import Firebase
-import FirebaseAuth
 import FirebaseAuthUI
 
 class LoginViewController: UIViewController {

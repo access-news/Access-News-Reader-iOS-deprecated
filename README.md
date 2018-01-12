@@ -25,3 +25,5 @@ Resources found useful during developing this app
 + https://hackernoon.com/how-to-build-an-ios-share-extension-in-swift-4a2019935b2e
 
 + Matt Neuburg books (iOS Programming Fundamentals with Swift + Programming iOS 11)
+
++ Cocoapods and Podfiles: https://stackoverflow.com/questions/41114967/how-to-add-firebase-to-today-extension-ios/48213902#48213902

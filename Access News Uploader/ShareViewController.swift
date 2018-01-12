@@ -8,6 +8,7 @@
 
 import UIKit
 import Social
+import Firebase
 
 /* TODO - Restrict to audio files only (i.e. m4a)
    https://developer.apple.com/library/content/documentation/General/Conceptual/ExtensibilityPG/ExtensionScenarios.html#//apple_ref/doc/uid/TP40014214-CH21-SW8
@@ -42,6 +43,11 @@ class ShareViewController: SLComposeServiceViewController {
             )
     ]
 
+    var imageURLs = [URL?]()
+    var urlProgress = [Progress]()
+
+    let storage = Storage()
+
     var currentConfigurationTuple: ConfigurationTuple?
 
     override func configurationItems() -> [Any]! {
@@ -68,7 +74,27 @@ class ShareViewController: SLComposeServiceViewController {
         // Note: Alternatively you could call super's -didSelectPost,
         // which will similarly complete the extension context.
 
-        // p ((self.extensionContext?.inputItems[0] as! NSExtensionItem).attachments?.first as! NSItemProvider).loadFileRepresentation(forTypeIdentifier: "public.jpeg") { url, error in if let u = url { print("\n\(u)\n") }}  
+        // p ((self.extensionContext?.inputItems[0] as! NSExtensionItem).attachments?.first as! NSItemProvider).loadFileRepresentation(forTypeIdentifier: "public.jpeg") { url, error in if let u = url { print("\n\(u)\n") }}
+
+        guard let ec = self.extensionContext else { return }
+        guard let input = ec.inputItems[0] as? NSExtensionItem else { return }
+        guard let attachments = input.attachments as? [NSItemProvider] else { return }
+
+        print(self.configurationTuples.map { ($0.configurationItem.value, $0.configurationItem.title) })
+
+        attachments.forEach { itemProvider in
+            self.urlProgress.append(
+                itemProvider.loadFileRepresentation(forTypeIdentifier: "public.jpeg") {url, error in
+//                    self.imageURLs.append(url)
+                    if let e = error {
+                        print("\n\(e.localizedDescription)\n")
+                    }
+                    let imgName = String(describing: url!.description.split(separator: "/").last!)
+                    let storageRef = self.storage.reference().child("images/\(imgName)")
+                    storageRef.putFile(from: url!)
+                }
+            )
+        }
 
         self.extensionContext!.completeRequest(
             returningItems:    [],
