@@ -43,10 +43,12 @@ class ShareViewController: SLComposeServiceViewController {
             )
     ]
 
-    var imageURLs = [URL?]()
-    var urlProgress = [Progress]()
+//    var imageURLs = [URL?]()
+//    var urlProgress = [Progress]()
 
-    let storage = Storage()
+    var storage: Storage!
+
+    var images = [(String,URL)]()
 
     var currentConfigurationTuple: ConfigurationTuple?
 
@@ -58,12 +60,37 @@ class ShareViewController: SLComposeServiceViewController {
 
     override func presentationAnimationDidFinish() {
         self.placeholder = "Send us a message!"
+
+        FirebaseApp.configure()
+        self.storage = Storage.storage()
     }
 
     override func isContentValid() -> Bool {
         // Do validation of contentText and/or NSExtensionContext
         // attachments here
         return true
+    }
+
+    func postCompletionHandler(item: NSSecureCoding?, error: Error!) {
+        guard let img = item as? URL else { return }
+        let imgBaseName = String(describing: img).split(separator: "/").last!
+        let storageRef = self.storage.reference().child("images/\(imgBaseName)")
+        self.images.append((String(imgBaseName),img))
+
+        /*
+         -> a BREAK here and then STEP OVER produced the following errors:
+
+             2018-01-13 04:55:06.659471-0800 Access News Uploader[34111:1940054] [default] [ERROR] Could not create a bookmark: Error Domain=NSFileProviderInternalErrorDomain Code=0 "NoValidProviderFound_url" UserInfo={NSLocalizedDescription=NoValidProviderFound_url}
+
+             2018-01-13 04:55:06.659712-0800 Access News Uploader[34111:1940054] [default] [ERROR] Failed to determine whether URL /Users/societyfortheblind/Library/Developer/CoreSimulator/Devices/CDA87780-870F-4601-83B5-94F838588204/data/Media/PhotoData/OutgoingTemp/8776A35D-4413-427E-B3A4-FA9CB32BB4F2/IMG_0004.JPG (s) is managed by a file provider
+
+             2018-01-13 04:55:06.667768-0800 Access News Uploader[34111:1939985] Can't endBackgroundTask: no background task exists with identifier 2, or it may have already been ended. Break in UIApplicationEndBackgroundTaskError() to debug.
+
+             2018-01-13 04:55:06.669585-0800 Access News Uploader[34111:1940036] Cannot get file size: Error Domain=NSCocoaErrorDomain Code=260 "The file “IMG_0003.JPG” couldn’t be opened because there is no such file." UserInfo={NSURL=file:///Users/societyfortheblind/Library/Developer/CoreSimulator/Devices/CDA87780-870F-4601-83B5-94F838588204/data/Media/PhotoData/OutgoingTemp/DC7ED051-7421-4398-8E91-A9D4670FB2B7/IMG_0003.JPG, NSFilePath=/Users/societyfortheblind/Library/Developer/CoreSimulator/Devices/CDA87780-870F-4601-83B5-94F838588204/data/Media/PhotoData/OutgoingTemp/DC7ED051-7421-4398-8E91-A9D4670FB2B7/IMG_0003.JPG, NSUnderlyingError=0x600000241e30 {Error Domain=NSPOSIXErrorDomain Code=2 "No such file or directory"}}
+
+             /Users/societyfortheblind/Library/Developer/CoreSimulator/Devices/CDA87780-870F-4601-83B5-94F838588204/data/Media/PhotoData/OutgoingTemp/DC7ED051-7421-4398-8E91-A9D4670FB2B7/IMG_0003.JPG
+        */
+        storageRef.putFile(from: img)
     }
 
     override func didSelectPost() {
@@ -83,17 +110,25 @@ class ShareViewController: SLComposeServiceViewController {
         print(self.configurationTuples.map { ($0.configurationItem.value, $0.configurationItem.title) })
 
         attachments.forEach { itemProvider in
-            self.urlProgress.append(
-                itemProvider.loadFileRepresentation(forTypeIdentifier: "public.jpeg") {url, error in
-//                    self.imageURLs.append(url)
-                    if let e = error {
-                        print("\n\(e.localizedDescription)\n")
-                    }
-                    let imgName = String(describing: url!.description.split(separator: "/").last!)
-                    let storageRef = self.storage.reference().child("images/\(imgName)")
-                    storageRef.putFile(from: url!)
-                }
-            )
+            if itemProvider.hasItemConformingToTypeIdentifier("public.jpeg") {
+                itemProvider.loadItem(forTypeIdentifier: "public.jpeg", options: nil, completionHandler: postCompletionHandler)
+            }
+
+//            itemProvider.loadItem(forTypeIdentifier: "public.jpeg", options: nil) { data, error in
+//                self.images.append(data as! Data)
+//            }
+//            self.urlProgress.append(
+//                itemProvider.loadFileRepresentation(forTypeIdentifier: "public.jpeg") {url, error in
+////                    self.imageURLs.append(url)
+//                    if let e = error {
+//                        print("\n\(e.localizedDescription)\n")
+//                    }
+//                    let imgName = String(describing: url!.description.split(separator: "/").last!)
+//                    let storageRef = self.storage.reference().child("images/\(imgName)")
+//                    storageRef.putFile(from: url!)
+//                    print("\n\n===\n\n")
+//                }
+//            )
         }
 
         self.extensionContext!.completeRequest(
