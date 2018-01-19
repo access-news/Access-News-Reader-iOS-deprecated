@@ -89,7 +89,10 @@ class ShareViewController: SLComposeServiceViewController {
 
         attachments.forEach { itemProvider in
             if itemProvider.hasItemConformingToTypeIdentifier("public.jpeg") {
+
+                // for some reason, Firebase' putData works, but not putFile
                 itemProvider.loadItem(forTypeIdentifier: "public.jpeg", options: nil, completionHandler: postCompletionHandler)
+//                itemProvider.loadFileRepresentation(forTypeIdentifier: "public.jpeg", completionHandler: postFileCompletionHandler)
             }
         }
 
@@ -101,6 +104,22 @@ class ShareViewController: SLComposeServiceViewController {
             )
     }
 
+//    func postFileCompletionHandler(item: URL?, error: Error!) {
+//
+//        if error != nil {
+//            print("\n\nerror\n\n")
+//        }
+//        guard let fileURL = item else { return }
+//
+//        let itemFileName = String(describing: fileURL).split(separator: "/").last!
+//        let storageRef = self.storage.reference().child("img/\(String(describing: itemFileName))")
+//
+//        // Large audio files are involved therefore `putFile` would be recommended,
+//        // I can't do it from the simulator (or maybe it's something else).
+//        storageRef.putFile(from: fileURL)
+//    }
+
+
     func postCompletionHandler(item: NSSecureCoding?, error: Error!) {
 
         guard let itemData = try? Data(contentsOf: item as! URL) else { return }
@@ -108,7 +127,7 @@ class ShareViewController: SLComposeServiceViewController {
 
         guard let itemURL = item as? URL else { return }
         let itemFileName = String(describing: itemURL).split(separator: "/").last!
-        let storageRef = self.storage.reference().child("images/\(itemFileName)")
+        let storageRef = self.storage.reference().child("img/\(itemFileName)")
 
         // Large audio files are involved therefore `putFile` would be recommended,
         // I can't do it from the simulator (or maybe it's something else).
