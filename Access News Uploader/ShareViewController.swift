@@ -48,7 +48,7 @@ class ShareViewController: SLComposeServiceViewController {
 
     var storage: Storage!
 
-    var images = [(String,URL)]()
+    var images = [Data]()
 
     var currentConfigurationTuple: ConfigurationTuple?
 
@@ -71,28 +71,6 @@ class ShareViewController: SLComposeServiceViewController {
         return true
     }
 
-    func postCompletionHandler(item: NSSecureCoding?, error: Error!) {
-        guard let img = item as? URL else { return }
-        let imgBaseName = String(describing: img).split(separator: "/").last!
-        let storageRef = self.storage.reference().child("images/\(imgBaseName)")
-        self.images.append((String(imgBaseName),img))
-
-        /*
-         -> a BREAK here and then STEP OVER produced the following errors:
-
-             2018-01-13 04:55:06.659471-0800 Access News Uploader[34111:1940054] [default] [ERROR] Could not create a bookmark: Error Domain=NSFileProviderInternalErrorDomain Code=0 "NoValidProviderFound_url" UserInfo={NSLocalizedDescription=NoValidProviderFound_url}
-
-             2018-01-13 04:55:06.659712-0800 Access News Uploader[34111:1940054] [default] [ERROR] Failed to determine whether URL /Users/societyfortheblind/Library/Developer/CoreSimulator/Devices/CDA87780-870F-4601-83B5-94F838588204/data/Media/PhotoData/OutgoingTemp/8776A35D-4413-427E-B3A4-FA9CB32BB4F2/IMG_0004.JPG (s) is managed by a file provider
-
-             2018-01-13 04:55:06.667768-0800 Access News Uploader[34111:1939985] Can't endBackgroundTask: no background task exists with identifier 2, or it may have already been ended. Break in UIApplicationEndBackgroundTaskError() to debug.
-
-             2018-01-13 04:55:06.669585-0800 Access News Uploader[34111:1940036] Cannot get file size: Error Domain=NSCocoaErrorDomain Code=260 "The file “IMG_0003.JPG” couldn’t be opened because there is no such file." UserInfo={NSURL=file:///Users/societyfortheblind/Library/Developer/CoreSimulator/Devices/CDA87780-870F-4601-83B5-94F838588204/data/Media/PhotoData/OutgoingTemp/DC7ED051-7421-4398-8E91-A9D4670FB2B7/IMG_0003.JPG, NSFilePath=/Users/societyfortheblind/Library/Developer/CoreSimulator/Devices/CDA87780-870F-4601-83B5-94F838588204/data/Media/PhotoData/OutgoingTemp/DC7ED051-7421-4398-8E91-A9D4670FB2B7/IMG_0003.JPG, NSUnderlyingError=0x600000241e30 {Error Domain=NSPOSIXErrorDomain Code=2 "No such file or directory"}}
-
-             /Users/societyfortheblind/Library/Developer/CoreSimulator/Devices/CDA87780-870F-4601-83B5-94F838588204/data/Media/PhotoData/OutgoingTemp/DC7ED051-7421-4398-8E91-A9D4670FB2B7/IMG_0003.JPG
-        */
-        storageRef.putFile(from: img)
-    }
-
     override func didSelectPost() {
         // This is called after the user selects Post. Do the upload of
         // contentText and/or NSExtensionContext attachments.
@@ -107,34 +85,34 @@ class ShareViewController: SLComposeServiceViewController {
         guard let input = ec.inputItems[0] as? NSExtensionItem else { return }
         guard let attachments = input.attachments as? [NSItemProvider] else { return }
 
-        print(self.configurationTuples.map { ($0.configurationItem.value, $0.configurationItem.title) })
+        /* CAVEMAN */ print(self.configurationTuples.map { ($0.configurationItem.value, $0.configurationItem.title) })
 
         attachments.forEach { itemProvider in
             if itemProvider.hasItemConformingToTypeIdentifier("public.jpeg") {
                 itemProvider.loadItem(forTypeIdentifier: "public.jpeg", options: nil, completionHandler: postCompletionHandler)
             }
-
-//            itemProvider.loadItem(forTypeIdentifier: "public.jpeg", options: nil) { data, error in
-//                self.images.append(data as! Data)
-//            }
-//            self.urlProgress.append(
-//                itemProvider.loadFileRepresentation(forTypeIdentifier: "public.jpeg") {url, error in
-////                    self.imageURLs.append(url)
-//                    if let e = error {
-//                        print("\n\(e.localizedDescription)\n")
-//                    }
-//                    let imgName = String(describing: url!.description.split(separator: "/").last!)
-//                    let storageRef = self.storage.reference().child("images/\(imgName)")
-//                    storageRef.putFile(from: url!)
-//                    print("\n\n===\n\n")
-//                }
-//            )
         }
+
+        print(self.images)
 
         self.extensionContext!.completeRequest(
             returningItems:    [],
             completionHandler: nil
             )
+    }
+
+    func postCompletionHandler(item: NSSecureCoding?, error: Error!) {
+
+        guard let itemData = try? Data(contentsOf: item as! URL) else { return }
+        self.images.append(itemData)
+
+        guard let itemURL = item as? URL else { return }
+        let itemFileName = String(describing: itemURL).split(separator: "/").last!
+        let storageRef = self.storage.reference().child("images/\(itemFileName)")
+
+        // Large audio files are involved therefore `putFile` would be recommended,
+        // I can't do it from the simulator (or maybe it's something else).
+        storageRef.putData(itemData)
     }
 
     // TODO: Is there anything that needs to be cleaned up?
