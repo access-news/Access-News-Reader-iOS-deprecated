@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6A4AE61A925CAC3B15694DEB /* Pods_Access_News_Reader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A90FC11762C15309122EA314 /* Pods_Access_News_Reader.framework */; };
-		B28B4283B34D84E882709862 /* Pods_Access_News_Access_News_Reader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68CA5F9F6EF6B17DC9E56AFA /* Pods_Access_News_Access_News_Reader.framework */; };
+		524FFEC59FFBBE1269E284CD /* Pods_Access_News_Access_News_Uploader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9C1FBCE203CB30B005CA670 /* Pods_Access_News_Access_News_Uploader.framework */; };
+		61A096D2AD3FCA33F8186E42 /* Pods_Access_News_Access_News_Reader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68CA5F9F6EF6B17DC9E56AFA /* Pods_Access_News_Access_News_Reader.framework */; };
 		D92B8ADB1FE2F90A006C5736 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92B8ADA1FE2F90A006C5736 /* AppDelegate.swift */; };
 		D92B8ADD1FE2F90A006C5736 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92B8ADC1FE2F90A006C5736 /* LoginViewController.swift */; };
 		D92B8AE01FE2F90A006C5736 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D92B8ADE1FE2F90A006C5736 /* Main.storyboard */; };
@@ -26,7 +26,6 @@
 		D956B0321FFFA0C500DCA685 /* ConfigurationItemDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D956B0311FFFA0C500DCA685 /* ConfigurationItemDelegate.swift */; };
 		D956B03420003C0800DCA685 /* ConfigurationItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D956B03320003C0800DCA685 /* ConfigurationItemViewController.swift */; };
 		D982B75F2007B7590064B6FE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D982B75E2007B7590064B6FE /* GoogleService-Info.plist */; };
-		E947C32171BDB3EEF97EFB70 /* Pods_Access_News_Access_News_Uploader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E1ED6F0BB7F58219438637B /* Pods_Access_News_Access_News_Uploader.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +84,8 @@
 		D982B7612007B77B0064B6FE /* Pods_Access_News_Reader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_Access_News_Reader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D982B7622007B85D0064B6FE /* FirebaseCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = FirebaseCore; path = Pods/FirebaseCore; sourceTree = "<group>"; };
 		D982B7642007B8860064B6FE /* FirebaseAuth */ = {isa = PBXFileReference; lastKnownFileType = folder; name = FirebaseAuth; path = Pods/FirebaseAuth; sourceTree = "<group>"; };
+		D9C1FBCB203CB2EE005CA670 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		D9C1FBCE203CB30B005CA670 /* Pods_Access_News_Access_News_Uploader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_Access_News_Access_News_Uploader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D9ECCA9B2007BBB600B1CA32 /* Firebase */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Firebase; path = Pods/Firebase; sourceTree = "<group>"; };
 		FE9F87F6C19E3D77F76B2C4A /* Pods-Access News Reader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Access News Reader.release.xcconfig"; path = "Pods/Target Support Files/Pods-Access News Reader/Pods-Access News Reader.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -94,8 +95,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A4AE61A925CAC3B15694DEB /* Pods_Access_News_Reader.framework in Frameworks */,
-				B28B4283B34D84E882709862 /* Pods_Access_News_Access_News_Reader.framework in Frameworks */,
+				61A096D2AD3FCA33F8186E42 /* Pods_Access_News_Access_News_Reader.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,7 +103,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E947C32171BDB3EEF97EFB70 /* Pods_Access_News_Access_News_Uploader.framework in Frameworks */,
+				524FFEC59FFBBE1269E284CD /* Pods_Access_News_Access_News_Uploader.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,6 +126,8 @@
 		32898F9F46ADE4E704082108 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D9C1FBCE203CB30B005CA670 /* Pods_Access_News_Access_News_Uploader.framework */,
+				D9C1FBCB203CB2EE005CA670 /* Podfile */,
 				D962E5212007BC6E002F6252 /* Pods_Access_News_Reader.framework */,
 				D9ECCA9B2007BBB600B1CA32 /* Firebase */,
 				D982B7642007B8860064B6FE /* FirebaseAuth */,
@@ -303,24 +305,14 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Access News-Access News Reader/Pods-Access News-Access News Reader-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher-iOS9.0/GTMSessionFetcher.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac-iOS9.0/GoogleToolboxForMac.framework",
-				"${BUILT_PRODUCTS_DIR}/SDWebImage-iOS9.0/SDWebImage.framework",
-				"${BUILT_PRODUCTS_DIR}/leveldb-library-iOS9.0/leveldb.framework",
-				"${BUILT_PRODUCTS_DIR}/nanopb-iOS9.0/nanopb.framework",
-				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher-iOS11.2/GTMSessionFetcher.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac-iOS11.2/GoogleToolboxForMac.framework",
-				"${BUILT_PRODUCTS_DIR}/SDWebImage-iOS11.2/SDWebImage.framework",
-				"${BUILT_PRODUCTS_DIR}/leveldb-library-iOS11.2/leveldb.framework",
-				"${BUILT_PRODUCTS_DIR}/nanopb-iOS11.2/nanopb.framework",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
+				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
@@ -339,8 +331,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Access News-Access News Reader/Pods-Access News-Access News Reader-resources.sh",
-				"$PODS_CONFIGURATION_BUILD_DIR/FirebaseUI-iOS9.0/FirebaseAuthUI.bundle",
-				"$PODS_CONFIGURATION_BUILD_DIR/FirebaseUI-iOS11.2/FirebaseAuthUI.bundle",
+				$PODS_CONFIGURATION_BUILD_DIR/FirebaseUI/FirebaseAuthUI.bundle,
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -394,7 +385,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Access News-Access News Uploader/Pods-Access News-Access News Uploader-resources.sh",
-				"$PODS_CONFIGURATION_BUILD_DIR/FirebaseUI-iOS11.2/FirebaseAuthUI.bundle",
+				$PODS_CONFIGURATION_BUILD_DIR/FirebaseUI/FirebaseAuthUI.bundle,
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -584,7 +575,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8FMKREFJQK;
+				DEVELOPMENT_TEAM = K6BD7WSV5V;
 				INFOPLIST_FILE = "Access News Reader/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.societyfortheblind.Access-News-Reader";
@@ -601,7 +592,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8FMKREFJQK;
+				DEVELOPMENT_TEAM = K6BD7WSV5V;
 				INFOPLIST_FILE = "Access News Reader/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.societyfortheblind.Access-News-Reader";
@@ -616,9 +607,9 @@
 			baseConfigurationReference = 1FE11983D67928BEECF01140 /* Pods-Access News-Access News Uploader.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = K6BD7WSV5V;
 				INFOPLIST_FILE = "Access News Uploader/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.societyfortheblind.Access-News-Reader.Access-News-Uploader";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -633,9 +624,9 @@
 			baseConfigurationReference = 87ABE1F52C6D931406B859D9 /* Pods-Access News-Access News Uploader.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = K6BD7WSV5V;
 				INFOPLIST_FILE = "Access News Uploader/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.societyfortheblind.Access-News-Reader.Access-News-Uploader";
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -7,12 +7,25 @@
 		<key>Access News Reader.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>14</integer>
+			<integer>8</integer>
 		</dict>
 		<key>Access News Uploader.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>15</integer>
+			<integer>9</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>D92B8AD61FE2F90A006C5736</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D9455E081FFA87C600A0F9A7</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>

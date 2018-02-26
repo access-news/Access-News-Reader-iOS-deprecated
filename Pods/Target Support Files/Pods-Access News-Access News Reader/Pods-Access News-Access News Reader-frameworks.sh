@@ -102,28 +102,18 @@ strip_invalid_archs() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_framework "${BUILT_PRODUCTS_DIR}/GTMSessionFetcher-iOS9.0/GTMSessionFetcher.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac-iOS9.0/GoogleToolboxForMac.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/SDWebImage-iOS9.0/SDWebImage.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/leveldb-library-iOS9.0/leveldb.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/nanopb-iOS9.0/nanopb.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/GTMSessionFetcher-iOS11.2/GTMSessionFetcher.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac-iOS11.2/GoogleToolboxForMac.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/SDWebImage-iOS11.2/SDWebImage.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/leveldb-library-iOS11.2/leveldb.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/nanopb-iOS11.2/nanopb.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_framework "${BUILT_PRODUCTS_DIR}/GTMSessionFetcher-iOS9.0/GTMSessionFetcher.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac-iOS9.0/GoogleToolboxForMac.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/SDWebImage-iOS9.0/SDWebImage.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/leveldb-library-iOS9.0/leveldb.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/nanopb-iOS9.0/nanopb.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/GTMSessionFetcher-iOS11.2/GTMSessionFetcher.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac-iOS11.2/GoogleToolboxForMac.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/SDWebImage-iOS11.2/SDWebImage.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/leveldb-library-iOS11.2/leveldb.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/nanopb-iOS11.2/nanopb.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait

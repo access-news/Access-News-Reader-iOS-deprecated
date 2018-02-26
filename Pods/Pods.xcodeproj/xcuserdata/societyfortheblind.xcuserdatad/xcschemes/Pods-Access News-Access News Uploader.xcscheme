@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "BA7F7E1C6B0610FA37C63DBEF4EDC548"
+               BlueprintIdentifier = "566262BC89D746F84A57159985323979"
                BuildableName = "Pods_Access_News_Access_News_Uploader.framework"
                BlueprintName = "Pods-Access News-Access News Uploader"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -47,7 +47,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "BA7F7E1C6B0610FA37C63DBEF4EDC548"
+            BlueprintIdentifier = "566262BC89D746F84A57159985323979"
             BuildableName = "Pods_Access_News_Access_News_Uploader.framework"
             BlueprintName = "Pods-Access News-Access News Uploader"
             ReferencedContainer = "container:Pods.xcodeproj">
