@@ -61,7 +61,10 @@ class ShareViewController: SLComposeServiceViewController {
     override func presentationAnimationDidFinish() {
         self.placeholder = "Send us a message!"
 
-        FirebaseApp.configure()
+        // https://stackoverflow.com/questions/37910766/
+        if FirebaseApp.app() == nil {
+            FirebaseApp.configure()
+        }
         self.storage = Storage.storage()
     }
 
