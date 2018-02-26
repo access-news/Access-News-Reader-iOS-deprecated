@@ -26,6 +26,11 @@ import Firebase
 
 class ShareViewController: SLComposeServiceViewController {
 
+    func delay(_ delay:Double, closure:@escaping () -> ()) {
+        let when = DispatchTime.now() + delay
+        DispatchQueue.main.asyncAfter(deadline: when, execute: closure)
+    }
+
     typealias ConfigurationTuple =
         ( itemTitle:         String
         , viewController:    ConfigurationItemViewController
@@ -74,6 +79,15 @@ class ShareViewController: SLComposeServiceViewController {
         return true
     }
 
+    /* 2/26/2018 7:52       INVESTIGATE
+
+       Only a couple files upload to Firebase from the iPad (simulator is fine).
+       + What about other devices?
+       + Why?
+       + Would background upload solve this? Will the `delay` function still be
+         needed afterwards?
+         See: https://developer.apple.com/library/content/documentation/General/Conceptual/ExtensibilityPG/ExtensionScenarios.html#//apple_ref/doc/uid/TP40014214-CH21-SW2
+     */
     override func didSelectPost() {
         // This is called after the user selects Post. Do the upload of
         // contentText and/or NSExtensionContext attachments.
@@ -82,29 +96,45 @@ class ShareViewController: SLComposeServiceViewController {
         // Note: Alternatively you could call super's -didSelectPost,
         // which will similarly complete the extension context.
 
+        // For debugging:
         // p ((self.extensionContext?.inputItems[0] as! NSExtensionItem).attachments?.first as! NSItemProvider).loadFileRepresentation(forTypeIdentifier: "public.jpeg") { url, error in if let u = url { print("\n\(u)\n") }}
 
-        guard let ec = self.extensionContext else { return }
-        guard let input = ec.inputItems[0] as? NSExtensionItem else { return }
-        guard let attachments = input.attachments as? [NSItemProvider] else { return }
+        /* 2/26/2018 6:57
+           Using the `delay` function from Matt Neuburg's iOS 11 Programming
+           Fundamentals with Swift (Part III, Chapter 11. Cocoa Events,
+           Delayed Performance, page 534)
 
-        /* CAVEMAN */ print(self.configurationTuples.map { ($0.configurationItem.value, $0.configurationItem.title) })
+           The share extension kept failing on the iPad without any error message,
+           but halting execution and being dropped to an assembly code, quitting
+           with exit code 0 after that.
 
-        attachments.forEach { itemProvider in
-            if itemProvider.hasItemConformingToTypeIdentifier("public.jpeg") {
+           Added a break point and going through line by line, everything worked.
+           Assumed it was because of the delay it added, and Matt's solution
+           solved it.
+        */
+        delay(0.1) {
+            guard let ec = self.extensionContext else { return }
+            guard let input = ec.inputItems[0] as? NSExtensionItem else { return }
+            guard let attachments = input.attachments as? [NSItemProvider] else { return }
 
-                // for some reason, Firebase' putData works, but not putFile
-                itemProvider.loadItem(forTypeIdentifier: "public.jpeg", options: nil, completionHandler: postCompletionHandler)
-//                itemProvider.loadFileRepresentation(forTypeIdentifier: "public.jpeg", completionHandler: postFileCompletionHandler)
+    //        /* CAVEMAN */ print(self.configurationTuples.map { ($0.configurationItem.value, $0.configurationItem.title) })
+
+            attachments.forEach { itemProvider in
+                if itemProvider.hasItemConformingToTypeIdentifier("public.jpeg") {
+
+                    // for some reason, Firebase' putData works, but not putFile
+                    itemProvider.loadItem(forTypeIdentifier: "public.jpeg", options: nil, completionHandler: self.postCompletionHandler)
+    //                itemProvider.loadFileRepresentation(forTypeIdentifier: "public.jpeg", completionHandler: postFileCompletionHandler)
+                }
             }
+
+    //        print(self.images)
+
+            self.extensionContext!.completeRequest(
+                returningItems:    [],
+                completionHandler: nil
+                )
         }
-
-        print(self.images)
-
-        self.extensionContext!.completeRequest(
-            returningItems:    [],
-            completionHandler: nil
-            )
     }
 
 //    func postFileCompletionHandler(item: URL?, error: Error!) {
