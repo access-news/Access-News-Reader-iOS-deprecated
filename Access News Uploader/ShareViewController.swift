@@ -66,6 +66,10 @@ class ShareViewController: SLComposeServiceViewController {
     override func presentationAnimationDidFinish() {
         self.placeholder = "Send us a message!"
 
+        /* TODO:
+           Should this config be in didSelectPost()`?
+           See http://www.talkmobiledev.com/2016/11/19/using-firebase-in-a-share-extension/
+         */
         // https://stackoverflow.com/questions/37910766/
         if FirebaseApp.app() == nil {
             FirebaseApp.configure()
