@@ -53,8 +53,8 @@ class HoursViewController: ConfigurationItemViewController {
         guard let durationString = formatter.string(from: durationInSeconds)
             else { return }
 
-        self.delegate.updateValue(durationString)
-        self.delegate.backToMain()
+        self.delegate?.updateValue(durationString)
+        self.delegate?.backToMain()
     }
 /* ===========================================================================*/
 

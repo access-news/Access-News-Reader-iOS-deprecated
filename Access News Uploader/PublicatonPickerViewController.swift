@@ -71,8 +71,8 @@ class PublicationPickerViewController: ConfigurationItemViewController {
     }
 
     @objc func doneButtonClicked() {
-        self.delegate.updateValue(self.currentlyPicked)
-        self.delegate.backToMain()
+        self.delegate?.updateValue(self.currentlyPicked)
+        self.delegate?.backToMain()
     }
 /* ===========================================================================*/
 

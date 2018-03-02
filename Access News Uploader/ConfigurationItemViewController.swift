@@ -11,7 +11,7 @@ import Social
 
 class ConfigurationItemViewController: UIViewController {
 
-    weak var delegate: ConfigurationItemDelegate!
+    weak var delegate: ConfigurationItemDelegate?
 
     /* Create a custom view that conforms to `SLComposeViewController`
        (and thus it will show up in the next window when clicking on
