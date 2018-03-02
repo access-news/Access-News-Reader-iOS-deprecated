@@ -172,6 +172,19 @@ class ShareViewController: SLComposeServiceViewController {
 //
 //    }
 
+    /* TODO:
+       This pretty and all, but
+       (1) hard to read
+       (2) may be leaking
+       -> (2.1) How to know for sure?
+       -> (2.2) It probably wouldn't hurt to use [unowned self]
+
+       For (2) see:
+       + https://stackoverflow.com/questions/24320347/shall-we-always-use-unowned-self-inside-closure-in-swift
+       + https://www.uraimo.com/2016/10/27/unowned-or-weak-lifetime-and-performance/
+       + Matt Neuburg - Programming iOS 11 (page 815, share extension example)
+       + follow up with Matt Neuburg - iOS 11 Programming Fundamentals with Swift
+    */
     private func makeConfigurationItemTuple
         ( itemTitle:      String
         , viewController: ConfigurationItemViewController

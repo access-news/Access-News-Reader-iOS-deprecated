@@ -86,6 +86,8 @@
 		D982B7642007B8860064B6FE /* FirebaseAuth */ = {isa = PBXFileReference; lastKnownFileType = folder; name = FirebaseAuth; path = Pods/FirebaseAuth; sourceTree = "<group>"; };
 		D9C1FBCB203CB2EE005CA670 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		D9C1FBCE203CB30B005CA670 /* Pods_Access_News_Access_News_Uploader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_Access_News_Access_News_Uploader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D9D68DF5204721FD006488ED /* Access News Reader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Access News Reader.entitlements"; sourceTree = "<group>"; };
+		D9D68DF6204723BD006488ED /* Access News Uploader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Access News Uploader.entitlements"; sourceTree = "<group>"; };
 		D9ECCA9B2007BBB600B1CA32 /* Firebase */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Firebase; path = Pods/Firebase; sourceTree = "<group>"; };
 		FE9F87F6C19E3D77F76B2C4A /* Pods-Access News Reader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Access News Reader.release.xcconfig"; path = "Pods/Target Support Files/Pods-Access News Reader/Pods-Access News Reader.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -163,6 +165,7 @@
 		D92B8AD91FE2F90A006C5736 /* Access News Reader */ = {
 			isa = PBXGroup;
 			children = (
+				D9D68DF5204721FD006488ED /* Access News Reader.entitlements */,
 				D92B8ADA1FE2F90A006C5736 /* AppDelegate.swift */,
 				D92B8ADC1FE2F90A006C5736 /* LoginViewController.swift */,
 				D9455E011FF9D62F00A0F9A7 /* Constants.swift */,
@@ -179,6 +182,7 @@
 		D9455E0A1FFA87C600A0F9A7 /* Access News Uploader */ = {
 			isa = PBXGroup;
 			children = (
+				D9D68DF6204723BD006488ED /* Access News Uploader.entitlements */,
 				D982B75E2007B7590064B6FE /* GoogleService-Info.plist */,
 				D9455E0B1FFA87C600A0F9A7 /* ShareViewController.swift */,
 				D956B03320003C0800DCA685 /* ConfigurationItemViewController.swift */,
@@ -248,10 +252,20 @@
 					D92B8AD61FE2F90A006C5736 = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					D9455E081FFA87C600A0F9A7 = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -574,12 +588,15 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Access News Reader/Access News Reader.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = K6BD7WSV5V;
 				INFOPLIST_FILE = "Access News Reader/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.societyfortheblind.Access-News-Reader";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -591,12 +608,15 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Access News Reader/Access News Reader.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = K6BD7WSV5V;
 				INFOPLIST_FILE = "Access News Reader/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.societyfortheblind.Access-News-Reader";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -606,6 +626,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1FE11983D67928BEECF01140 /* Pods-Access News-Access News Uploader.debug.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Access News Uploader/Access News Uploader.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = K6BD7WSV5V;
 				INFOPLIST_FILE = "Access News Uploader/Info.plist";
@@ -623,6 +644,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 87ABE1F52C6D931406B859D9 /* Pods-Access News-Access News Uploader.release.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Access News Uploader/Access News Uploader.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = K6BD7WSV5V;
 				INFOPLIST_FILE = "Access News Uploader/Info.plist";
