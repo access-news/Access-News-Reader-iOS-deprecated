@@ -14,12 +14,6 @@ class PublicationPickerViewController: ConfigurationItemViewController {
     lazy var publicationPicker: UIPickerView = {
 
         let picker = self.createView(from: UIPickerView.self)
-
-        /* TODO
-           Figure out how to move this to the `createView` method. See
-           "how-to-assign-delegate-to-dynamically-generated-view" branch
-           initial work, but I needed to move on.
-        */
         picker.delegate   = self
         picker.dataSource = self
 
@@ -31,13 +25,13 @@ class PublicationPickerViewController: ConfigurationItemViewController {
        probably change after the complete overhaul of TR2.)
 
          I think this should be taken care of in
-         * Userdefaults
+         + Userdefaults
 
            Pointers:
            see MainViewController and
            https://www.makeschool.com/online-courses/tutorials/build-a-photo-sharing-app-9f153781-8df0-4909-8162-bb3b3a2f7a81/keeping-users-logged-in
 
-         * firebase realtime database
+         + firebase realtime database
            https://www.makeschool.com/online-courses/tutorials/build-a-photo-sharing-app-9f153781-8df0-4909-8162-bb3b3a2f7a81/managing-user-accounts
     */
     /* TODO
@@ -45,36 +39,15 @@ class PublicationPickerViewController: ConfigurationItemViewController {
      */
     var pickerData: [String] = ["Safeway ads", "Walmart ads", "Ferndale Enterprise"]
 
-    lazy var currentlyPicked = self.pickerData[0]
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        // Set up initial value.
+        self.delegate?.selectedPublication = self.pickerData[0]
 
-/* ===========================================================================
- TODO: DRY up:
-
- This block is the same for any configuration item. How could this be
- moved up to ConfigurationItemViewController? The button pushes the
- new value back to main interface. */
-        
         self.title = "Choose a publication"
         self.view.addSubview(self.publicationPicker)
-
-        let doneButton = UIBarButtonItem(title:   "Done"
-                                        , style:  .done
-                                        , target: self
-                                        , action: #selector(doneButtonClicked)
-                                        )
-        self.navigationItem.rightBarButtonItem = doneButton
     }
-
-    @objc func doneButtonClicked() {
-        self.delegate?.updateValue(self.currentlyPicked)
-        self.delegate?.backToMain()
-    }
-/* ===========================================================================*/
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -103,7 +76,7 @@ extension PublicationPickerViewController: UIPickerViewDelegate {
         )
         -> String?
     {
-        return pickerData[row]
+        return self.pickerData[row]
     }
 
     func pickerView
@@ -112,7 +85,7 @@ extension PublicationPickerViewController: UIPickerViewDelegate {
         , inComponent  component:  Int
         )
     {
-        self.currentlyPicked = pickerData[row]
+        self.delegate?.selectedPublication = pickerData[row]
     }
 }
 
@@ -128,7 +101,7 @@ extension PublicationPickerViewController: UIPickerViewDataSource {
         )
         -> Int
     {
-        return pickerData.count
+        return self.pickerData.count
     }
 }
 

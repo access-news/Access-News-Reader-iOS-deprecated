@@ -24,43 +24,98 @@ import Firebase
           See TODO in PublicationPickerViewController.
  */
 
-class ShareViewController: SLComposeServiceViewController {
+class ShareViewController: SLComposeServiceViewController, ConfigurationItemDelegate {
 
     func delay(_ delay:Double, closure:@escaping () -> ()) {
         let when = DispatchTime.now() + delay
         DispatchQueue.main.asyncAfter(deadline: when, execute: closure)
     }
 
-    typealias ConfigurationTuple =
-        ( itemTitle:         String
-        , viewController:    ConfigurationItemViewController
-        , configurationItem: SLComposeSheetConfigurationItem
-        )
+    /* 3/2/2018 0734
+       https://stackoverflow.com/questions/24127587/how-do-i-declare-an-array-of-weak-references-in-swift
+       would be an overkill as there is always only going to be a finite low number
+       of items
+    */
+    weak var hoursConfigItem: SLComposeSheetConfigurationItem?
+    var hours = "" {
+        didSet {
+            self.hoursConfigItem?.value = self.hours
+        }
+    }
 
-    lazy var configurationTuples =
-        [ makeConfigurationItemTuple(
-            itemTitle:      "Publication:",
-            viewController: PublicationPickerViewController()
-            )
-        , makeConfigurationItemTuple(
-            itemTitle:      "Time spent reading:",
-            viewController: HoursViewController()
-            )
-    ]
-
-//    var imageURLs = [URL?]()
-//    var urlProgress = [Progress]()
+    weak var publicationConfigItem: SLComposeSheetConfigurationItem?
+    var selectedPublication = "" {
+        didSet {
+            self.publicationConfigItem?.value = self.selectedPublication
+        }
+    }
 
     var storage: Storage!
-
     var images = [Data]()
-
-    var currentConfigurationTuple: ConfigurationTuple?
 
     override func configurationItems() -> [Any]! {
         // To add configuration options via table cells at the bottom of the
         // sheet, return an array of SLComposeSheetConfigurationItem here.
-        return self.configurationTuples.map { $0.configurationItem }
+
+        /* TODO:
+         This pretty and all, but
+         (1) hard to read
+         (2) (FIXED) may be leaking
+         -> (2.1) How to know for sure?
+         -> (2.2) It probably wouldn't hurt to use [unowned self]
+
+         For (2) see:
+         + https://stackoverflow.com/questions/24320347/shall-we-always-use-unowned-self-inside-closure-in-swift
+         + https://www.uraimo.com/2016/10/27/unowned-or-weak-lifetime-and-performance/
+         + Matt Neuburg - Programming iOS 11 (page 815, share extension example)
+         + follow up with Matt Neuburg - iOS 11 Programming Fundamentals with Swift
+         */
+         func initConfigItem
+            ( forConfigItem:  inout SLComposeSheetConfigurationItem?
+            , title:          String
+            , value:          String
+            , viewController: ConfigurationItemViewController
+            )
+            -> SLComposeSheetConfigurationItem
+        {
+            let item = SLComposeSheetConfigurationItem()!
+            item.title      = title
+            item.value      = value
+            item.tapHandler =
+                { [unowned self] in
+                    viewController.delegate = self
+                    self.pushConfigurationViewController(viewController)
+                }
+            forConfigItem = item
+            return item
+        }
+
+        /* QUESTION
+           Why not this below?
+             self.hoursConfigItem =       initConfigItem(...)
+             self.publicationConfigItem = initConfigItem(...)
+             return [self.hoursConfigItem, self.publicationConfigItem]
+
+            (?) ANSWER
+            In `initConfigItem` I could've set up the `forConfigItem` parameter,
+            but the variables destined to be passed are defined as *weak*, so
+            that would probably complicate things.
+
+            + TRY IT OUT the way it is set in the question. If it works,
+            + ask around whether I am missing something.
+         */
+        return [ initConfigItem(
+                   forConfigItem:  &self.publicationConfigItem,
+                   title:          "Choose publication:",
+                   value:          self.selectedPublication,
+                   viewController: PublicationPickerViewController()
+                   )
+               , initConfigItem(
+                   forConfigItem:  &self.hoursConfigItem,
+                   title:          "Time spent recording:",
+                   value:          self.hours,
+                   viewController: HoursViewController())
+               ]
     }
 
     override func presentationAnimationDidFinish() {
@@ -83,7 +138,7 @@ class ShareViewController: SLComposeServiceViewController {
         return true
     }
 
-    /* 2/26/2018 7:52       INVESTIGATE
+    /* 2/26/2018 7:52       INVESTIGATE (TODO)
 
        Only a couple files upload to Firebase from the iPad (simulator is fine).
        + What about other devices?
@@ -132,30 +187,12 @@ class ShareViewController: SLComposeServiceViewController {
                 }
             }
 
-    //        print(self.images)
-
             self.extensionContext!.completeRequest(
                 returningItems:    [],
                 completionHandler: nil
                 )
         }
     }
-
-//    func postFileCompletionHandler(item: URL?, error: Error!) {
-//
-//        if error != nil {
-//            print("\n\nerror\n\n")
-//        }
-//        guard let fileURL = item else { return }
-//
-//        let itemFileName = String(describing: fileURL).split(separator: "/").last!
-//        let storageRef = self.storage.reference().child("img/\(String(describing: itemFileName))")
-//
-//        // Large audio files are involved therefore `putFile` would be recommended,
-//        // I can't do it from the simulator (or maybe it's something else).
-//        storageRef.putFile(from: fileURL)
-//    }
-
 
     func postCompletionHandler(item: NSSecureCoding?, error: Error!) {
 
@@ -171,79 +208,10 @@ class ShareViewController: SLComposeServiceViewController {
         storageRef.putData(itemData)
     }
 
-    // TODO: Is there anything that needs to be cleaned up?
+//    TODO: Is there anything that needs to be cleaned up?
 //    override func didSelectCancel() {
 //
 //    }
-
-    /* TODO:
-       This pretty and all, but
-       (1) hard to read
-       (2) may be leaking
-       -> (2.1) How to know for sure?
-       -> (2.2) It probably wouldn't hurt to use [unowned self]
-
-       For (2) see:
-       + https://stackoverflow.com/questions/24320347/shall-we-always-use-unowned-self-inside-closure-in-swift
-       + https://www.uraimo.com/2016/10/27/unowned-or-weak-lifetime-and-performance/
-       + Matt Neuburg - Programming iOS 11 (page 815, share extension example)
-       + follow up with Matt Neuburg - iOS 11 Programming Fundamentals with Swift
-    */
-    private func makeConfigurationItemTuple
-        ( itemTitle:      String
-        , viewController: ConfigurationItemViewController
-        )
-        -> ConfigurationTuple
-    {
-        let item = SLComposeSheetConfigurationItem()!
-        item.title      = itemTitle
-        item.value      = ""
-        item.tapHandler =
-            configurationItemTapHandler( for:      item
-                                       , usedWith: viewController
-                                       )
-        return (itemTitle, viewController, item)
-    }
-
-    private func configurationItemTapHandler
-        ( for configurationItem:   SLComposeSheetConfigurationItem
-        , usedWith viewController: ConfigurationItemViewController
-        )
-        -> SLComposeSheetConfigurationItemTapHandler
-    {
-        func tapHandler() {
-            viewController.delegate             = self
-            
-            self.setCurrentConfigurationTuple(using: configurationItem)
-            self.forward(to: viewController)
-        }
-        return tapHandler
-    }
-
-    private func setCurrentConfigurationTuple
-        (using configurationItem: SLComposeSheetConfigurationItem)
-    {
-        self.currentConfigurationTuple =
-            self.configurationTuples.first {
-                $0.itemTitle == configurationItem.title
-        }
-    }
-}
-
-extension ShareViewController: ConfigurationItemDelegate {
-    func updateValue(_ newValue: String) {
-        self.currentConfigurationTuple!.configurationItem.value = newValue
-        self.currentConfigurationTuple = nil
-    }
-
-    func backToMain() {
-        self.popConfigurationViewController()
-    }
-
-    func forward(to configurationItem: ConfigurationItemViewController) {
-        self.pushConfigurationViewController(configurationItem)
-    }
-
 }
 
 

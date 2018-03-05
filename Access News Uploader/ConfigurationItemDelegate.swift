@@ -10,8 +10,6 @@ import Foundation
 import UIKit
 
 protocol ConfigurationItemDelegate: class {
-
-    func updateValue(_ newValue: String)
-    func backToMain() // pop
-    func forward(to configurationItem: ConfigurationItemViewController) // push
+    var selectedPublication: String {get set}
+    var hours:               String {get set}
 }

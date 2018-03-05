@@ -17,53 +17,47 @@ class HoursViewController: ConfigurationItemViewController {
         picker.datePickerMode = .countDownTimer
         picker.minuteInterval = 5
 
+        /* 3/4/2018 0635
+           Ran into an issue where the time wouldn't update if only one dial is
+           turned, but this solves it:
+           https://stackoverflow.com/questions/28295013/
+        */
+        let calendar = Calendar(identifier: .gregorian)
+        let date = DateComponents(calendar: calendar, hour: 0, minute: 5).date!
+        picker.setDate(date, animated: true)
+
         return picker
     }()
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
-
-/* ===========================================================================
- TODO: DRY up:
-
- This block is the same for any configuration item. How could this be
- moved up to ConfigurationItemViewController? The button pushes the
- new value back to main interface. */
+        // Set up initial value.
+        self.delegate?.hours = "5m"
 
         self.title = "Time spent reading?"
-        self.view.addSubview(durationPicker)
+        self.view.addSubview(self.durationPicker)
 
-        let doneButton = UIBarButtonItem(title:   "Done"
-                                        , style:  .done
-                                        , target: self
-                                        , action: #selector(doneButtonClicked)
-                                        )
-        self.navigationItem.rightBarButtonItem = doneButton
+        self.durationPicker.addTarget(
+            self,
+            action: #selector(durationPickerValueChanged),
+            for:    .valueChanged
+            )
     }
 
-    @objc func doneButtonClicked() {
-
+    @objc func durationPickerValueChanged(sender: UIDatePicker) {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.hour, .minute]
         formatter.unitsStyle = .abbreviated
 
-        let durationInSeconds = durationPicker.countDownDuration
-        guard let durationString = formatter.string(from: durationInSeconds)
-            else { return }
-
-        self.delegate?.updateValue(durationString)
-        self.delegate?.backToMain()
+        self.delegate?.hours = formatter.string(from: sender.countDownDuration)!
     }
-/* ===========================================================================*/
-
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
 
     /*
     // MARK: - Navigation
@@ -74,5 +68,4 @@ class HoursViewController: ConfigurationItemViewController {
         // Pass the selected object to the new view controller.
     }
     */
-
 }
