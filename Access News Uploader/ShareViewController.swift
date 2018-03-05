@@ -31,6 +31,8 @@ class ShareViewController: SLComposeServiceViewController, ConfigurationItemDele
         DispatchQueue.main.asyncAfter(deadline: when, execute: closure)
     }
 
+    /* ------- CODE TO CONFORM TO ConfigurationItemDelegage PROTOCOL -------
+       --------------------------------------------------------------------- */
     /* 3/2/2018 0734
        https://stackoverflow.com/questions/24127587/how-do-i-declare-an-array-of-weak-references-in-swift
        would be an overkill as there is always only going to be a finite low number
@@ -50,6 +52,9 @@ class ShareViewController: SLComposeServiceViewController, ConfigurationItemDele
         }
     }
 
+    let defaults = UserDefaults.init(suiteName: "group.org.societyfortheblind.access-news-reader-ag")!
+    /* --------------------------------------------------------------------- */
+    
     var storage: Storage!
     var images = [Data]()
 

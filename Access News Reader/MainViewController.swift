@@ -15,16 +15,7 @@ class MainViewController: UIViewController {
     @IBOutlet weak var logOutButton: UIButton!
     @IBAction func logOut(_ sender: Any) {
 
-        // Not using any social identity providers, so this is unnecessary.
-        /*
-        do {
-            try FUIAuth.defaultAuthUI()!.signOut()
-        } catch {
-            print("error while logging out")
-        }
-        */
-
-        UserDefaults.standard.set(false, forKey: Constants.userLoggedIn)
+        (UIApplication.shared.delegate as? AppDelegate)?.defaults.set(false, forKey: Constants.userLoggedIn)
 
         let storyboard = UIStoryboard.init(name: "Main", bundle: .main)
         let vc = storyboard.instantiateInitialViewController()

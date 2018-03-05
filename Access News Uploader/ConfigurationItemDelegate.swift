@@ -12,4 +12,5 @@ import UIKit
 protocol ConfigurationItemDelegate: class {
     var selectedPublication: String {get set}
     var hours:               String {get set}
+    var defaults:            UserDefaults {get}
 }

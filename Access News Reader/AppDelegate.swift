@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var authUI: FUIAuth?
-
+    let defaults = UserDefaults.init(suiteName: "group.org.societyfortheblind.access-news-reader-ag")!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -29,8 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.authUI = FUIAuth.defaultAuthUI()
         authUI?.delegate = self
 
-        if UserDefaults.standard.bool(forKey: Constants.userLoggedIn) {
-            print("\ntrue\n")
+        if self.defaults.bool(forKey: Constants.userLoggedIn) {
             let storyboard = UIStoryboard(name: "Main", bundle: .main)
             let vc = storyboard.instantiateViewController(withIdentifier: "MainViewController")
             self.window?.rootViewController = vc
@@ -71,7 +70,7 @@ extension AppDelegate: FUIAuthDelegate {
             fatalError()
         }
         if user != nil {
-            UserDefaults.standard.set(true, forKey: Constants.userLoggedIn)
+            self.defaults.set(true, forKey: Constants.userLoggedIn)
 
             let storyboard = UIStoryboard(name: "Main", bundle: .main)
             let vc = storyboard.instantiateViewController(withIdentifier: "MainViewController")
@@ -84,8 +83,9 @@ extension AppDelegate: FUIAuthDelegate {
 }
 
 // Implementing app delegate methods for share extension (upload)
-extension AppDelegate {
-    func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
-        //placeholder
-    }
-}
+//extension AppDelegate {
+//    func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
+//        //placeholder
+//    }
+//}
+
