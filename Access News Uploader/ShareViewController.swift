@@ -171,7 +171,7 @@ class ShareViewController: SLComposeServiceViewController, ConfigurationItemDele
            Assumed it was because of the delay it added, and Matt's solution
            solved it.
         */
-        delay(0.1) {
+//        delay(0.1) {
             guard let ec = self.extensionContext else { return }
             guard let input = ec.inputItems[0] as? NSExtensionItem else { return }
             guard let attachments = input.attachments as? [NSItemProvider] else { return }
@@ -182,7 +182,20 @@ class ShareViewController: SLComposeServiceViewController, ConfigurationItemDele
                 if itemProvider.hasItemConformingToTypeIdentifier("public.jpeg") {
 
                     // for some reason, Firebase' putData works, but not putFile
-                    itemProvider.loadItem(forTypeIdentifier: "public.jpeg", options: nil, completionHandler: self.postCompletionHandler)
+                    itemProvider.loadItem(forTypeIdentifier: "public.jpeg") {  item, error in
+                        DispatchQueue.main.async {
+                            guard let itemData = try? Data(contentsOf: item as! URL) else { return }
+                            self.images.append(itemData)
+
+                            guard let itemURL = item as? URL else { return }
+                            let itemFileName = String(describing: itemURL).split(separator: "/").last!
+                            let storageRef = self.storage.reference().child("img/\(itemFileName)")
+
+                            // Large audio files are involved therefore `putFile` would be recommended,
+                            // I can't do it from the simulator (or maybe it's something else).
+                            storageRef.putData(itemData)
+                        }
+                    }
     //                itemProvider.loadFileRepresentation(forTypeIdentifier: "public.jpeg", completionHandler: postFileCompletionHandler)
                 }
             }
@@ -191,21 +204,7 @@ class ShareViewController: SLComposeServiceViewController, ConfigurationItemDele
                 returningItems:    [],
                 completionHandler: nil
                 )
-        }
-    }
-
-    func postCompletionHandler(item: NSSecureCoding?, error: Error!) {
-
-        guard let itemData = try? Data(contentsOf: item as! URL) else { return }
-        self.images.append(itemData)
-
-        guard let itemURL = item as? URL else { return }
-        let itemFileName = String(describing: itemURL).split(separator: "/").last!
-        let storageRef = self.storage.reference().child("img/\(itemFileName)")
-
-        // Large audio files are involved therefore `putFile` would be recommended,
-        // I can't do it from the simulator (or maybe it's something else).
-        storageRef.putData(itemData)
+//        }
     }
 
 //    TODO: Is there anything that needs to be cleaned up?
