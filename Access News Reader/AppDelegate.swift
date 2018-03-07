@@ -79,11 +79,6 @@ extension AppDelegate: FUIAuthDelegate {
         }
     }
 }
-
-extension AppDelegate: UINavigationControllerDelegate {
-    
-}
-
 // Implementing app delegate methods for share extension (upload)
 //extension AppDelegate {
 //    func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {

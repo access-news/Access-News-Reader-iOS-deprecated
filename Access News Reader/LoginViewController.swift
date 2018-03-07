@@ -12,16 +12,20 @@ import FirebaseAuthUI
 
 class LoginViewController: UIViewController {
 
-    /* Tapping the login button will ask user for email & password
+    /* Tapping the login button will ask user for email & password,
+       instead of going through the default FirebaseUI flow (i.e.,
+       asking for email and based on whether that address already
+       exists for a user, signup or signin).
+       At the moment,
+       all volunteers go through personal volunteer orientations so
+       this is not an issue. When this will change, only the following
+       will need to be changed below:
 
-        (Instead of going through the default FirebaseUI flow and asking new
-         users to sign up. There wouldn't be no harm, but every new volunteer
-         needs to go through the usual channels anyway.
+       let rootVC = FUIPasswordSignInViewController(authUI: FUIAuth.defaultAuthUI()!, email: nil)
+                  ->FUIEmailEntryViewController<-
+     */
 
-         If the service grows, this can always be extended to the original flow.
-        )
-
-        Tried to present the `FUIPasswordSignInViewController` as the initial
+     /* Tried to present the `FUIPasswordSignInViewController` as the initial
         screen for the app (i.e., directly from `viewDidLoad` in `ViewController`
         or anywhere from `AppDelegate`), but `FUIAuthDelegate` methods never got
         called once the user have been authenticated.
