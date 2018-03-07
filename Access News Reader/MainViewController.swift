@@ -12,10 +12,18 @@ import FirebaseAuthUI
 
 class MainViewController: UIViewController {
 
+    let appDelegate = (UIApplication.shared.delegate as? AppDelegate)!
+
     @IBOutlet weak var logOutButton: UIButton!
     @IBAction func logOut(_ sender: Any) {
 
-        (UIApplication.shared.delegate as? AppDelegate)?.defaults.set(false, forKey: Constants.userLoggedIn)
+        appDelegate.defaults.set(false, forKey: Constants.userLoggedIn)
+
+        do {
+            try appDelegate.authUI?.auth?.signOut()
+        } catch {
+            print(error)
+        }
 
         let storyboard = UIStoryboard.init(name: "Main", bundle: .main)
         let vc = storyboard.instantiateInitialViewController()
