@@ -27,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         FirebaseApp.configure()
         self.authUI = FUIAuth.defaultAuthUI()
-        authUI?.delegate = self
+        self.authUI?.delegate = self
 
         if self.defaults.bool(forKey: Constants.userLoggedIn) {
             let storyboard = UIStoryboard(name: "Main", bundle: .main)
@@ -78,8 +78,10 @@ extension AppDelegate: FUIAuthDelegate {
             self.window?.makeKeyAndVisible()
         }
     }
+}
 
-
+extension AppDelegate: UINavigationControllerDelegate {
+    
 }
 
 // Implementing app delegate methods for share extension (upload)
