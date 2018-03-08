@@ -29,3 +29,5 @@ Resources found useful during developing this app
 + Cocoapods and Podfiles: https://stackoverflow.com/questions/41114967/how-to-add-firebase-to-today-extension-ios/48213902#48213902
 
 + This helped deciphering `init`s in Firebase-iOS-SDK's undocumented classes: http://joemburgess.com/2014/10/13/why-the-underscores-in-init/
+
++ [How to load view controllers (navigation controller included) with their xib/nib views without a storyboard](https://www.weheartswift.com/remove-storyboard-from-project/)
