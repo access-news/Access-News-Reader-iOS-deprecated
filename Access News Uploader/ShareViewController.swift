@@ -125,37 +125,6 @@ class ShareViewController: SLComposeServiceViewController, ConfigurationItemDele
                ]
     }
 
-    /*  TODO
-
-        STAGE 1: "Before trying to upload any recordings, please use  the Access
-                  News Reader application to log in first."
-                 -> stop share extension (cancel?)
-
-        STAGE 2: The most straighforward solution would be to present a custom
-                 login view without FirebaseAuthUI, and using only FirebaseAuth.
-                 https://medium.com/@brianclouser/swift-3-creating-a-custom-view-from-a-xib-ecdfe5b3a960
-
-        Other ideas for STAGE 2:
-
-        + find a way to present LoginViewController over the share extension
-          (i.e., over the modal view of SLComposeServiceViewController)
-
-        + create a custom ShareViewController based on UIViewController (instead
-          of SLComposeServiceViewController)
-          https://stackoverflow.com/questions/26979248/ios-8-share-extension-custom-view-controller-size
-
-        + popovers?
-          https://stackoverflow.com/questions/12864709/where-to-set-the-size-of-a-view-controller-presented-in-a-popover
-          https://developer.apple.com/documentation/uikit/uipopoverpresentationcontroller
-    */
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(true)
-//
-//        if self.defaults.bool(forKey: Constants.userLoggedIn) /* == false */ {
-//            self.pushConfigurationViewController(UINavigationController(rootViewController: FUIEmailEntryViewController(authUI: FUIAuth.defaultAuthUI()!)))
-//        }
-//    }
-
     override func presentationAnimationDidFinish() {
         self.placeholder = "Send us a message!"
 
