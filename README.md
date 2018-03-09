@@ -31,3 +31,5 @@ Resources found useful during developing this app
 + This helped deciphering `init`s in Firebase-iOS-SDK's undocumented classes: http://joemburgess.com/2014/10/13/why-the-underscores-in-init/
 
 + [How to load view controllers (navigation controller included) with their xib/nib views without a storyboard](https://www.weheartswift.com/remove-storyboard-from-project/)
+
++ [Set NSExtensionActivationRule to accept audio only](https://stackoverflow.com/questions/29546283/ios-share-extension-how-to-support-wav-files/30536743#30536743)
