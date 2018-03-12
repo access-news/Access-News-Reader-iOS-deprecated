@@ -10,6 +10,7 @@ import UIKit
 import Social
 import Firebase
 import FirebaseAuthUI
+import MobileCoreServices
 
 /* TODO - Restrict to audio files only (i.e. m4a)
    https://developer.apple.com/library/content/documentation/General/Conceptual/ExtensibilityPG/ExtensionScenarios.html#//apple_ref/doc/uid/TP40014214-CH21-SW8
@@ -27,10 +28,10 @@ import FirebaseAuthUI
 
 class ShareViewController: SLComposeServiceViewController, ConfigurationItemDelegate {
 
-    func delay(_ delay:Double, closure:@escaping () -> ()) {
-        let when = DispatchTime.now() + delay
-        DispatchQueue.main.asyncAfter(deadline: when, execute: closure)
-    }
+//    func delay(_ delay:Double, closure:@escaping () -> ()) {
+//        let when = DispatchTime.now() + delay
+//        DispatchQueue.main.asyncAfter(deadline: when, execute: closure)
+//    }
 
     /* ------- CODE TO CONFORM TO ConfigurationItemDelegage PROTOCOL -------
        --------------------------------------------------------------------- */
@@ -59,6 +60,7 @@ class ShareViewController: SLComposeServiceViewController, ConfigurationItemDele
     var storage: Storage!
     var images = [Data]()
     var authUI: FUIAuth?
+    let desiredType = kUTTypeAudio as String
 
     override func configurationItems() -> [Any]! {
         // To add configuration options via table cells at the bottom of the
@@ -194,38 +196,60 @@ class ShareViewController: SLComposeServiceViewController, ConfigurationItemDele
            solved it.
         */
 //        delay(0.1) {
-            guard let ec = self.extensionContext else { return }
-            guard let input = ec.inputItems[0] as? NSExtensionItem else { return }
-            guard let attachments = input.attachments as? [NSItemProvider] else { return }
+//        let items = self.extensionContext!.inputItems
+//
+//        guard let extensionItem
 
-    //        /* CAVEMAN */ print(self.configurationTuples.map { ($0.configurationItem.value, $0.configurationItem.title) })
-
-            attachments.forEach { itemProvider in
-                if itemProvider.hasItemConformingToTypeIdentifier("public.jpeg") {
-
-                    // for some reason, Firebase' putData works, but not putFile
-                    itemProvider.loadItem(forTypeIdentifier: "public.jpeg") {  item, error in
-                        DispatchQueue.main.async {
-                            guard let itemData = try? Data(contentsOf: item as! URL) else { return }
-                            self.images.append(itemData)
-
-                            guard let itemURL = item as? URL else { return }
-                            let itemFileName = String(describing: itemURL).split(separator: "/").last!
-                            let storageRef = self.storage.reference().child("img/\(itemFileName)")
-
-                            // Large audio files are involved therefore `putFile` would be recommended,
-                            // I can't do it from the simulator (or maybe it's something else).
-                            storageRef.putData(itemData)
-                        }
-                    }
-    //                itemProvider.loadFileRepresentation(forTypeIdentifier: "public.jpeg", completionHandler: postFileCompletionHandler)
-                }
-            }
-
+        func finish() {
             self.extensionContext!.completeRequest(
                 returningItems:    [],
                 completionHandler: nil
-                )
+            )
+        }
+
+        guard let input = self.extensionContext!.inputItems[0] as? NSExtensionItem,
+              let attachments = input.attachments as? [NSItemProvider]
+        else {
+            finish()
+            return
+        }
+
+        attachments.forEach { provider in
+            if provider.hasItemConformingToTypeIdentifier(self.desiredType) {
+                provider.loadItem(forTypeIdentifier: self.desiredType) { audio, error in
+                    DispatchQueue.main.async {
+                        guard let audioURL = audio as? NSURL else { return }
+//                        print("\n\n\(audioURL)\n\n")
+                        
+                    }
+                }
+            }
+        }
+    //        /* CAVEMAN */ print(self.configurationTuples.map { ($0.configurationItem.value, $0.configurationItem.title) })
+
+//            attachments.forEach { itemProvider in
+//                if itemProvider.hasItemConformingToTypeIdentifier("public.jpeg") {
+//
+//                    // for some reason, Firebase' putData works, but not putFile
+//                    itemProvider.loadItem(forTypeIdentifier: "public.jpeg") {  item, error in
+//                        DispatchQueue.main.async {
+//                            guard let itemData = try? Data(contentsOf: item as! URL) else { return }
+//                            self.images.append(itemData)
+//
+//                            guard let itemURL = item as? URL else { return }
+//                            let itemFileName = String(describing: itemURL).split(separator: "/").last!
+//                            let storageRef = self.storage.reference().child("img/\(itemFileName)")
+//
+//                            // Large audio files are involved therefore `putFile` would be recommended,
+//                            // I can't do it from the simulator (or maybe it's something else).
+//                            storageRef.putData(itemData)
+//                        }
+//                    }
+    //                itemProvider.loadFileRepresentation(forTypeIdentifier: "public.jpeg", completionHandler: postFileCompletionHandler)
+//                }
+//            }
+
+            finish()
 //        }
     }
 
