@@ -72,7 +72,7 @@
       <RemoteRunnable
          runnableDebuggingMode = "1"
          BundleIdentifier = "com.apple.mobileslideshow"
-         RemotePath = "/Applications/MobileSlideShow.app">
+         RemotePath = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/Applications/MobileSlideShow.app">
       </RemoteRunnable>
       <MacroExpansion>
          <BuildableReference

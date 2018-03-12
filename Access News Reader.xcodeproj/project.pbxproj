@@ -27,6 +27,7 @@
 		D956B03420003C0800DCA685 /* ConfigurationItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D956B03320003C0800DCA685 /* ConfigurationItemViewController.swift */; };
 		D97FB06E2051605700772BB6 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92B8ADC1FE2F90A006C5736 /* LoginViewController.swift */; };
 		D982B75F2007B7590064B6FE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D982B75E2007B7590064B6FE /* GoogleService-Info.plist */; };
+		D9EF0329205709AF00870B6A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D92B8AE11FE2F90A006C5736 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -306,6 +307,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D9455E0F1FFA87C600A0F9A7 /* MainInterface.storyboard in Resources */,
+				D9EF0329205709AF00870B6A /* Assets.xcassets in Resources */,
 				D982B75F2007B7590064B6FE /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -590,6 +592,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = "Access News Reader/Access News Reader.entitlements";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -610,6 +613,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = "Access News Reader/Access News Reader.entitlements";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
