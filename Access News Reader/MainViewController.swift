@@ -30,6 +30,13 @@ class MainViewController: UIViewController {
         self.present(vc!, animated: true, completion: nil)
     }
 
+    @IBOutlet weak var changeEmailField: UITextField!
+    @IBOutlet weak var submitEmailChange: UIButton!
+    @IBAction func changeEmail(_ sender: Any) {
+        self.appDelegate.authUI?.auth?.currentUser?.updateEmail(to: self.changeEmailField.text!)
+    }
+
+
     override func viewDidLoad() {
         super.viewDidLoad()
 

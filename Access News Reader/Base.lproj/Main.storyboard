@@ -54,12 +54,32 @@
                                     <action selector="logOut:" destination="Lh6-1Z-7RF" eventType="touchUpInside" id="WY8-P1-na4"/>
                                 </connections>
                             </button>
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MFe-hI-M5K">
+                                <rect key="frame" x="89" y="276" width="205" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <action selector="changeEmail:" destination="Lh6-1Z-7RF" eventType="editingDidEnd" id="8Kn-uT-SKm"/>
+                                </connections>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5YJ-Nh-G6w">
+                                <rect key="frame" x="100" y="314" width="75" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="submit"/>
+                                <connections>
+                                    <action selector="changeEmail:" destination="Lh6-1Z-7RF" eventType="touchUpInside" id="WBL-Y3-eiv"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.86639630879999996" green="1" blue="0.59237770710000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="lg1-Cp-R6N"/>
                     </view>
                     <connections>
+                        <outlet property="changeEmailField" destination="MFe-hI-M5K" id="1IQ-oj-ms5"/>
                         <outlet property="logOutButton" destination="hKY-nj-Ss1" id="LI1-v1-2kX"/>
+                        <outlet property="submitEmailChange" destination="5YJ-Nh-G6w" id="hh9-4x-jar"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QgT-Sg-QRU" userLabel="First Responder" sceneMemberID="firstResponder"/>
