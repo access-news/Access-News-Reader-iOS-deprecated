@@ -42,7 +42,7 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var loginButton: UIButton!
     @IBAction func loginButtonTapped(_ sender: Any) {
 
-        let rootVC = FUIPasswordSignInViewController(authUI: FUIAuth.defaultAuthUI()!, email: nil)
+        let rootVC = FUIEmailEntryViewController(authUI: FUIAuth.defaultAuthUI()!)
         let navVC = UINavigationController(rootViewController: rootVC)
         self.present(navVC, animated: true, completion: nil)
     }

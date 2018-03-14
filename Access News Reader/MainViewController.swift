@@ -17,10 +17,10 @@ class MainViewController: UIViewController {
     @IBOutlet weak var logOutButton: UIButton!
     @IBAction func logOut(_ sender: Any) {
 
-        appDelegate.defaults.set(false, forKey: Constants.userLoggedIn)
+        self.appDelegate.defaults.set(false, forKey: Constants.userLoggedIn)
 
         do {
-            try appDelegate.authUI?.auth?.signOut()
+            try self.appDelegate.authUI?.auth?.signOut()
         } catch {
             print(error)
         }
