@@ -10,4 +10,8 @@ import Foundation
 
 struct Constants {
     static let userLoggedIn: String = "userLoggedIn"
+
+    // storyboard IDs
+    static let  mainViewController = "MainViewController"
+    static let loginViewController = "LoginViewController"
 }

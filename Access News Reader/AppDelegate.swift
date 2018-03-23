@@ -22,6 +22,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var authUI: FUIAuth?
     let defaults = UserDefaults.init(suiteName: "group.org.societyfortheblind.access-news-reader-ag")!
 
+    func showStoryboardViewController(storyboardID: String){
+        let storyboard = UIStoryboard(name: "Main", bundle: .main)
+        let vc = storyboard.instantiateViewController(withIdentifier: storyboardID)
+        self.window?.rootViewController = vc
+        self.window?.makeKeyAndVisible()
+    }
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
 
@@ -30,10 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.authUI?.delegate = self
 
         if self.defaults.bool(forKey: Constants.userLoggedIn) {
-            let storyboard = UIStoryboard(name: "Main", bundle: .main)
-            let vc = storyboard.instantiateViewController(withIdentifier: "MainViewController")
-            self.window?.rootViewController = vc
-            self.window?.makeKeyAndVisible()
+            self.showStoryboardViewController(storyboardID: Constants.mainViewController)
         }
 
         return true
@@ -72,10 +76,7 @@ extension AppDelegate: FUIAuthDelegate {
         if user != nil {
             self.defaults.set(true, forKey: Constants.userLoggedIn)
 
-            let storyboard = UIStoryboard(name: "Main", bundle: .main)
-            let vc = storyboard.instantiateViewController(withIdentifier: "MainViewController")
-            self.window?.rootViewController = vc
-            self.window?.makeKeyAndVisible()
+            self.showStoryboardViewController(storyboardID: Constants.mainViewController)
         }
     }
 }
