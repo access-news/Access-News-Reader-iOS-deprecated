@@ -201,17 +201,17 @@ class ShareViewController: SLComposeServiceViewController, ConfigurationItemDele
     //        /* CAVEMAN */ print(self.configurationTuples.map { ($0.configurationItem.value, $0.configurationItem.title) })
 
             attachments.forEach { itemProvider in
-                if itemProvider.hasItemConformingToTypeIdentifier("public.jpeg") {
+                if itemProvider.hasItemConformingToTypeIdentifier("public.audio") {
 
                     // for some reason, Firebase' putData works, but not putFile
-                    itemProvider.loadItem(forTypeIdentifier: "public.jpeg") {  item, error in
+                    itemProvider.loadItem(forTypeIdentifier: "public.audio") {  item, error in
                         DispatchQueue.main.async {
                             guard let itemData = try? Data(contentsOf: item as! URL) else { return }
                             self.images.append(itemData)
 
                             guard let itemURL = item as? URL else { return }
                             let itemFileName = String(describing: itemURL).split(separator: "/").last!
-                            let storageRef = self.storage.reference().child("img/\(itemFileName)")
+                            let storageRef = self.storage.reference().child("audio/\(itemFileName)")
 
                             // Large audio files are involved therefore `putFile` would be recommended,
                             // I can't do it from the simulator (or maybe it's something else).
