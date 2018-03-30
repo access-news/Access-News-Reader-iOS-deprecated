@@ -37,7 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.authUI?.delegate = self
 
         if self.defaults.bool(forKey: Constants.userLoggedIn) {
-            self.showStoryboardViewController(storyboardID: Constants.mainViewController)
+            self.showStoryboardViewController(storyboardID: "nvc")
         }
 
         return true
@@ -76,7 +76,7 @@ extension AppDelegate: FUIAuthDelegate {
         if user != nil {
             self.defaults.set(true, forKey: Constants.userLoggedIn)
 
-            self.showStoryboardViewController(storyboardID: Constants.mainViewController)
+            self.showStoryboardViewController(storyboardID: "nvc")
         }
     }
 }

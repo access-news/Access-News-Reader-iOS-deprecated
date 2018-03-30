@@ -14,6 +14,8 @@ class MainViewController: UIViewController {
 
     let appDelegate = (UIApplication.shared.delegate as? AppDelegate)!
 
+    @IBOutlet weak var settings: UIBarButtonItem!
+
     @IBOutlet weak var logOutButton: UIButton!
     @IBAction func logOut(_ sender: Any) {
 
@@ -35,7 +37,6 @@ class MainViewController: UIViewController {
     @IBAction func changeEmail(_ sender: Any) {
         self.appDelegate.authUI?.auth?.currentUser?.updateEmail(to: self.changeEmailField.text!)
     }
-
 
     override func viewDidLoad() {
         super.viewDidLoad()
