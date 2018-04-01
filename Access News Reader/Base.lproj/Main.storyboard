@@ -13,7 +13,7 @@
         <!--Login View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="LoginViewController" customModule="Access_News_Reader" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="LoginViewController" customModule="Access_News_Reader" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -46,14 +46,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hKY-nj-Ss1">
-                                <rect key="frame" x="264" y="60" width="95" height="86"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Log Out"/>
-                                <connections>
-                                    <action selector="logOut:" destination="Lh6-1Z-7RF" eventType="touchUpInside" id="WY8-P1-na4"/>
-                                </connections>
-                            </button>
                             <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MFe-hI-M5K">
                                 <rect key="frame" x="89" y="276" width="205" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -78,16 +70,9 @@
                     </view>
                     <navigationItem key="navigationItem" id="6tF-00-7ZK">
                         <barButtonItem key="leftBarButtonItem" title="Log out" id="qTJ-rx-BWU"/>
-                        <barButtonItem key="rightBarButtonItem" title="Settings" id="wBF-jK-8mi">
-                            <connections>
-                                <segue destination="TXP-Tp-YAu" kind="show" id="G6L-dT-dsg"/>
-                            </connections>
-                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="changeEmailField" destination="MFe-hI-M5K" id="1IQ-oj-ms5"/>
-                        <outlet property="logOutButton" destination="hKY-nj-Ss1" id="LI1-v1-2kX"/>
-                        <outlet property="settings" destination="wBF-jK-8mi" id="2X6-z6-z5t"/>
                         <outlet property="submitEmailChange" destination="5YJ-Nh-G6w" id="hh9-4x-jar"/>
                     </connections>
                 </viewController>

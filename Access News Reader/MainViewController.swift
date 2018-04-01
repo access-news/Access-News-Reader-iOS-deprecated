@@ -14,11 +14,14 @@ class MainViewController: UIViewController {
 
     let appDelegate = (UIApplication.shared.delegate as? AppDelegate)!
 
-    @IBOutlet weak var settings: UIBarButtonItem!
+    var loginNC: UINavigationController {
+        get {
+            let rootVC = FUIEmailEntryViewController(authUI: FUIAuth.defaultAuthUI()!)
+            return UINavigationController(rootViewController: rootVC)
+        }
+    }
 
-    @IBOutlet weak var logOutButton: UIButton!
-    @IBAction func logOut(_ sender: Any) {
-
+    @objc func showLogin() {
         self.appDelegate.defaults.set(false, forKey: Constants.userLoggedIn)
 
         do {
@@ -26,12 +29,9 @@ class MainViewController: UIViewController {
         } catch {
             print(error)
         }
-
-        let storyboard = UIStoryboard.init(name: "Main", bundle: .main)
-        let vc = storyboard.instantiateInitialViewController()
-        self.present(vc!, animated: true, completion: nil)
+        self.present(loginNC, animated: true, completion: nil)
     }
-
+    
     @IBOutlet weak var changeEmailField: UITextField!
     @IBOutlet weak var submitEmailChange: UIButton!
     @IBAction func changeEmail(_ sender: Any) {
@@ -41,7 +41,8 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        self.navigationItem.leftBarButtonItem?.target = self
+        self.navigationItem.leftBarButtonItem?.action = #selector(showLogin)
     }
 
     override func didReceiveMemoryWarning() {
