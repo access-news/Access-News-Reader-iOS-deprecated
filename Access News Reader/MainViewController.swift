@@ -43,6 +43,8 @@ class MainViewController: UIViewController {
 
         self.navigationItem.leftBarButtonItem?.target = self
         self.navigationItem.leftBarButtonItem?.action = #selector(showLogin)
+
+        self.navigationController?.setToolbarHidden(false, animated: true)
     }
 
     override func didReceiveMemoryWarning() {
