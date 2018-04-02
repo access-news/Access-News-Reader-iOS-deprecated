@@ -42,5 +42,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>The audio recorded by this app is stored securely and is only shared with Access News listeners.</string>
 </dict>
 </plist>
