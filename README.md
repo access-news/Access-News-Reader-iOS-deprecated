@@ -1,3 +1,30 @@
+UI TODO
+=======
+
+"Settings" goes to a table view where "Logout" is on the bottom
+  + Strive for an adaptive interface such as the iOS "Settings"
+    (i.e., on iPhone, it is a tableview, on iPad it is a split view)
+
+"Recordings" goes to a sectioned table view. Sections:
+  + "Current status" 
+     Shows whether a recording is in progress (u.i., is there an unqueued audio).
+  + "Queued"
+  + "Submitted"
+
+"Help!" menu(?) to call, email or message Access News.
+
+Show reader statistics -> Settings?
+
+"Submit" uploads all queued recordings, including the current one that is stopped.
+It behaves the same way if there are many queued recordings or none: a modal view
+pops up, asks for how much time they spent recording and then it sends the file(s)
+to firebase.
+
+Tooltips section on each audio control status. For example, when recording is stopped,
+it will say that "To resume recording, press Record. To start recording another article,
+press Queue and tap Record after that. Or to upload the article right now, hit Submit."
+And so on.
+
 Notes
 =====
 
