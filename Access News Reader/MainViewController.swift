@@ -17,8 +17,9 @@ class MainViewController: UIViewController {
     let appDelegate = (UIApplication.shared.delegate as? AppDelegate)!
 
     var recordingSession: AVAudioSession!
-    var audioRecorder:    AVAudioRecorder!
-    var audioPlayer:      AVAudioPlayer!
+    var audioRecorder:    AVAudioRecorder?
+    var audioPlayer:      AVAudioPlayer?
+    var selectedPublication: String!
 
     let publications = ["Mad River Union", "Sacramento Bee", "Sacramento Business Journal", "Santa Rosa Press Democrat", "Senior News"]
 
@@ -40,7 +41,7 @@ class MainViewController: UIViewController {
         self.present(loginNC, animated: true, completion: nil)
     }
 
-    func prepareAudioRecorder(publication: String) {
+    func setRecorder(publication: String) {
         let settings = [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
             AVSampleRateKey: 44100,
@@ -50,103 +51,162 @@ class MainViewController: UIViewController {
         ]
 
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "-yyyyMMdd_HHmmss"
+        dateFormatter.dateFormat = "_yyyy-MM-dd-HHmmss"
 
-        let recordingFilename = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("\(publication)\(dateFormatter.string(from: Date())).m4a")
+        let publicationCondensed = "\(publication.split(separator: " ").joined(separator: "-"))"
+        let datetime = dateFormatter.string(from: Date())
+        let filename = publicationCondensed + datetime + ".m4a"
+        let file = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(filename)
 
         do {
-            self.audioRecorder = try AVAudioRecorder.init(url: recordingFilename, settings: settings)
+            self.audioRecorder = try AVAudioRecorder.init(url: file, settings: settings)
             // TODO: add audio recorder delegate? Interruptions (e.g., calls)
-            //       handled elsewhere
-            self.recordButton.isEnabled = true
-            self.audioRecorder.prepareToRecord()
+            //       are handled elsewhere anyway
         } catch {
             print("Unable to init audio recorder.")
         }
     }
 
-    @IBOutlet weak var publicationPicker: UIPickerView!
-
-    @IBOutlet weak var changeEmailField: UITextField!
-    @IBOutlet weak var submitEmailChange: UIButton!
-    @IBAction func changeEmail(_ sender: Any) {
-        if let newEmail = self.changeEmailField.text {
-            self.appDelegate.authUI?.auth?.currentUser?.updateEmail(to: newEmail)
-        } else {
-            // TODO: modal popup: "Please specify a valid email address."
-        }
-    }
-
-    @IBOutlet weak var recordButton: UIButton!
-    @IBAction func recordTapped(_ sender: Any) {
-        self.audioRecorder.record()
-
-        self.recordButton.isEnabled = false
-        self.recordButton.setTitle("Recording...", for: .disabled)
-        self.recordButton.sizeToFit()
-
-        self.stopButton.isEnabled = true
-        self.stopButton.setTitle("Stop and save recording", for: .normal)
-        self.stopButton.sizeToFit()
-
-        self.pauseButton.isEnabled = true
-
-        self.playButton.isEnabled = false
-    }
-
-    @IBOutlet weak var pauseButton: UIButton!
-    @IBAction func pauseTapped(_ sender: Any) {
-        self.audioRecorder.pause()
-
-        self.pauseButton.isEnabled = false
-
-        self.recordButton.isEnabled = true
-        self.recordButton.setTitle("Resume recording", for: .normal)
-        self.recordButton.sizeToFit()
-    }
-
-    @IBOutlet weak var stopButton: UIButton!
-    @IBAction func stopTapped(_ sender: Any) {
-        self.audioRecorder.stop()
-
-        self.recordButton.isEnabled = true
-        self.recordButton.setTitle("Record", for: .normal)
-
-        self.pauseButton.isEnabled = false
-
-        self.stopButton.isEnabled = false
-        self.stopButton.setTitle("Stop", for: .disabled)
-
-        self.playButton.isEnabled = true
-    }
-
-    @IBOutlet weak var playButton: UIButton!
-    @IBAction func playTapped(_ sender: Any) {
+    func setPlayer() {
         do {
-            self.audioPlayer = try AVAudioPlayer.init(contentsOf: self.audioRecorder.url)
-            self.audioPlayer.play()
+            self.audioPlayer = try AVAudioPlayer.init(contentsOf: (self.audioRecorder?.url)!)
         } catch {
             print("Can't play.")
         }
-//        self.audioRecorder = nil
+    }
 
-        self.pauseButton.isEnabled = true
-        self.stopButton.isEnabled  = true
-        self.recordButton.isEnabled = false
+    func resetAudioInstances() {
+
+    }
+
+    @IBOutlet weak var publicationPicker: UIPickerView!
+    @IBOutlet weak var tooltips: UITextView!
+    @IBOutlet weak var audioControlStatus: UILabel!
+    @IBOutlet weak var currentFileLabel: UILabel!
+
+// TODO move this to wherever settings will be
+//
+//    @IBOutlet weak var changeEmailField: UITextField!
+//    @IBOutlet weak var submitEmailChange: UIButton!
+//    @IBAction func changeEmail(_ sender: Any) {
+//        if let newEmail = self.changeEmailField.text {
+//            self.appDelegate.authUI?.auth?.currentUser?.updateEmail(to: newEmail)
+//        } else {
+//            // TODO: modal popup: "Please specify a valid email address."
+//        }
+//    }
+
+    // https://cocoacasts.com/how-to-work-with-bitmasks-in-swift/
+    struct Controls: OptionSet {
+        let rawValue: Int
+
+        static let record = Controls(rawValue: 1 << 0)
+        static let stop   = Controls(rawValue: 1 << 1)
+        static let play   = Controls(rawValue: 1 << 2)
+        static let queue  = Controls(rawValue: 1 << 3)
+        static let submit = Controls(rawValue: 1 << 4)
+    }
+
+    func updateControlsAndStatus
+        ( activeControls c: Controls
+        , tooltipText    t: NSAttributedString?
+        , controlStatus  s: (text: String, colour: UIColor)?
+        )
+    {
+        self.recordButton.isEnabled = c.contains(.record)
+        self.stopButton.isEnabled   = c.contains(.stop)
+        self.playButton.isEnabled   = c.contains(.play)
+        self.queueButton.isEnabled  = c.contains(.queue)
+        self.submitButton.isEnabled = c.contains(.submit)
+
+        let str = t != nil ? t : NSAttributedString(string: "")
+        self.tooltips.attributedText = str
+
+        if s != nil {
+            self.audioControlStatus.textColor = s!.colour
+            self.audioControlStatus.text      = s!.text
+        }
+
+        // Only querying self.audioRecorder because only the current
+        // recording will ever be loaded in here (that is used to
+        // instantiate AVAudioPlayer later)
+        self.currentFileLabel.text =
+            self.audioRecorder?.url.lastPathComponent ?? ""
+        self.currentFileLabel.sizeToFit()
+    }
+
+    @IBOutlet weak var recordButton: UIBarButtonItem!
+    @IBAction func recordTapped(_ sender: Any) {
+        if self.audioRecorder == nil {
+            self.setRecorder(publication: self.selectedPublication)
+        }
+        self.audioRecorder?.record()
+
+        self.updateControlsAndStatus(
+            activeControls: [.stop],
+            tooltipText:    nil,
+            controlStatus:  ("Recording...", .red))
+    }
+
+    @IBOutlet weak var stopButton: UIBarButtonItem!
+    @IBAction func stopTapped(_ sender: Any) {
+        let controlStatus: (String, UIColor)
+
+        if self.audioRecorder?.isRecording == true {
+            self.audioRecorder?.stop()
+            controlStatus = ("Recording stopped.", .red)
+        } else {
+            audioPlayer?.stop()
+            controlStatus = ("Playback stopped.", .green)
+        }
+
+        let tooltip =
+            [ "Tap Record to continue recording."
+            , "Tap Play to list to your recording so far."
+            , "Tap Queue to add file to the list of recordings to be submitted later."
+            , "Tap Submit to upload current file and queued recordings right now."
+            ].joined(separator: "\n\n")
+
+        self.updateControlsAndStatus(
+            activeControls: [.record, .play, .queue, .submit],
+            tooltipText:    NSAttributedString(string: tooltip),
+            controlStatus:  controlStatus)
+    }
+
+    @IBOutlet weak var playButton: UIBarButtonItem!
+    @IBAction func playTapped(_ sender: Any) {
+        if self.audioPlayer == nil {
+            self.setPlayer()
+        }
+        self.audioPlayer?.play()
+
+        self.updateControlsAndStatus(
+            activeControls: [.stop],
+            tooltipText:    NSAttributedString(string: "Tap Stop/Pause to halt playback."),
+            controlStatus:  ("Playing recording...", .green))
+    }
+
+    @IBOutlet weak var queueButton: UIBarButtonItem!
+    @IBAction func queueTapped(_ sender: Any) {
+        // Tap Record if you would like to read another article from <publication>
+        // Or choose another publication to record from another
+        self.resetAudioInstances()
+    }
+
+    @IBOutlet weak var submitButton: UIBarButtonItem!
+    @IBAction func submitButton(_ sender: Any) {
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.navigationController?.isToolbarHidden = false
+
         self.publicationPicker.dataSource = self
         self.publicationPicker.delegate =   self
         self.publicationPicker.showsSelectionIndicator = true
 
-        // None of the controls should be enabled until a publication is selected.
-        self.pauseButton.isEnabled  = false
-        self.recordButton.isEnabled = false
-        self.playButton.isEnabled   = false
-        self.stopButton.isEnabled   = false
+        self.tooltips.isEditable = false
 
         // https://www.hackingwithswift.com/example-code/media/how-to-record-audio-using-avaudiorecorder
         self.recordingSession = AVAudioSession.sharedInstance()
@@ -155,10 +215,21 @@ class MainViewController: UIViewController {
             try self.recordingSession.setActive(true)
             self.recordingSession.requestRecordPermission() { [unowned self] allowed in
                 DispatchQueue.main.async {
-                    if allowed == false {
-                        self.recordButton.setTitle("Please enable recording at \"Settings > Privacy > Microphone\".", for: .disabled)
-                        self.recordButton.sizeToFit()
+                    let tooltip: String
+                    let controlStatus: (String, UIColor)?
+
+                    if allowed == true {
+                        tooltip = "Please choose a publication first to start recording."
+                        controlStatus = ("Ready to record.", .gray)
+                    } else {
+                        tooltip = "Please enable recording at \"Settings > Privacy > Microphone\"."
+                        controlStatus = ("Recording disabled.", .magenta)
                     }
+
+                    self.updateControlsAndStatus(
+                        activeControls: [],
+                        tooltipText:    NSAttributedString(string: tooltip),
+                        controlStatus:  controlStatus)
                 }
             }
         } catch {
@@ -211,7 +282,7 @@ extension MainViewController : UIPickerViewDelegate, UIPickerViewDataSource {
     }
 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        self.prepareAudioRecorder(publication: self.publications[row])
+        self.selectedPublication = self.publications[row]
         self.recordButton.isEnabled = true
     }
 }

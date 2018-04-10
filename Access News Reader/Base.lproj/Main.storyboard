@@ -9,6 +9,11 @@
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="Courier.ttc">
+            <string>Courier</string>
+        </array>
+    </customFonts>
     <scenes>
         <!--Login View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -46,42 +51,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5YJ-Nh-G6w">
-                                <rect key="frame" x="16" y="593" width="75" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="submit"/>
-                                <connections>
-                                    <action selector="changeEmail:" destination="Lh6-1Z-7RF" eventType="touchUpInside" id="WBL-Y3-eiv"/>
-                                </connections>
-                            </button>
-                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MFe-hI-M5K">
-                                <rect key="frame" x="99" y="593" width="205" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                                <connections>
-                                    <action selector="changeEmail:" destination="Lh6-1Z-7RF" eventType="editingDidEnd" id="8Kn-uT-SKm"/>
-                                </connections>
-                            </textField>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bmf-75-m0h">
-                                <rect key="frame" x="16" y="269" width="153" height="91"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="41"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kmb-FN-M49">
-                                <rect key="frame" x="177" y="270" width="49" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Record"/>
-                                <connections>
-                                    <action selector="recordTapped:" destination="Lh6-1Z-7RF" eventType="touchUpInside" id="4vS-jp-nbF"/>
-                                </connections>
-                            </button>
                             <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OkR-OO-cAh">
                                 <rect key="frame" x="16" y="100" width="343" height="162"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </pickerView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="heC-2x-X2C">
                                 <rect key="frame" x="16" y="84" width="247" height="21"/>
@@ -95,47 +67,97 @@
                                 </attributedString>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="chH-Lx-3aq">
-                                <rect key="frame" x="180" y="308" width="42" height="30"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Current recording:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Ar-f0-Dvb">
+                                <rect key="frame" x="29" y="270" width="149" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Pause"/>
-                                <connections>
-                                    <action selector="pauseTapped:" destination="Lh6-1Z-7RF" eventType="touchUpInside" id="ID0-Aa-rch"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RWV-jJ-EF5">
-                                <rect key="frame" x="180" y="346" width="32" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bmf-75-m0h">
+                                <rect key="frame" x="29" y="518" width="313" height="91"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Stop"/>
-                                <connections>
-                                    <action selector="stopTapped:" destination="Lh6-1Z-7RF" eventType="touchUpInside" id="Cd6-o9-KtT"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4xs-TL-52G">
-                                <rect key="frame" x="233" y="308" width="30" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="41"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="audio control status" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gld-Xy-yzJ">
+                                <rect key="frame" x="29" y="488" width="313" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Play"/>
-                                <connections>
-                                    <action selector="playTapped:" destination="Lh6-1Z-7RF" eventType="touchUpInside" id="Xxm-mQ-Son"/>
-                                </connections>
+                                <fontDescription key="fontDescription" name="Courier" family="Courier" pointSize="21"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" text="Balabab lofa meg valami." textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="IoZ-fC-qtR">
+                                <rect key="frame" x="65" y="352" width="240" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Er9-V6-pam">
+                                <rect key="frame" x="240" y="299" width="133" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Change publication"/>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="filename" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cv1-AJ-CJG">
+                                <rect key="frame" x="29" y="299" width="66" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="lg1-Cp-R6N"/>
                     </view>
                     <toolbarItems>
-                        <barButtonItem title="Settings" id="F3a-Ne-47W"/>
-                        <barButtonItem title="Log out" id="qTJ-rx-BWU"/>
+                        <barButtonItem title="Record" id="1gf-z3-Mk2">
+                            <connections>
+                                <action selector="recordTapped:" destination="Lh6-1Z-7RF" id="NAC-wt-YMv"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="yQp-bf-r9w"/>
+                        <barButtonItem title="Stop/Pause" id="cIJ-ij-dpf">
+                            <connections>
+                                <action selector="stopTapped:" destination="Lh6-1Z-7RF" id="eFi-O4-FGm"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="h4Z-ch-Eyf"/>
+                        <barButtonItem title="Play" id="R72-Zb-Mqw">
+                            <connections>
+                                <action selector="playTapped:" destination="Lh6-1Z-7RF" id="WWx-jc-aY9"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="OJv-av-dON"/>
+                        <barButtonItem title="Queue" id="n0q-HG-vzt">
+                            <connections>
+                                <action selector="queueTapped:" destination="Lh6-1Z-7RF" id="IQe-Nt-9Tp"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="zec-dQ-YnO"/>
+                        <barButtonItem title="Submit" id="Rwc-ii-UKh">
+                            <connections>
+                                <action selector="submitButton:" destination="Lh6-1Z-7RF" id="Pgf-Nv-PEz"/>
+                            </connections>
+                        </barButtonItem>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" id="6tF-00-7ZK"/>
+                    <navigationItem key="navigationItem" id="6tF-00-7ZK">
+                        <barButtonItem key="leftBarButtonItem" title="Settings" id="F3a-Ne-47W"/>
+                        <barButtonItem key="rightBarButtonItem" title="Recordings" id="XKc-rG-5D1"/>
+                    </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="pauseButton" destination="chH-Lx-3aq" id="cJD-i6-5sK"/>
-                        <outlet property="playButton" destination="4xs-TL-52G" id="8rs-LZ-9In"/>
+                        <outlet property="audioControlStatus" destination="gld-Xy-yzJ" id="gCc-81-scq"/>
+                        <outlet property="currentFileLabel" destination="cv1-AJ-CJG" id="RQn-uS-tcd"/>
+                        <outlet property="playButton" destination="R72-Zb-Mqw" id="Tv7-QL-C9y"/>
                         <outlet property="publicationPicker" destination="OkR-OO-cAh" id="j3F-Za-HGe"/>
-                        <outlet property="recordButton" destination="Kmb-FN-M49" id="a0t-gC-Jcg"/>
-                        <outlet property="stopButton" destination="RWV-jJ-EF5" id="pvc-ZV-wX9"/>
+                        <outlet property="queueButton" destination="n0q-HG-vzt" id="jJV-Tt-sq0"/>
+                        <outlet property="recordButton" destination="1gf-z3-Mk2" id="2iO-KE-oou"/>
+                        <outlet property="stopButton" destination="cIJ-ij-dpf" id="LhK-bD-or9"/>
+                        <outlet property="submitButton" destination="Rwc-ii-UKh" id="oZ7-LA-Lw0"/>
                         <outlet property="submitEmailChange" destination="5YJ-Nh-G6w" id="hh9-4x-jar"/>
+                        <outlet property="tooltips" destination="IoZ-fC-qtR" id="XdY-cu-PkO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QgT-Sg-QRU" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -165,6 +187,26 @@
                     <view key="view" contentMode="scaleToFill" id="g63-PE-55O">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5YJ-Nh-G6w">
+                                <rect key="frame" x="55" y="95" width="75" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="submit"/>
+                                <connections>
+                                    <action selector="changeEmail:" destination="Lh6-1Z-7RF" eventType="touchUpInside" id="WBL-Y3-eiv"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MFe-hI-M5K">
+                                <rect key="frame" x="145" y="96" width="205" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <action selector="changeEmail:" destination="Lh6-1Z-7RF" eventType="editingDidEnd" id="8Kn-uT-SKm"/>
+                                </connections>
+                            </textField>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="bmN-xL-dfL"/>
                     </view>
