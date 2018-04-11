@@ -29,6 +29,8 @@ And so on.
 On "Submit" and "Queue" -> popup dialog to confirm publication (and optionally, the
 title). For example, "Saving Sacramento Bee article (titled blabla). Confirm ChangePublication"
 
+Add titles to scenes - UIViewController's `title` attribute. (recordings, Settings, etc.)
+
 Notes
 =====
 
