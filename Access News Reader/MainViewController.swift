@@ -82,7 +82,6 @@ class MainViewController: UIViewController {
     @IBOutlet weak var publicationPicker: UIPickerView!
     @IBOutlet weak var tooltips: UITextView!
     @IBOutlet weak var audioControlStatus: UILabel!
-    @IBOutlet weak var currentFileLabel: UILabel!
 
 // TODO move this to wherever settings will be
 //
@@ -126,13 +125,6 @@ class MainViewController: UIViewController {
             self.audioControlStatus.textColor = s!.colour
             self.audioControlStatus.text      = s!.text
         }
-
-        // Only querying self.audioRecorder because only the current
-        // recording will ever be loaded in here (that is used to
-        // instantiate AVAudioPlayer later)
-        self.currentFileLabel.text =
-            self.audioRecorder?.url.lastPathComponent ?? ""
-        self.currentFileLabel.sizeToFit()
     }
 
     @IBOutlet weak var recordButton: UIBarButtonItem!

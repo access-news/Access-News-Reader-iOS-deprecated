@@ -26,6 +26,9 @@ it will say that "To resume recording, press Record. To start recording another 
 press Queue and tap Record after that. Or to upload the article right now, hit Submit."
 And so on.
 
+On "Submit" and "Queue" -> popup dialog to confirm publication (and optionally, the
+title). For example, "Saving Sacramento Bee article (titled blabla). Confirm ChangePublication"
+
 Notes
 =====
 
