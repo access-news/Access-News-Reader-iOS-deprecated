@@ -38,7 +38,8 @@ class RecordViewController: UIViewController {
 //                        controlStatus = ("Recording disabled.", .magenta)
 //                    }
 
-                    self.updateControlsAndStatus(activeControls: ["record"])
+                    self.updateControlsAndStatus(
+                        activeControls:[.record, .play, .submit])
 //                    self.updateControlsAndStatus(
 //                        activeControls: [],
 //                        tooltipText:    NSAttributedString(string: tooltip),
@@ -98,42 +99,102 @@ class RecordViewController: UIViewController {
     @objc func recordTapped() {
         print("\n\nbalabab")
     }
+
+    @objc func stopTapped() {
+        print("works\\n\n")
+    }
+
+    @objc func playTapped() {
+        print("works\\n\n")
+    }
+
+    @objc func queueTapped() {
+        print("works\\n\n")
+    }
+
+    @objc func submitTapped() {
+        print("works\\n\n")
+    }
+
     // https://cocoacasts.com/how-to-work-with-bitmasks-in-swift/
-//    struct Controls: OptionSet {
-//        let rawValue: Int
-//
-//        static let record = Controls(rawValue: 1 << 0)
-//        static let stop   = Controls(rawValue: 1 << 1)
-//        static let play   = Controls(rawValue: 1 << 2)
-//        static let queue  = Controls(rawValue: 1 << 3)
-//        static let submit = Controls(rawValue: 1 << 4)
-//    }
+    struct Controls: OptionSet {
+        let rawValue: Int
+
+        static let record = Controls(rawValue: 1 << 0)
+        static let stop   = Controls(rawValue: 1 << 1)
+        static let play   = Controls(rawValue: 1 << 2)
+        static let queue  = Controls(rawValue: 1 << 3)
+        static let submit = Controls(rawValue: 1 << 4)
+    }
 
     func updateControlsAndStatus
-        ( activeControls c: [String]
+        ( activeControls c: Controls
 //        , tooltipText    t: NSAttributedString?
 //        , controlStatus  s: (text: String, colour: UIColor)?
         )
     {
+
         func flexSpace() -> UIBarButtonItem {
             return UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         }
 
-        var toolbarItems: [UIBarButtonItem] = [flexSpace()]
+        var buttons: [UIBarButtonItem] = [flexSpace()]
 
-        for buttonTitle in c {
-            let button =
-                UIBarButtonItem(
-                    title: buttonTitle,
-                    style: .plain,
-                    target: self,
-                    action: Selector(buttonTitle+"Tapped"))
+        /* There are more clever ways to do this, but this solution is
+            + easy on the eyes
+            + quickly updateable
+            + there is a finite number of items
+            + (so far) not used anywhere else in the UI
+            + and, most importantly, I will know what I did when I return to this
+              after months
+        */
+        if c.contains(.record) {
+            buttons +=
+                [ UIBarButtonItem(title: "Record",
+                                  style: .plain,
+                                  target: target,
+                                  action: #selector(self.recordTapped))
+                    , flexSpace()]
+        }
 
-            toolbarItems += [button, flexSpace()]
+        if c.contains(.stop) {
+            buttons +=
+                [ UIBarButtonItem(title: "Stop/Pause",
+                                  style: .plain,
+                                  target: self,
+                                  action: #selector(self.stopTapped))
+                    , flexSpace()]
+        }
+
+        if c.contains(.play) {
+            buttons +=
+                [ UIBarButtonItem(title: "Play",
+                                  style: .plain,
+                                  target: self,
+                                  action: #selector(self.playTapped))
+                    , flexSpace()]
+        }
+
+        if c.contains(.queue) {
+            buttons +=
+                [ UIBarButtonItem(title: "Queue",
+                                  style: .plain,
+                                  target: self,
+                                  action: #selector(self.queueTapped))
+                    , flexSpace()]
+        }
+
+        if c.contains(.submit) {
+            buttons +=
+                [ UIBarButtonItem(title: "Submit",
+                                  style: .plain,
+                                  target: self,
+                                  action: #selector(self.submitTapped))
+                    , flexSpace()]
         }
 
         // https://stackoverflow.com/questions/10825572/uitoolbar-not-showing-uibarbuttonitem
-        self.setToolbarItems(toolbarItems, animated: true)
+        self.setToolbarItems(buttons, animated: true)
 
 //        self.recordButton.isEnabled = c.contains(.record)
 //        self.stopButton.isEnabled   = c.contains(.stop)
