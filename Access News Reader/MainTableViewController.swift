@@ -7,16 +7,16 @@
 //
 
 import UIKit
-import AVFoundation
+//import AVFoundation
 
-import Firebase
-import FirebaseAuthUI
+//import Firebase
+//import FirebaseAuthUI
 
 class MainTableViewController: UITableViewController {
 
 //    let appDelegate = (UIApplication.shared.delegate as? AppDelegate)!
 
-    let publications = ["Mad River Union", "Sacramento Bee", "Sacramento Business Journal", "Santa Rosa Press Democrat", "Senior News"]
+//    let publications = ["Mad River Union", "Sacramento Bee", "Sacramento Business Journal", "Santa Rosa Press Democrat", "Senior News"]
 
 //    var loginNC: UINavigationController {
 //        get {
@@ -108,15 +108,14 @@ class MainTableViewController: UITableViewController {
 //        // Or choose another publication to record from another
 //        self.resetAudioInstances()
 //    }
-
-    @IBOutlet weak var submitButton: UIBarButtonItem!
-    @IBAction func submitButton(_ sender: Any) {
-    }
+//
+//    @IBOutlet weak var submitButton: UIBarButtonItem!
+//    @IBAction func submitButton(_ sender: Any) {
+//    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-//        self.tooltips.isEditable = false
+        self.tooltips.isEditable = false
 
 
 //        self.navigationItem.leftBarButtonItem?.target = self
@@ -128,8 +127,14 @@ class MainTableViewController: UITableViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
 
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.tableView.deselectRow(at: indexPath, animated: false)
+
+        if self.tableView.visibleCells[0].isSelected {
+            self.navigationController?.pushViewController(SelectPublication(), animated: true)
+        }
+    }
     /*
     // MARK: - Navigation
 
@@ -139,5 +144,4 @@ class MainTableViewController: UITableViewController {
         // Pass the selected object to the new view controller.
     }
     */
-
 }
