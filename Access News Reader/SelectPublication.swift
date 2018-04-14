@@ -10,6 +10,43 @@ import UIKit
 
 class SelectPublication: UITableViewController {
 
+    let publications =
+        [ "Sports"
+        , "News"
+        , "Sacramento News & Review"
+        , "Sacramento Press"
+        , "Sacramento Business Journal"
+        , "Davis Enterprise"
+        , "Roseville Press Tribune"
+        , "Woodland Daily Democrat"
+        , "Carmichael Times"
+        , "Comstocks"
+        , "SacTown"
+        , "Sacramento Magazine"
+        , "Auburn Journal"
+        , "Grass Valley-Nevada City Union"
+        , "Modesto Bee"
+        , "Stockton Record"
+        , "El Dorado County Mountain Democrat"
+        , "Santa Rosa Press Democrat"
+        , "SF Gate"
+        , "San Francisco Bay Guardian (RARELY UPDATES)"
+        , "East Bay Times"
+        , "SF Weekly"
+        , "KQED Bay Area Bites"
+        , "Senior News"
+        , "North Coast Journal"
+        , "Mad River Union"
+        , "Eureka Times Standard"
+        , "Ferndale Enterprise"
+        , "Earle Baum Center newsletter"
+        , "Braille Monitor"
+        , "Sierra Services for the Blind"
+        , "UC Davis - Achieve a healthy weight"
+        , "Matter of Balance"
+        , "Yuba-Sutter Meals on Wheels"
+        ]
+
     override func viewDidLoad() {
         super.viewDidLoad()
 

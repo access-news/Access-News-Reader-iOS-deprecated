@@ -37,7 +37,6 @@ class MainTableViewController: UITableViewController {
 //    }
 
     @IBOutlet weak var tooltips: UITextView!
-    @IBOutlet weak var audioControlStatus: UILabel!
 
 // TODO move this to wherever settings will be
 //
