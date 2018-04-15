@@ -127,12 +127,15 @@ class MainTableViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    /* Could just connect cell with SelectPublication on storyboard,
+       but then row wouldn't be deselected, and probably cleaner this way.
+    */	
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.tableView.deselectRow(at: indexPath, animated: false)
 
-        if self.tableView.visibleCells[0].isSelected {
-            self.navigationController?.pushViewController(SelectPublication(), animated: true)
-        }
+//        if self.tableView.visibleCells[0].isSelected {
+//            self.navigationController?.pushViewController(SelectPublication(), animated: true)
+//        }
     }
     /*
     // MARK: - Navigation
