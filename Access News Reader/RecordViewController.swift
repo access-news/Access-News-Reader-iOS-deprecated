@@ -15,6 +15,14 @@ class RecordViewController: UIViewController {
     var audioRecorder:    AVAudioRecorder?
     var audioPlayer:      AVAudioPlayer?
 
+    var selectedPublication: String {
+        get {
+            let mainTVC = self.childViewControllers.first as! MainTableViewController
+            let publicationCell = mainTVC.tableView.visibleCells.first
+            return (publicationCell?.textLabel?.text)!
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -38,8 +46,8 @@ class RecordViewController: UIViewController {
 //                        controlStatus = ("Recording disabled.", .magenta)
 //                    }
 
-                    self.updateControlsAndStatus(
-                        activeControls:[.record, .play, .submit])
+                    self.updateControlsAndStatus(activeControls: [.record])
+                    self.toolbarItems?[1].isEnabled = false
 //                    self.updateControlsAndStatus(
 //                        activeControls: [],
 //                        tooltipText:    NSAttributedString(string: tooltip),
@@ -78,6 +86,7 @@ class RecordViewController: UIViewController {
 
         do {
             self.audioRecorder = try AVAudioRecorder.init(url: file, settings: settings)
+            self.audioRecorder?.prepareToRecord()
             // TODO: add audio recorder delegate? Interruptions (e.g., calls)
             //       are handled elsewhere anyway
         } catch {
@@ -97,7 +106,10 @@ class RecordViewController: UIViewController {
     }
 
     @objc func recordTapped() {
-        print("\n\nbalabab")
+
+        if self.audioRecorder == nil {
+
+        }
     }
 
     @objc func stopTapped() {
@@ -152,7 +164,7 @@ class RecordViewController: UIViewController {
             buttons +=
                 [ UIBarButtonItem(title: "Record",
                                   style: .plain,
-                                  target: target,
+                                  target: self,
                                   action: #selector(self.recordTapped))
                     , flexSpace()]
         }

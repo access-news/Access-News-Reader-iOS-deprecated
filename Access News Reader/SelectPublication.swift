@@ -85,12 +85,20 @@ class SelectPublication: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        /* As it stands at the moment, this needs to stay here so that
+           `RecordViewController` is the navigation controller's top view
+           controller below.
+        */
         self.navigationController?.popViewController(animated: true)
-        
+
         let recordViewController = self.navigationController?.topViewController
-        let mainTableViewController = recordViewController?.childViewControllers.first as! MainTableViewController
-        let publicationCell = mainTableViewController.tableView.visibleCells[0]
-        publicationCell.textLabel?.text = self.publications[indexPath.row]
+        recordViewController?.toolbarItems?[1].isEnabled = true
+        
+        let mainTVC = recordViewController?.childViewControllers.first as! MainTableViewController
+        let publicationCellLabel = mainTVC.tableView.visibleCells[0].textLabel!
+        publicationCellLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        publicationCellLabel.textColor = UIColor(red: 0.0, green: 0.478, blue: 1.0, alpha: 1.0)
+        publicationCellLabel.text = self.publications[indexPath.row]
     }
     /*
     // Override to support conditional editing of the table view.
