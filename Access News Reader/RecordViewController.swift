@@ -14,6 +14,9 @@ class RecordViewController: UIViewController {
     var recordingSession: AVAudioSession!
     var audioRecorder:    AVAudioRecorder?
     var audioPlayer:      AVAudioPlayer?
+    
+
+    @IBOutlet weak var controlStatus: UILabel!
 
     var selectedPublication: String {
         get {
@@ -47,11 +50,11 @@ class RecordViewController: UIViewController {
 //                    }
 
                     self.updateControlsAndStatus(activeControls: [.record])
+
+                    /* Disable "Record" button until publication is selected.
+                       Enabled in SelectPublication view controller.
+                    */
                     self.toolbarItems?[1].isEnabled = false
-//                    self.updateControlsAndStatus(
-//                        activeControls: [],
-//                        tooltipText:    NSAttributedString(string: tooltip),
-//                        controlStatus:  controlStatus)
                 }
             }
         } catch {
@@ -106,14 +109,27 @@ class RecordViewController: UIViewController {
     }
 
     @objc func recordTapped() {
-
         if self.audioRecorder == nil {
-
+            self.setRecorder(publication: self.selectedPublication)
         }
+        self.audioRecorder?.record()
+        self.updateControlsAndStatus(
+            activeControls: [.stop],
+            controlStatus: ("Recording...", .red)
+        )
     }
 
     @objc func stopTapped() {
-        print("works\\n\n")
+        let status: (String, UIColor)
+
+        if self.audioRecorder?.isRecording == true {
+            self.audioRecorder?.stop()
+            status = ("Recording stopped.", .red)
+        } else {
+            audioPlayer?.stop()
+            status = ("Playback stopped.", .green)
+        }
+
     }
 
     @objc func playTapped() {
@@ -142,7 +158,7 @@ class RecordViewController: UIViewController {
     func updateControlsAndStatus
         ( activeControls c: Controls
 //        , tooltipText    t: NSAttributedString?
-//        , controlStatus  s: (text: String, colour: UIColor)?
+        , controlStatus  s: (text: String, colour: UIColor)? = nil
         )
     {
 
@@ -207,20 +223,14 @@ class RecordViewController: UIViewController {
 
         // https://stackoverflow.com/questions/10825572/uitoolbar-not-showing-uibarbuttonitem
         self.setToolbarItems(buttons, animated: true)
-
-//        self.recordButton.isEnabled = c.contains(.record)
-//        self.stopButton.isEnabled   = c.contains(.stop)
-//        self.playButton.isEnabled   = c.contains(.play)
-//        self.queueButton.isEnabled  = c.contains(.queue)
-//        self.submitButton.isEnabled = c.contains(.submit)
 //
 //        let str = t != nil ? t : NSAttributedString(string: "")
 //        self.tooltips.attributedText = str
-//
-//        if s != nil {
-//            self.audioControlStatus.textColor = s!.colour
-//            self.audioControlStatus.text      = s!.text
-//        }
+
+        if s != nil {
+            self.controlStatus.textColor = s!.colour
+            self.controlStatus.text      = s!.text
+        }
     }
 
     // MARK: - Navigation

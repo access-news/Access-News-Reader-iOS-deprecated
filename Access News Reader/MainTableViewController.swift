@@ -14,19 +14,19 @@ import UIKit
 
 class MainTableViewController: UITableViewController {
 
-//    let appDelegate = (UIApplication.shared.delegate as? AppDelegate)!
+//    let appDelegate = (
 
 //    let publications = ["Mad River Union", "Sacramento Bee", "Sacramento Business Journal", "Santa Rosa Press Democrat", "Senior News"]
 
 //    var loginNC: UINavigationController {
 //        get {
-//            let rootVC = FUIEmailEntryViewController(authUI: FUIAuth.defaultAuthUI()!)
-//            return UINavigationController(rootViewController: rootVC)
+//            let rootVC =
+//            return 
 //        }
 //    }
 
 //    @objc func showLogin() {
-//        self.appDelegate.defaults.set(false, forKey: Constants.userLoggedIn)
+//        self.
 //
 //        do {
 //            try self.appDelegate.authUI?.auth?.signOut()
@@ -115,11 +115,6 @@ class MainTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tooltips.isEditable = false
-
-
-//        self.navigationItem.leftBarButtonItem?.target = self
-//        self.navigationItem.leftBarButtonItem?.action = #selector(showLogin)
-//        self.navigationController?.setToolbarHidden(false, animated: true)
     }
 
     override func didReceiveMemoryWarning() {

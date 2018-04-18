@@ -23,6 +23,7 @@
 		D9455E0C1FFA87C600A0F9A7 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9455E0B1FFA87C600A0F9A7 /* ShareViewController.swift */; };
 		D9455E0F1FFA87C600A0F9A7 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D9455E0D1FFA87C600A0F9A7 /* MainInterface.storyboard */; };
 		D9455E131FFA87C600A0F9A7 /* Access News Uploader.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = D9455E091FFA87C600A0F9A7 /* Access News Uploader.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D94E90B92086F5B300BCF55D /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D94E90B82086F5B300BCF55D /* Settings.swift */; };
 		D95067E31FFD3369002C617D /* PublicatonPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D95067E21FFD3369002C617D /* PublicatonPickerViewController.swift */; };
 		D95067E51FFD337E002C617D /* HoursViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D95067E41FFD337E002C617D /* HoursViewController.swift */; };
 		D956B0321FFFA0C500DCA685 /* ConfigurationItemDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D956B0311FFFA0C500DCA685 /* ConfigurationItemDelegate.swift */; };
@@ -82,6 +83,7 @@
 		D9455E0B1FFA87C600A0F9A7 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		D9455E0E1FFA87C600A0F9A7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		D9455E101FFA87C600A0F9A7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D94E90B82086F5B300BCF55D /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		D95067E21FFD3369002C617D /* PublicatonPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicatonPickerViewController.swift; sourceTree = "<group>"; };
 		D95067E41FFD337E002C617D /* HoursViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoursViewController.swift; sourceTree = "<group>"; };
 		D956B0311FFFA0C500DCA685 /* ConfigurationItemDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationItemDelegate.swift; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 				D9D2E5CF207FC9AE00E81FF2 /* RecordViewController.swift */,
 				D911B7CB20815BC1001DF415 /* SelectPublication.swift */,
 				D911B7CD20845685001DF415 /* ListRecordings.swift */,
+				D94E90B82086F5B300BCF55D /* Settings.swift */,
 			);
 			path = "Access News Reader";
 			sourceTree = "<group>";
@@ -431,6 +434,7 @@
 			files = (
 				D911B7CC20815BC1001DF415 /* SelectPublication.swift in Sources */,
 				D92B8ADD1FE2F90A006C5736 /* LoginViewController.swift in Sources */,
+				D94E90B92086F5B300BCF55D /* Settings.swift in Sources */,
 				D911B7CE20845685001DF415 /* ListRecordings.swift in Sources */,
 				D92B8ADB1FE2F90A006C5736 /* AppDelegate.swift in Sources */,
 				D9D2E5D0207FC9AE00E81FF2 /* RecordViewController.swift in Sources */,
