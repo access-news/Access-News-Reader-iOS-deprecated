@@ -14,28 +14,6 @@ import UIKit
 
 class MainTableViewController: UITableViewController {
 
-//    let appDelegate = (
-
-//    let publications = ["Mad River Union", "Sacramento Bee", "Sacramento Business Journal", "Santa Rosa Press Democrat", "Senior News"]
-
-//    var loginNC: UINavigationController {
-//        get {
-//            let rootVC =
-//            return 
-//        }
-//    }
-
-//    @objc func showLogin() {
-//        self.
-//
-//        do {
-//            try self.appDelegate.authUI?.auth?.signOut()
-//        } catch {
-//            print(error)
-//        }
-//        self.present(loginNC, animated: true, completion: nil)
-//    }
-
     @IBOutlet weak var tooltips: UITextView!
 
 // TODO move this to wherever settings will be
@@ -43,11 +21,7 @@ class MainTableViewController: UITableViewController {
 //    @IBOutlet weak var changeEmailField: UITextField!
 //    @IBOutlet weak var submitEmailChange: UIButton!
 //    @IBAction func changeEmail(_ sender: Any) {
-//        if let newEmail = self.changeEmailField.text {
-//            self.appDelegate.authUI?.auth?.currentUser?.updateEmail(to: newEmail)
-//        } else {
-//            // TODO: modal popup: "Please specify a valid email address."
-//        }
+//        
 //    }
 
 //    @IBOutlet weak var recordButton: UIBarButtonItem!

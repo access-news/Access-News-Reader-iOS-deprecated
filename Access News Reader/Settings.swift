@@ -12,11 +12,23 @@ import FirebaseAuthUI
 
 class Settings: UITableViewController {
 
+    let appDelegate = (UIApplication.shared.delegate as? AppDelegate)!
+
+    @IBOutlet weak var changeEmailField: UITextField!
+    // TODO See issue #14 - Make the keyboard take the role of this button
+    @IBAction func submitEmailChange(_ sender: Any) {
+        if let newEmail = self.changeEmailField.text {
+            self.appDelegate.authUI?.auth?.currentUser?.updateEmail(to: newEmail)
+        } else {
+            // TODO: modal popup: "Please specify a valid email address."
+        }
+    }
+
     /* Could've just put
          self.navigationItem.rightBarButtonItem?.target = self
          self.navigationItem.rightBarButtonItem?.action = #selector(logoutTapped)
      in `viewDidLoad`, but this solution is grouped nicely in one place.
-    */
+    */	
     /* TO REMEMBER
        When Settings table view controller was created and connected as a "show"
        segue, it wasn't possible to create a Logout button on the navigation bar.
@@ -30,13 +42,14 @@ class Settings: UITableViewController {
     */
     @IBOutlet weak var logoutButton: UIBarButtonItem!
     @IBAction func logoutTapped(_ sender: Any) {
-        let appDelegate = (UIApplication.shared.delegate as? AppDelegate)!
-        appDelegate.defaults.set(false, forKey: Constants.userLoggedIn)
         do {
+            // TODO Would this work without any network connection?
             try appDelegate.authUI?.auth?.signOut()
         } catch {
-            print(error)
+            NSLog("Error: Unable to log out of Firebase")
         }
+
+        self.appDelegate.defaults.set(false, forKey: Constants.userLoggedIn)
 
         let fuiLoginVC = FUIEmailEntryViewController(authUI: FUIAuth.defaultAuthUI()!)
         let navController = UINavigationController(rootViewController: fuiLoginVC)
@@ -60,15 +73,15 @@ class Settings: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
-    }
+//    override func numberOfSections(in tableView: UITableView) -> Int {
+//        // #warning Incomplete implementation, return the number of sections
+//        return 0
+//    }
+//
+//    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        // #warning Incomplete implementation, return the number of rows
+//        return 0
+//    }
 
     /*
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
