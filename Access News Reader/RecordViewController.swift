@@ -11,10 +11,13 @@ import AVFoundation
 
 class RecordViewController: UIViewController {
 
+    private static var playerItemContext = 0
+
     var recordingSession: AVAudioSession!
     var audioRecorder:    AVAudioRecorder?
-    var audioPlayer:      AVAudioPlayer?
-    
+
+    var articleChunks = [AVURLAsset]()
+    var qPlayer:        AVQueuePlayer?
 
     @IBOutlet weak var controlStatus: UILabel!
 
@@ -70,7 +73,7 @@ class RecordViewController: UIViewController {
 
     // MARK: - Helper functions
 
-    func setRecorder(publication: String) {
+    func startRecorder(publication: String) {
         let settings = [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
             AVSampleRateKey: 44100,
@@ -80,29 +83,114 @@ class RecordViewController: UIViewController {
             ]
 
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "_yyyy-MM-dd-HHmmss"
-
-        let publicationCondensed = "\(publication.split(separator: " ").joined(separator: "-"))"
+        dateFormatter.dateFormat = "yyyy-MM-dd-HHmmss"
         let datetime = dateFormatter.string(from: Date())
-        let filename = publicationCondensed + datetime + ".m4a"
-        let file = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(filename)
+
+//        let publicationCondensed = "\(publication.split(separator: " ").joined(separator: "-"))"
+
+//        let filename = publicationCondensed + datetime + ".m4a"
+        let documentDir = FileManager.default.urls(
+                              for: .documentDirectory,
+                              in:  .userDomainMask
+                          ).first!
+        let file = documentDir.appendingPathComponent(datetime + ".m4a")
 
         do {
-            self.audioRecorder = try AVAudioRecorder.init(url: file, settings: settings)
-            self.audioRecorder?.prepareToRecord()
+            self.audioRecorder =
+                try AVAudioRecorder.init(url: file, settings: settings)
+            self.audioRecorder?.record()
             // TODO: add audio recorder delegate? Interruptions (e.g., calls)
             //       are handled elsewhere anyway
         } catch {
-            print("Unable to init audio recorder.")
+            NSLog("Unable to init audio recorder.")
         }
     }
 
-    func setPlayer() {
-        do {
-            self.audioPlayer = try AVAudioPlayer.init(contentsOf: (self.audioRecorder?.url)!)
-        } catch {
-            print("Can't play.")
+    func stopRecorder() {
+        self.audioRecorder?.stop()
+        let assetURL  = self.audioRecorder!.url
+        self.audioRecorder = nil
+
+        /* https://developer.apple.com/documentation/avfoundation/avurlassetpreferprecisedurationandtimingkey
+         "If you intend to insert the asset into an AVMutableComposition
+         object, precise random access is typically desirable, and the
+         value of true is recommended."
+         */
+        let assetOpts = [AVURLAssetPreferPreciseDurationAndTimingKey: true]
+        let asset     = AVURLAsset(url: assetURL, options: assetOpts)
+
+        self.articleChunks.append(asset)
+
+        let assetKeys = ["playable"]
+        let playerItems = self.articleChunks.map {
+            AVPlayerItem(asset: $0, automaticallyLoadedAssetKeys: assetKeys)
         }
+
+//        playerItem.addObserver(
+//            self,
+//            forKeyPath: #keyPath(AVPlayerItem.status),
+//            options:    [.old, .new],
+//            context:    &RecordViewController.playerItemContext)
+
+
+
+        self.qPlayer = AVQueuePlayer(items: playerItems)
+        self.qPlayer?.actionAtItemEnd = .advance
+    }
+
+//    override func observeValue(forKeyPath keyPath: String?,
+//                               of object: Any?,
+//                               change: [NSKeyValueChangeKey : Any]?,
+//                               context: UnsafeMutableRawPointer?) {
+//        // Only handle observations for the playerItemContext
+//        guard context == &RecordViewController.playerItemContext else {
+//            super.observeValue(forKeyPath: keyPath,
+//                               of: object,
+//                               change: change,
+//                               context: context)
+//            return
+//        }
+//
+//        if keyPath == #keyPath(AVPlayerItem.status) {
+//            let status: AVPlayerItemStatus
+//
+//            // Get the status change from the change dictionary
+//            if let statusNumber = change?[.newKey] as? NSNumber {
+//                status = AVPlayerItemStatus(rawValue: statusNumber.intValue)!
+//            } else {
+//                status = .unknown
+//            }
+//
+//            // Switch over the status
+//            switch status {
+//            case .readyToPlay:
+////                self.toolbarItems?[3].isEnabled = true
+//                print("lofa")
+//            case .failed:
+//            // Player item failed. See error.
+//                print("failed")
+//            case .unknown:
+//                // Player item is not yet ready.
+//                print("unknown")
+//            }
+//        }
+//    }
+
+    func startPlayer() {
+        // Does qPlayer needs to be nil-led first?
+
+        self.qPlayer?.play()
+//        do {
+//            self.audioPlayer = try AVAudioPlayer.init(contentsOf: self.audioRecorder.url)
+//        } catch {
+//            print("Can't play.")
+//        }
+        self.updateControlsAndStatus(activeControls: [.stop])
+    }
+
+    func stopPlayer() {
+        self.qPlayer?.pause()
+        self.qPlayer = nil
     }
 
     func resetAudioInstances() {
@@ -110,9 +198,9 @@ class RecordViewController: UIViewController {
 
     @objc func recordTapped() {
         if self.audioRecorder == nil {
-            self.setRecorder(publication: self.selectedPublication)
+            self.startRecorder(publication: self.selectedPublication)
         }
-        self.audioRecorder?.record()
+
         self.updateControlsAndStatus(
             activeControls: [.stop],
             controlStatus: ("Recording...", .red)
@@ -123,17 +211,26 @@ class RecordViewController: UIViewController {
         let status: (String, UIColor)
 
         if self.audioRecorder?.isRecording == true {
-            self.audioRecorder?.stop()
+            self.stopRecorder()
             status = ("Recording stopped.", .red)
         } else {
-            audioPlayer?.stop()
-            status = ("Playback stopped.", .green)
+            self.stopPlayer()
+            status = ("Playback paused.", .green)
         }
 
+        self.updateControlsAndStatus(
+            activeControls: [.record, .play, .queue, .submit],
+            controlStatus:  status)
+
+        /* Disable "Play" button until AVPlayerItemStatus comes up as
+           `readyToPlay`. Enabled in `observeValue`.
+        */
+//        self.toolbarItems?[3].isEnabled = false
     }
 
     @objc func playTapped() {
-        print("works\\n\n")
+        self.startPlayer()
+        updateControlsAndStatus(activeControls: [.stop])
     }
 
     @objc func queueTapped() {
@@ -222,7 +319,7 @@ class RecordViewController: UIViewController {
         }
 
         // https://stackoverflow.com/questions/10825572/uitoolbar-not-showing-uibarbuttonitem
-        self.setToolbarItems(buttons, animated: true)
+        self.setToolbarItems(buttons, animated: false)
 //
 //        let str = t != nil ? t : NSAttributedString(string: "")
 //        self.tooltips.attributedText = str
