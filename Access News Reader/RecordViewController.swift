@@ -21,11 +21,19 @@ class RecordViewController: UIViewController {
 
     @IBOutlet weak var controlStatus: UILabel!
 
-    var selectedPublication: String {
+    var publicationCell: UITableViewCell {
         get {
             let mainTVC = self.childViewControllers.first as! MainTableViewController
-            let publicationCell = mainTVC.tableView.visibleCells.first
-            return (publicationCell?.textLabel?.text)!
+            return mainTVC.tableView.visibleCells.first!
+        }
+    }
+
+    var selectedPublication: String {
+        get {
+            return (publicationCell.textLabel?.text)!
+        }
+        set(newPublication) {
+            publicationCell.textLabel?.text = newPublication
         }
     }
 
@@ -52,12 +60,7 @@ class RecordViewController: UIViewController {
 //                        controlStatus = ("Recording disabled.", .magenta)
 //                    }
 
-                    self.updateControlsAndStatus(activeControls: [.record])
-
-                    /* Disable "Record" button until publication is selected.
-                       Enabled in SelectPublication view controller.
-                    */
-                    self.toolbarItems?[1].isEnabled = false
+                    self.resetUI()
                 }
             }
         } catch {
@@ -193,7 +196,23 @@ class RecordViewController: UIViewController {
         self.qPlayer = nil
     }
 
-    func resetAudioInstances() {
+    func resetUI() {
+        self.selectedPublication = ""
+        self.updateControlsAndStatus(activeControls: [.record])
+
+        /* Disable "Record" button until publication is selected.
+         Enabled in SelectPublication view controller.
+         */
+        self.toolbarItems?[1].isEnabled = false
+
+        /* TODO Add article title (see issue #14 and #21) */
+
+        self.audioRecorder = nil
+        self.qPlayer = nil
+
+        if self.articleChunks.isEmpty == false {
+            self.assembleChunks()
+        }
     }
 
     @objc func recordTapped() {
@@ -234,7 +253,7 @@ class RecordViewController: UIViewController {
     }
 
     @objc func queueTapped() {
-        print("works\\n\n")
+        self.resetUI()
     }
 
     @objc func submitTapped() {
