@@ -215,6 +215,33 @@ class RecordViewController: UIViewController {
         }
     }
 
+    /* TODO Run in background #22 */
+    func assembleChunks() {
+        let composition = AVMutableComposition()
+        let audioTrack  = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
+
+        var insertAt =
+            CMTimeRange(start: kCMTimeZero, end: kCMTimeZero)
+
+        repeat {
+            let asset = self.articleChunks.removeFirst()
+            let assetTimeRange = CMTimeRange(start: kCMTimeZero, end: asset.duration)
+            do {
+                try audioTrack?.insertTimeRange(
+                    assetTimeRange,
+                    of: asset.tracks(withMediaType: .audio).first!,
+                    at: insertAt.end)
+            } catch {
+                NSLog("Unable to compose asset track.")
+            }
+
+            let nextDuration =
+                insertAt.duration + assetTimeRange.duration
+            insertAt =
+                CMTimeRange(start: kCMTimeZero, duration: nextDuration)
+        } while self.articleChunks.count == 0
+    }
+
     @objc func recordTapped() {
         if self.audioRecorder == nil {
             self.startRecorder(publication: self.selectedPublication)
