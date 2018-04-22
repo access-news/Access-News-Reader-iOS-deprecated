@@ -11,13 +11,15 @@ import AVFoundation
 
 class RecordViewController: UIViewController {
 
-    private static var playerItemContext = 0
+//    private static var playerItemContext = 0
 
     var recordingSession: AVAudioSession!
     var audioRecorder:    AVAudioRecorder?
 
     var articleChunks = [AVURLAsset]()
-    var qPlayer:        AVQueuePlayer?
+    var queuePlayer:        AVQueuePlayer?
+
+    var articleQueue = [URL]()
 
     @IBOutlet weak var controlStatus: UILabel!
 
@@ -137,8 +139,8 @@ class RecordViewController: UIViewController {
 
 
 
-        self.qPlayer = AVQueuePlayer(items: playerItems)
-        self.qPlayer?.actionAtItemEnd = .advance
+        self.queuePlayer = AVQueuePlayer(items: playerItems)
+        self.queuePlayer?.actionAtItemEnd = .advance
     }
 
 //    override func observeValue(forKeyPath keyPath: String?,
@@ -180,9 +182,9 @@ class RecordViewController: UIViewController {
 //    }
 
     func startPlayer() {
-        // Does qPlayer needs to be nil-led first?
+        // Does queuePlayer needs to be nil-led first?
 
-        self.qPlayer?.play()
+        self.queuePlayer?.play()
 //        do {
 //            self.audioPlayer = try AVAudioPlayer.init(contentsOf: self.audioRecorder.url)
 //        } catch {
@@ -192,8 +194,8 @@ class RecordViewController: UIViewController {
     }
 
     func stopPlayer() {
-        self.qPlayer?.pause()
-        self.qPlayer = nil
+        self.queuePlayer?.pause()
+        self.queuePlayer = nil
     }
 
     func resetUI() {
@@ -208,10 +210,10 @@ class RecordViewController: UIViewController {
         /* TODO Add article title (see issue #14 and #21) */
 
         self.audioRecorder = nil
-        self.qPlayer = nil
+        self.queuePlayer = nil
 
         if self.articleChunks.isEmpty == false {
-            self.assembleChunks()
+//            self.assembleChunks()
         }
     }
 
