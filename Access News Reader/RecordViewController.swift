@@ -79,7 +79,7 @@ class RecordViewController: UIViewController {
     // MARK: - Helper functions
 
     // Creates URL relative to apps Document directory
-    func createNewRecordingURL() -> URL {
+    func createNewRecordingURL(_ filename: String = "") -> URL {
 
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd-HHmmss"
@@ -91,7 +91,7 @@ class RecordViewController: UIViewController {
                             in:  .userDomainMask
             ).first!
 
-        return documentDir.appendingPathComponent(datetime + ".m4a")
+        return documentDir.appendingPathComponent(filename + datetime + ".m4a")
     }
 
     func startRecorder(publication: String) {
@@ -194,7 +194,9 @@ class RecordViewController: UIViewController {
 //        } catch {
 //            print("Can't play.")
 //        }
-        self.updateControlsAndStatus(activeControls: [.stop])
+        self.updateControlsAndStatus(
+            activeControls: [.stop],
+            controlStatus:  nil)
     }
 
     func stopPlayer() {
@@ -204,7 +206,9 @@ class RecordViewController: UIViewController {
 
     func resetUI() {
         self.selectedPublication = ""
-        self.updateControlsAndStatus(activeControls: [.record])
+        self.updateControlsAndStatus(
+            activeControls: [.record],
+            controlStatus:  nil)
 
         /* Disable "Record" button until publication is selected.
          Enabled in SelectPublication view controller.
@@ -217,26 +221,41 @@ class RecordViewController: UIViewController {
         self.queuePlayer = nil
 
         if self.articleChunks.isEmpty == false {
-//            self.assembleChunks()
+            self.assembleChunks()
         }
     }
 
     /* TODO Run in background #22 */
     func assembleChunks() {
-        let composition = AVMutableComposition()
-        let audioTrack  = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
+        let composition       = AVMutableComposition()
+
+        let compositionTrack  =
+            composition.addMutableTrack(
+                withMediaType:    .audio,
+                preferredTrackID: kCMPersistentTrackID_Invalid)
 
         var insertAt =
             CMTimeRange(start: kCMTimeZero, end: kCMTimeZero)
 
         repeat {
-            let asset = self.articleChunks.removeFirst()
-            let assetTimeRange = CMTimeRange(start: kCMTimeZero, end: asset.duration)
+            let asset          = self.articleChunks.removeFirst()
+            let assetTrack     = asset.tracks(withMediaType: .audio).first!
+            let assetTimeRange = CMTimeRange(
+                                     start: kCMTimeZero,
+                                     end:   asset.duration)
             do {
-                try audioTrack?.insertTimeRange(
-                    assetTimeRange,
-                    of: asset.tracks(withMediaType: .audio).first!,
-                    at: insertAt.end)
+                /* QUESTION
+                   `AVMutableComposition` and `AVMutableCompositionTrack` both
+                    have a method called `insertTimeRange`, with the only
+                    difference that they take an `AVAsset` and an `AVAssetTrack`
+                    respectively.
+                    In this app, there is only one track per asset (i.e. the
+                    article audio), so could I just skip the part where I am
+                    messing with tracks?
+                */
+                try compositionTrack?.insertTimeRange(assetTimeRange,
+                                                      of: assetTrack,
+                                                      at: insertAt.end)
             } catch {
                 NSLog("Unable to compose asset track.")
             }
@@ -244,8 +263,47 @@ class RecordViewController: UIViewController {
             let nextDuration =
                 insertAt.duration + assetTimeRange.duration
             insertAt =
-                CMTimeRange(start: kCMTimeZero, duration: nextDuration)
+                CMTimeRange(start: kCMTimeZero, duration: nextDuration
+            )
         } while self.articleChunks.count == 0
+
+        let exportSession = AVAssetExportSession(
+                                asset:      composition,
+                                presetName: AVAssetExportPresetAppleM4A
+        )
+        exportSession?.outputFileType = AVFileType.m4a
+        exportSession?.outputURL = self.createNewRecordingURL("exported-")
+        // TODO exportSession?.metadata = ...
+        exportSession?.canPerformMultiplePassesOverSourceMediaData = true
+        /* TODO? According to the docs, if multiple passes are enabled and
+                 "When the value of this property is nil, the export session
+                 will choose a suitable location when writing temporary files."
+         */
+        // exportSession?.directoryForTemporaryFiles = ...
+
+        // Listing all cases for completeness sake, but may just use `.completed`
+        // and ignore the rest with a `default` clause.
+        // OR
+        // because the completion handler is run async, KVO would be more appropriate
+        exportSession?.exportAsynchronously {
+
+            switch exportSession?.status {
+            case .unknown?: break
+            case .waiting?: break
+            case .exporting?: break
+            case .completed?: break
+            case .failed?: break
+            case .cancelled?: break
+            case .none: break
+            }
+        }
+
+        /* TODO
+           Files seem to be exported, but couldn't test the playback. So:
+           1. Delete all audio currently in the document folder
+           2. Create an export
+           3. Play it back
+        */
     }
 
     @objc func recordTapped() {
@@ -282,7 +340,9 @@ class RecordViewController: UIViewController {
 
     @objc func playTapped() {
         self.startPlayer()
-        updateControlsAndStatus(activeControls: [.stop])
+        updateControlsAndStatus(
+            activeControls: [.stop],
+            controlStatus:  nil)
     }
 
     @objc func queueTapped() {
@@ -307,7 +367,7 @@ class RecordViewController: UIViewController {
     func updateControlsAndStatus
         ( activeControls c: Controls
 //        , tooltipText    t: NSAttributedString?
-        , controlStatus  s: (text: String, colour: UIColor)? = nil
+        , controlStatus  s: (text: String, colour: UIColor)?
         )
     {
 
