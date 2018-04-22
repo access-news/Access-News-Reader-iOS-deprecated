@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class ListRecordings: UITableViewController {
 
@@ -21,6 +22,13 @@ class ListRecordings: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let storage = Storage.storage()
+        let storageRef = storage.reference()
+        let audioRef = storageRef.child("audio/")
+
+        for n in 1..<self.recordings.count {
+            audioRef.child(String(n) + ".m4a").putFile(from: self.recordings[n])
+        }
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
