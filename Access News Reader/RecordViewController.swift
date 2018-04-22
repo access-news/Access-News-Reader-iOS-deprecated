@@ -78,6 +78,22 @@ class RecordViewController: UIViewController {
 
     // MARK: - Helper functions
 
+    // Creates URL relative to apps Document directory
+    func createNewRecordingURL() -> URL {
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd-HHmmss"
+        let datetime = dateFormatter.string(from: Date())
+
+        let documentDir =
+            FileManager.default.urls(
+                            for: .documentDirectory,
+                            in:  .userDomainMask
+            ).first!
+
+        return documentDir.appendingPathComponent(datetime + ".m4a")
+    }
+
     func startRecorder(publication: String) {
         let settings = [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
@@ -86,23 +102,11 @@ class RecordViewController: UIViewController {
             AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue,
             AVEncoderBitRateKey: 128000,
             ]
-
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd-HHmmss"
-        let datetime = dateFormatter.string(from: Date())
-
-//        let publicationCondensed = "\(publication.split(separator: " ").joined(separator: "-"))"
-
-//        let filename = publicationCondensed + datetime + ".m4a"
-        let documentDir = FileManager.default.urls(
-                              for: .documentDirectory,
-                              in:  .userDomainMask
-                          ).first!
-        let file = documentDir.appendingPathComponent(datetime + ".m4a")
+        let url = self.createNewRecordingURL()
 
         do {
             self.audioRecorder =
-                try AVAudioRecorder.init(url: file, settings: settings)
+                try AVAudioRecorder.init(url: url, settings: settings)
             self.audioRecorder?.record()
             // TODO: add audio recorder delegate? Interruptions (e.g., calls)
             //       are handled elsewhere anyway
