@@ -8,8 +8,11 @@
 
 import UIKit
 import Firebase
+import AVFoundation
 
 class ListRecordings: UITableViewController {
+
+    var audioPlayer: AVAudioPlayer?
 
     var recordings: [URL] {
         get {
@@ -22,13 +25,13 @@ class ListRecordings: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let storage = Storage.storage()
-        let storageRef = storage.reference()
-        let audioRef = storageRef.child("audio/")
-
-        for n in 1..<self.recordings.count {
-            audioRef.child(String(n) + ".m4a").putFile(from: self.recordings[n])
-        }
+//        let storage = Storage.storage()
+//        let storageRef = storage.reference()
+//        let audioRef = storageRef.child("audio/")
+//
+//        for n in 1..<self.recordings.count {
+//            audioRef.child(String(n) + ".m4a").putFile(from: self.recordings[n])
+//        }
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -77,6 +80,11 @@ class ListRecordings: UITableViewController {
         }    
     }
 
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.audioPlayer = try! AVAudioPlayer(contentsOf: self.recordings[indexPath.row])
+        self.audioPlayer!.play()
+        self.tableView.deselectRow(at: indexPath, animated: false)
+    }
     /*
     // Override to support rearranging the table view.
     override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {

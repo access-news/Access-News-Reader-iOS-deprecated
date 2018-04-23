@@ -265,7 +265,7 @@ class RecordViewController: UIViewController {
             insertAt =
                 CMTimeRange(start: kCMTimeZero, duration: nextDuration
             )
-        } while self.articleChunks.count == 0
+        } while self.articleChunks.count != 0
 
         let exportSession = AVAssetExportSession(
                                 asset:      composition,
