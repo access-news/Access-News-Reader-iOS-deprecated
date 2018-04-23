@@ -221,56 +221,45 @@ class RecordViewController: UIViewController {
         self.queuePlayer = nil
 
         if self.articleChunks.isEmpty == false {
-            self.assembleChunks()
+            self.concatChunks()
         }
     }
 
     /* TODO Run in background #22 */
-    func assembleChunks() {
-        let composition       = AVMutableComposition()
+    func concatChunks() {
+        let composition = AVMutableComposition()
 
-        let compositionTrack  =
-            composition.addMutableTrack(
-                withMediaType:    .audio,
-                preferredTrackID: kCMPersistentTrackID_Invalid)
+//        let compositionTrack  =
+//            composition.addMutableTrack(
+//                withMediaType:    .audio,
+//                preferredTrackID: kCMPersistentTrackID_Invalid)
 
-        var insertAt =
-            CMTimeRange(start: kCMTimeZero, end: kCMTimeZero)
+        var insertAt = CMTimeRange(start: kCMTimeZero, end: kCMTimeZero)
 
         repeat {
-            let asset          = self.articleChunks.removeFirst()
-            let assetTrack     = asset.tracks(withMediaType: .audio).first!
-            let assetTimeRange = CMTimeRange(
-                                     start: kCMTimeZero,
-                                     end:   asset.duration)
+            let asset = self.articleChunks.removeFirst()
+//            let assetTrack = asset.tracks(withMediaType: .audio).first!
+
+            let assetTimeRange = CMTimeRange(start: kCMTimeZero, end: asset.duration)
+
             do {
-                /* QUESTION
-                   `AVMutableComposition` and `AVMutableCompositionTrack` both
-                    have a method called `insertTimeRange`, with the only
-                    difference that they take an `AVAsset` and an `AVAssetTrack`
-                    respectively.
-                    In this app, there is only one track per asset (i.e. the
-                    article audio), so could I just skip the part where I am
-                    messing with tracks?
-                */
-                try compositionTrack?.insertTimeRange(assetTimeRange,
-                                                      of: assetTrack,
-                                                      at: insertAt.end)
+                try composition.insertTimeRange(assetTimeRange,
+                                                of: asset,
+                                                at: insertAt.end)
             } catch {
                 NSLog("Unable to compose asset track.")
             }
 
-            let nextDuration =
-                insertAt.duration + assetTimeRange.duration
-            insertAt =
-                CMTimeRange(start: kCMTimeZero, duration: nextDuration
-            )
+            let nextDuration = insertAt.duration + assetTimeRange.duration
+            insertAt = CMTimeRange(start: kCMTimeZero, duration: nextDuration)
+
         } while self.articleChunks.count != 0
 
-        let exportSession = AVAssetExportSession(
-                                asset:      composition,
-                                presetName: AVAssetExportPresetAppleM4A
-        )
+        let exportSession =
+            AVAssetExportSession(
+                asset:      composition,
+                presetName: AVAssetExportPresetAppleM4A)
+
         exportSession?.outputFileType = AVFileType.m4a
         exportSession?.outputURL = self.createNewRecordingURL("exported-")
         // TODO exportSession?.metadata = ...
@@ -291,7 +280,8 @@ class RecordViewController: UIViewController {
             case .unknown?: break
             case .waiting?: break
             case .exporting?: break
-            case .completed?: break
+            case .completed?:
+                print("\n\nexported!\n\n")
             case .failed?: break
             case .cancelled?: break
             case .none: break
