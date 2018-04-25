@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import Firebase
 
 class RecordViewController: UIViewController {
 
@@ -18,7 +19,6 @@ class RecordViewController: UIViewController {
     var queuePlayer:      AVQueuePlayer?
 
     var articleChunks = [AVURLAsset]()
-    var articleQueue  = [URL]()
 
     @IBOutlet weak var controlStatus: UILabel!
 
@@ -61,7 +61,19 @@ class RecordViewController: UIViewController {
 //                        controlStatus = ("Recording disabled.", .magenta)
 //                    }
 
-                    self.resetUI()
+                    self.newArticleReset(activeControls: [.record])
+
+                    /* Disable "Record" button until publication is selected.
+                     Enabled in SelectPublication view controller.
+
+                     Not pretty, because the assumption that the "Record" button is the
+                     first is hard coded, but no point in making `updateControlsAndStatus`
+                     more general, because
+                     + this is the only control that is disabled conditionally
+                     + `updateControlAndStatus` is internal (i.e., private to this module),
+                     and this exception is noted here
+                     */
+                    self.toolbarItems?[1].isEnabled = false
                 }
             }
         } catch {
@@ -195,16 +207,12 @@ class RecordViewController: UIViewController {
         self.queuePlayer = nil
     }
 
-    func resetUI() {
+    func newArticleReset(activeControls: Controls) {
         self.selectedPublication = ""
-        self.updateControlsAndStatus(
-            activeControls: [.record],
-            controlStatus:  nil)
 
-        /* Disable "Record" button until publication is selected.
-         Enabled in SelectPublication view controller.
-         */
-        self.toolbarItems?[1].isEnabled = false
+        self.updateControlsAndStatus(
+            activeControls: activeControls,
+            controlStatus:  nil)
 
         /* TODO Add article title (see issue #14 and #21) */
 
@@ -239,8 +247,6 @@ class RecordViewController: UIViewController {
 
         exportSession?.outputFileType = AVFileType.m4a
         exportSession?.outputURL = self.createNewRecordingURL("exported-")
-
-        self.articleQueue.append((exportSession?.outputURL)!)
 
         // TODO exportSession?.metadata = ...
 
@@ -281,49 +287,65 @@ class RecordViewController: UIViewController {
         }
     }
 
+    func upload() {
+        //        let storage = Storage.storage()
+        //        let storageRef = storage.reference()
+        //        let audioRef = storageRef.child("audio/")
+        //
+        //        for n in 1..<self.recordings.count {
+        //            audioRef.child(String(n) + ".m4a").putFile(from: self.recordings[n])
+        //        }
+    }
+
     @objc func recordTapped() {
         if self.audioRecorder == nil {
             self.startRecorder(publication: self.selectedPublication)
         }
 
         self.updateControlsAndStatus(
-            activeControls: [.stop],
+            activeControls: [.pause, .stop],
             controlStatus: ("Recording...", .red)
         )
     }
 
-    @objc func stopTapped() {
+    @objc func pauseTapped() {
         let status: (String, UIColor)
 
         if self.audioRecorder?.isRecording == true {
             self.stopRecorder()
-            status = ("Recording stopped.", .red)
+            status = ("Recording paused.", .red)
         } else {
             self.stopPlayer()
             status = ("Playback paused.", .green)
         }
 
         self.updateControlsAndStatus(
-            activeControls: [.record, .play, .queue, .submit],
+            activeControls: [.record, .play, .stop],
             controlStatus:  status)
     }
 
     @objc func playTapped() {
         self.startPlayer()
         updateControlsAndStatus(
-            activeControls: [.stop],
+            activeControls: [.pause, .stop],
             controlStatus:  nil)
     }
 
-    @objc func queueTapped() {
+    @objc func stopTapped() {
         self.concatChunks()
-        self.resetUI()
+        self.newArticleReset(activeControls: [.record, .submit])
     }
 
     /* Issue #26 - cellular upload considerations
     */
     @objc func submitTapped() {
-        // TODO nil self.articleQueue
+        /* TODO
+           Show new VC with list of recordings about to be uploaded and ask for
+           time spent recording.
+        */
+        self.concatChunks()
+        self.newArticleReset(activeControls: [.record])
+        self.upload()
     }
 
     // https://cocoacasts.com/how-to-work-with-bitmasks-in-swift/
@@ -331,9 +353,9 @@ class RecordViewController: UIViewController {
         let rawValue: Int
 
         static let record = Controls(rawValue: 1 << 0)
-        static let stop   = Controls(rawValue: 1 << 1)
+        static let pause  = Controls(rawValue: 1 << 1)
         static let play   = Controls(rawValue: 1 << 2)
-        static let queue  = Controls(rawValue: 1 << 3)
+        static let stop   = Controls(rawValue: 1 << 3)
         static let submit = Controls(rawValue: 1 << 4)
     }
 
@@ -367,12 +389,12 @@ class RecordViewController: UIViewController {
                     , flexSpace()]
         }
 
-        if c.contains(.stop) {
+        if c.contains(.pause) {
             buttons +=
-                [ UIBarButtonItem(title: "Stop/Pause",
+                [ UIBarButtonItem(title: "Pause",
                                   style: .plain,
                                   target: self,
-                                  action: #selector(self.stopTapped))
+                                  action: #selector(self.pauseTapped))
                     , flexSpace()]
         }
 
@@ -385,12 +407,12 @@ class RecordViewController: UIViewController {
                     , flexSpace()]
         }
 
-        if c.contains(.queue) {
+        if c.contains(.stop) {
             buttons +=
-                [ UIBarButtonItem(title: "Queue",
+                [ UIBarButtonItem(title: "Stop",
                                   style: .plain,
                                   target: self,
-                                  action: #selector(self.queueTapped))
+                                  action: #selector(self.stopTapped))
                     , flexSpace()]
         }
 
