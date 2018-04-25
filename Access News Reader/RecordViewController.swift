@@ -15,11 +15,10 @@ class RecordViewController: UIViewController {
 
     var recordingSession: AVAudioSession!
     var audioRecorder:    AVAudioRecorder?
+    var queuePlayer:      AVQueuePlayer?
 
     var articleChunks = [AVURLAsset]()
-    var queuePlayer:        AVQueuePlayer?
-
-    var articleQueue = [URL]()
+    var articleQueue  = [URL]()
 
     @IBOutlet weak var controlStatus: UILabel!
 
@@ -240,7 +239,11 @@ class RecordViewController: UIViewController {
 
         exportSession?.outputFileType = AVFileType.m4a
         exportSession?.outputURL = self.createNewRecordingURL("exported-")
+
+        self.articleQueue.append((exportSession?.outputURL)!)
+
         // TODO exportSession?.metadata = ...
+
         exportSession?.canPerformMultiplePassesOverSourceMediaData = true
         /* TODO? According to the docs, if multiple passes are enabled and
                  "When the value of this property is nil, the export session
@@ -317,7 +320,10 @@ class RecordViewController: UIViewController {
         self.resetUI()
     }
 
+    /* Issue #26 - cellular upload considerations
+    */
     @objc func submitTapped() {
+        // TODO nil self.articleQueue
     }
 
     // https://cocoacasts.com/how-to-work-with-bitmasks-in-swift/
