@@ -121,30 +121,14 @@ class RecordViewController: UIViewController {
         self.audioRecorder = nil
 
         /* https://developer.apple.com/documentation/avfoundation/avurlassetpreferprecisedurationandtimingkey
-         "If you intend to insert the asset into an AVMutableComposition
-         object, precise random access is typically desirable, and the
-         value of true is recommended."
+           "If you intend to insert the asset into an AVMutableComposition
+           object, precise random access is typically desirable, and the
+           value of true is recommended."
          */
         let assetOpts = [AVURLAssetPreferPreciseDurationAndTimingKey: true]
         let asset     = AVURLAsset(url: assetURL, options: assetOpts)
 
         self.articleChunks.append(asset)
-
-        let assetKeys = ["playable"]
-        let playerItems = self.articleChunks.map {
-            AVPlayerItem(asset: $0, automaticallyLoadedAssetKeys: assetKeys)
-        }
-
-//        playerItem.addObserver(
-//            self,
-//            forKeyPath: #keyPath(AVPlayerItem.status),
-//            options:    [.old, .new],
-//            context:    &RecordViewController.playerItemContext)
-
-
-
-        self.queuePlayer = AVQueuePlayer(items: playerItems)
-        self.queuePlayer?.actionAtItemEnd = .advance
     }
 
 //    override func observeValue(forKeyPath keyPath: String?,
@@ -186,14 +170,22 @@ class RecordViewController: UIViewController {
 //    }
 
     func startPlayer() {
-        // Does queuePlayer needs to be nil-led first?
+        let assetKeys = ["playable"]
+        let playerItems = self.articleChunks.map {
+            AVPlayerItem(asset: $0, automaticallyLoadedAssetKeys: assetKeys)
+        }
+
+        //        playerItem.addObserver(
+        //            self,
+        //            forKeyPath: #keyPath(AVPlayerItem.status),
+        //            options:    [.old, .new],
+        //            context:    &RecordViewController.playerItemContext)
+
+        self.queuePlayer = AVQueuePlayer(items: playerItems)
+        self.queuePlayer?.actionAtItemEnd = .advance
 
         self.queuePlayer?.play()
-//        do {
-//            self.audioPlayer = try AVAudioPlayer.init(contentsOf: self.audioRecorder.url)
-//        } catch {
-//            print("Can't play.")
-//        }
+
         self.updateControlsAndStatus(
             activeControls: [.stop],
             controlStatus:  nil)
@@ -218,28 +210,15 @@ class RecordViewController: UIViewController {
         /* TODO Add article title (see issue #14 and #21) */
 
         self.audioRecorder = nil
-        self.queuePlayer = nil
-
-        if self.articleChunks.isEmpty == false {
-            self.concatChunks()
-        }
+        self.queuePlayer   = nil
     }
 
-    /* TODO Run in background #22 */
     func concatChunks() {
         let composition = AVMutableComposition()
 
-//        let compositionTrack  =
-//            composition.addMutableTrack(
-//                withMediaType:    .audio,
-//                preferredTrackID: kCMPersistentTrackID_Invalid)
-
         var insertAt = CMTimeRange(start: kCMTimeZero, end: kCMTimeZero)
 
-        repeat {
-            let asset = self.articleChunks.removeFirst()
-//            let assetTrack = asset.tracks(withMediaType: .audio).first!
-
+        for asset in self.articleChunks {
             let assetTimeRange = CMTimeRange(start: kCMTimeZero, end: asset.duration)
 
             do {
@@ -252,8 +231,7 @@ class RecordViewController: UIViewController {
 
             let nextDuration = insertAt.duration + assetTimeRange.duration
             insertAt = CMTimeRange(start: kCMTimeZero, duration: nextDuration)
-
-        } while self.articleChunks.count != 0
+        }
 
         let exportSession =
             AVAssetExportSession(
@@ -270,10 +248,12 @@ class RecordViewController: UIViewController {
          */
         // exportSession?.directoryForTemporaryFiles = ...
 
-        // Listing all cases for completeness sake, but may just use `.completed`
-        // and ignore the rest with a `default` clause.
-        // OR
-        // because the completion handler is run async, KVO would be more appropriate
+        /* TODO?
+           Listing all cases for completeness sake, but may just use `.completed`
+           and ignore the rest with a `default` clause.
+           OR
+           because the completion handler is run async, KVO would be more appropriate
+        */
         exportSession?.exportAsynchronously {
 
             switch exportSession?.status {
@@ -281,19 +261,21 @@ class RecordViewController: UIViewController {
             case .waiting?: break
             case .exporting?: break
             case .completed?:
-                print("\n\nexported!\n\n")
+                /* Cleaning up partial recordings
+                */
+                for asset in self.articleChunks {
+                    try! FileManager.default.removeItem(at: asset.url)
+                }
+                /* Resetting `articleChunks` here, because this function is
+                   called asynchronously and calling it from `queueTapped` or
+                   `submitTapped` may delete the files prematurely.
+                */
+                self.articleChunks = [AVURLAsset]()
             case .failed?: break
             case .cancelled?: break
             case .none: break
             }
         }
-
-        /* TODO
-           Files seem to be exported, but couldn't test the playback. So:
-           1. Delete all audio currently in the document folder
-           2. Create an export
-           3. Play it back
-        */
     }
 
     @objc func recordTapped() {
@@ -321,11 +303,6 @@ class RecordViewController: UIViewController {
         self.updateControlsAndStatus(
             activeControls: [.record, .play, .queue, .submit],
             controlStatus:  status)
-
-        /* Disable "Play" button until AVPlayerItemStatus comes up as
-           `readyToPlay`. Enabled in `observeValue`.
-        */
-//        self.toolbarItems?[3].isEnabled = false
     }
 
     @objc func playTapped() {
@@ -336,11 +313,11 @@ class RecordViewController: UIViewController {
     }
 
     @objc func queueTapped() {
+        self.concatChunks()
         self.resetUI()
     }
 
     @objc func submitTapped() {
-        print("works\\n\n")
     }
 
     // https://cocoacasts.com/how-to-work-with-bitmasks-in-swift/
