@@ -62,7 +62,7 @@
         <!--List Recordings-->
         <scene sceneID="nq3-ek-poL">
             <objects>
-                <tableViewController id="DeF-8F-YJ4" customClass="ListRecordings" customModule="Access_News_Reader" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="ListRecordings" useStoryboardIdentifierAsRestorationIdentifier="YES" id="DeF-8F-YJ4" customClass="ListRecordings" customModule="Access_News_Reader" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="VCT-G7-YjX">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

@@ -12,7 +12,7 @@ import FirebaseAuthUI
 
 class Settings: UITableViewController {
 
-    let appDelegate = (UIApplication.shared.delegate as? AppDelegate)!
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
 
     @IBOutlet weak var changeEmailField: UITextField!
     // TODO See issue #14 - Make the keyboard take the role of this button

@@ -19,11 +19,13 @@ import FirebaseAuthUI
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var authUI: FUIAuth?
+    var storyboard: UIStoryboard!
     let defaults = UserDefaults.init(suiteName: "group.org.societyfortheblind.access-news-reader-ag")!
 
+    var authUI: FUIAuth?
+
     func showStoryboardViewController(storyboardID: String){
-        let storyboard = UIStoryboard(name: "Main", bundle: .main)
+        self.storyboard = UIStoryboard(name: "Main", bundle: .main)
         let vc = storyboard.instantiateViewController(withIdentifier: storyboardID)
         self.window?.rootViewController = vc
         self.window?.makeKeyAndVisible()

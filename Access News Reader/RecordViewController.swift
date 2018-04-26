@@ -14,6 +14,9 @@ class RecordViewController: UIViewController {
 
 //    private static var playerItemContext = 0
 
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    var mainTVC: UITableViewController!
+
     var recordingSession: AVAudioSession!
     var audioRecorder:    AVAudioRecorder?
     var queuePlayer:      AVQueuePlayer?
@@ -24,8 +27,7 @@ class RecordViewController: UIViewController {
 
     var publicationCell: UITableViewCell {
         get {
-            let mainTVC = self.childViewControllers.first as! MainTableViewController
-            return mainTVC.tableView.visibleCells.first!
+            return self.mainTVC.tableView.visibleCells.first!
         }
     }
 
@@ -42,7 +44,7 @@ class RecordViewController: UIViewController {
         super.viewDidLoad()
 
         self.navigationController?.isToolbarHidden = false
-
+        self.mainTVC = self.childViewControllers.first as! MainTableViewController
         // https://www.hackingwithswift.com/example-code/media/how-to-record-audio-using-avaudiorecorder
         self.recordingSession = AVAudioSession.sharedInstance()
         do {
@@ -208,7 +210,6 @@ class RecordViewController: UIViewController {
     }
 
     func newArticleReset(activeControls: Controls) {
-        self.selectedPublication = ""
 
         self.updateControlsAndStatus(
             activeControls: activeControls,
@@ -218,6 +219,11 @@ class RecordViewController: UIViewController {
 
         self.audioRecorder = nil
         self.queuePlayer   = nil
+    }
+
+    func newPublicationReset(activeControls: Controls) {
+        self.selectedPublication = ""
+        self.newArticleReset(activeControls: activeControls)
     }
 
     func concatChunks() {
@@ -315,7 +321,7 @@ class RecordViewController: UIViewController {
             self.stopRecorder()
             status = ("Recording paused.", .red)
         } else {
-            self.stopPlayer()
+            self.queuePlayer?.pause()
             status = ("Playback paused.", .green)
         }
 
@@ -331,21 +337,60 @@ class RecordViewController: UIViewController {
             controlStatus:  nil)
     }
 
+    /* Issue #27: Allow appending to finalized (i.e. exported) recordings
+     */
     @objc func stopTapped() {
-        self.concatChunks()
-        self.newArticleReset(activeControls: [.record, .submit])
+        let status: (String, UIColor)
+
+        if self.audioRecorder?.isRecording == true {
+            self.stopRecorder()
+            self.concatChunks()
+            self.newArticleReset(activeControls: [.record, .submit])
+        } else {
+            self.stopPlayer()
+            status = ("Playback stopped.", .green)
+            self.updateControlsAndStatus(
+                activeControls: [.record, .play, .submit],
+                controlStatus: nil)
+        }
     }
 
     /* Issue #26 - cellular upload considerations
     */
     @objc func submitTapped() {
-        /* TODO
-           Show new VC with list of recordings about to be uploaded and ask for
-           time spent recording.
-        */
-        self.concatChunks()
-        self.newArticleReset(activeControls: [.record])
         self.upload()
+
+        /* + https://developer.apple.com/library/content/featuredarticles/ViewControllerPGforiPhoneOS/ImplementingaContainerViewController.html#//apple_ref/doc/uid/TP40007457-CH11-SW12
+           + https://developer.apple.com/documentation/uikit/uiviewcontroller#1652844
+           + https://stackoverflow.com/questions/37370801/how-to-add-a-container-view-programmatically
+        */
+        func changeViewControllers          // no animation
+            ( from oldVC: UIViewController
+            , to   newVC: UIViewController
+            )
+        {
+            /* 1. Add new view controller to container view controller's children */
+            self.addChildViewController(newVC)
+            /* 2. Add the child’s root view to your container’s view hierarchy. */
+            self.view.addSubview(newVC.view)
+            /* 3. Add any constraints for managing the size and position of
+                  the child’s root view (i.e., making it the same position and
+                  dimensions of the old view controller's view).
+
+                  The definition of a view frame: "a rectangle, which describes
+                  the view’s location and size in its superview’s coordinate
+                  system".
+             */
+            newVC.view.frame = oldVC.view.frame
+            /* 4. Remove the currently visible view controller from the container. */
+            oldVC.removeFromParentViewController()
+            /* 5. Finishing the transition */
+            newVC.didMove(toParentViewController: self)
+        }
+
+        let listRecordingsTVC = self.appDelegate.storyboard.instantiateViewController(withIdentifier: "ListRecordings")
+
+        changeViewControllers(from: self.mainTVC, to: listRecordingsTVC)
     }
 
     // https://cocoacasts.com/how-to-work-with-bitmasks-in-swift/
