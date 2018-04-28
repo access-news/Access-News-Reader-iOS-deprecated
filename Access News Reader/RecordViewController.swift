@@ -23,59 +23,67 @@ class RecordViewController: UIViewController {
 
     var articleChunks = [AVURLAsset]()
 
+    @IBOutlet weak var articleStatus: UILabel!
     @IBOutlet weak var controlStatus: UILabel!
 
-    var publicationCell: UITableViewCell {
+    var mainTVCCells: [UITableViewCell] {
         get {
-            return self.mainTVC.tableView.visibleCells.first!
+            return self.mainTVC.tableView.visibleCells
         }
     }
 
     var selectedPublication: String {
         get {
-            return (publicationCell.textLabel?.text)!
+            return (mainTVCCells[0].textLabel?.text)!
         }
         set(newPublication) {
-            publicationCell.textLabel?.text = newPublication
+            mainTVCCells[0].textLabel?.text = newPublication
         }
     }
+
+//    var articleTitle: String {
+//        get {
+//            return mainTVCCells[1].text...
+//        }
+//    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.navigationController?.isToolbarHidden = false
         self.mainTVC = self.childViewControllers.first as! MainTableViewController
-        // https://www.hackingwithswift.com/example-code/media/how-to-record-audio-using-avaudiorecorder
+
+        /* https://www.hackingwithswift.com/example-code/media/how-to-record-audio-using-avaudiorecorder
+        */
         self.recordingSession = AVAudioSession.sharedInstance()
         do {
             try self.recordingSession.setCategory(AVAudioSessionCategoryPlayAndRecord)
             try self.recordingSession.setActive(true)
             self.recordingSession.requestRecordPermission() { [unowned self] allowed in
                 DispatchQueue.main.async {
-//                    let tooltip: String
-//                    let controlStatus: (String, UIColor)?
+                    let controlStatus: (String, UIColor)?
 
-//                    if allowed == true {
+                    if allowed == true {
 //                        tooltip = "Please choose a publication first to start recording."
-//                        controlStatus = ("Ready to record.", .gray)
-//                    } else {
+                        controlStatus = ("Choose publication to record.", .black)
+                    } else {
 //                        tooltip = "Please enable recording at \"Settings > Privacy > Microphone\"."
-//                        controlStatus = ("Recording disabled.", .magenta)
-//                    }
+                        controlStatus = ("Recording disabled.", .magenta)
+                    }
 
                     self.newArticleReset(activeControls: [.record])
 
-                    /* Disable "Record" button until publication is selected.
-                     Enabled in SelectPublication view controller.
-
-                     Not pretty, because the assumption that the "Record" button is the
-                     first is hard coded, but no point in making `updateControlsAndStatus`
-                     more general, because
-                     + this is the only control that is disabled conditionally
-                     + `updateControlAndStatus` is internal (i.e., private to this module),
-                     and this exception is noted here
+                    /* Disable "Record" button until publication is selected. Enabled in SelectPublication view controller.
                      */
-                    self.toolbarItems?[1].isEnabled = false
+
+                    self.setUI(
+                        navLeft: ("Profile", true),
+                        navRight:("Queued Recordings", ?),
+                        publication: "",
+                        article: "",
+                        articleStatus: "",
+                        controlStatus:
+                    )
                 }
             }
         } catch {
@@ -91,6 +99,7 @@ class RecordViewController: UIViewController {
 
     // MARK: - Helper functions
 
+    func setUI() {}
     // Creates URL relative to apps Document directory
     func createNewRecordingURL(_ filename: String = "") -> URL {
 
@@ -405,17 +414,17 @@ class RecordViewController: UIViewController {
     }
 
     func updateControlsAndStatus
-        ( activeControls c: Controls
-//        , tooltipText    t: NSAttributedString?
-        , controlStatus  s: (text: String, colour: UIColor)?
-        )
+        ( visibleControls: (controls: Controls, titles: [String])
+        , controlStatus:   (text: String, colour: UIColor)?
+        , isRecordEnabled: Bool = true
+    )
     {
-
         func flexSpace() -> UIBarButtonItem {
             return UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         }
 
         var buttons: [UIBarButtonItem] = [flexSpace()]
+        var titles = visibleControls.titles
 
         /* There are more clever ways to do this, but this solution is
             + easy on the eyes
@@ -423,62 +432,69 @@ class RecordViewController: UIViewController {
             + there is a finite number of items
             + (so far) not used anywhere else in the UI
             + and, most importantly, I will know what I did when I return to this
-              after months
+           ¡¡¡¡¡   after months
         */
-        if c.contains(.record) {
+        if visibleControls.controls.contains(.record) {
             buttons +=
-                [ UIBarButtonItem(title: "Record",
+                [ UIBarButtonItem(title: titles.removeFirst(),
                                   style: .plain,
                                   target: self,
                                   action: #selector(self.recordTapped))
-                    , flexSpace()]
+                , flexSpace()
+                ]
         }
 
-        if c.contains(.pause) {
+        if visibleControls.controls.contains(.pause) {
             buttons +=
-                [ UIBarButtonItem(title: "Pause",
+                [ UIBarButtonItem(title: titles.removeFirst(),
                                   style: .plain,
                                   target: self,
                                   action: #selector(self.pauseTapped))
-                    , flexSpace()]
+                , flexSpace()
+                ]
         }
 
-        if c.contains(.play) {
+        if visibleControls.controls.contains(.play) {
             buttons +=
-                [ UIBarButtonItem(title: "Play",
+                [ UIBarButtonItem(title: titles.removeFirst(),
                                   style: .plain,
                                   target: self,
                                   action: #selector(self.playTapped))
-                    , flexSpace()]
+                , flexSpace()
+                ]
         }
 
-        if c.contains(.stop) {
+        if visibleControls.controls.contains(.stop) {
             buttons +=
-                [ UIBarButtonItem(title: "Stop",
+                [ UIBarButtonItem(title: titles.removeFirst(),
                                   style: .plain,
                                   target: self,
                                   action: #selector(self.stopTapped))
-                    , flexSpace()]
+                , flexSpace()
+                ]
         }
 
-        if c.contains(.submit) {
+        if visibleControls.controls.contains(.submit) {
             buttons +=
-                [ UIBarButtonItem(title: "Submit",
+                [ UIBarButtonItem(title: titles.removeFirst(),
                                   style: .plain,
                                   target: self,
                                   action: #selector(self.submitTapped))
-                    , flexSpace()]
+                , flexSpace()
+                ]
         }
 
         // https://stackoverflow.com/questions/10825572/uitoolbar-not-showing-uibarbuttonitem
         self.setToolbarItems(buttons, animated: false)
-//
-//        let str = t != nil ? t : NSAttributedString(string: "")
-//        self.tooltips.attributedText = str
 
-        if s != nil {
-            self.controlStatus.textColor = s!.colour
-            self.controlStatus.text      = s!.text
+        /* Not pretty, but the only control ever to be dissabled is the
+           "Record" button.
+        */
+        self.toolbarItems?[1].isEnabled = isRecordEnabled
+
+        if controlStatus != nil {
+            self.controlStatus.textColor = controlStatus!.colour
+            self.controlStatus.text      = controlStatus!.text
         }
     }
 

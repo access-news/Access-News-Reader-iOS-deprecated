@@ -372,6 +372,7 @@
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="articleStatus" destination="XLT-bA-oSX" id="MMg-zS-Row"/>
                         <outlet property="controlStatus" destination="GUg-1Q-eCS" id="aUY-L4-Pp8"/>
                     </connections>
                 </viewController>

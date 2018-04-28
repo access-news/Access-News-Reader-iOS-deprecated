@@ -92,6 +92,10 @@ class SelectPublication: UITableViewController {
         self.navigationController?.popViewController(animated: true)
 
         let recordViewController = self.navigationController?.topViewController
+
+        /* Enable "Record" button, because a publication has been
+           selected here.
+        */
         recordViewController?.toolbarItems?[1].isEnabled = true
         
         let mainTVC = recordViewController?.childViewControllers.first as! MainTableViewController
