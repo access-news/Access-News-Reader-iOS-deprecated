@@ -41,6 +41,22 @@ class RecordViewController: UIViewController {
         }
     }
 
+    var documentDir: URL {
+        get {
+            let documentURLs = FileManager.default.urls(
+                for: .documentDirectory,
+                in:  .userDomainMask
+            )
+            return documentURLs.first!
+        }
+    }
+
+    var recordings: [URL] {
+        get {
+            let fileURLs = try? FileManager.default.contentsOfDirectory(at: self.documentDir, includingPropertiesForKeys: nil, options: [])
+            return fileURLs ?? []
+        }
+    }
 //    var articleTitle: String {
 //        get {
 //            return mainTVCCells[1].text...
@@ -71,18 +87,17 @@ class RecordViewController: UIViewController {
                         controlStatus = ("Recording disabled.", .magenta)
                     }
 
-                    self.newArticleReset(activeControls: [.record])
-
                     /* Disable "Record" button until publication is selected. Enabled in SelectPublication view controller.
                      */
 
                     self.setUI(
-                        navLeft: ("Profile", true),
-                        navRight:("Queued Recordings", ?),
-                        publication: "",
-                        article: "",
-                        articleStatus: "",
-                        controlStatus:
+                        visibleControls:      ([.record], ["Start Recording"]),
+                        isRecordEnabled:      false,
+                        navLeftButton:        ("Profile", true),
+                        navRightButton:       ("Queued Recordings", self.recordings.isEmpty),
+                        selectedPublication:  "",
+                        articleStatus:        "",
+                        controlStatus:        ("Please select a publication", UIColor.orange)
                     )
                 }
             }
@@ -99,7 +114,42 @@ class RecordViewController: UIViewController {
 
     // MARK: - Helper functions
 
-    func setUI() {}
+    /* Not messing around conditionals and default parameters,
+       requiring everything explicit. The rationale is the same
+       as with `updateControlsAndStatus`: if I come back to this
+       after months, I don't have to track down state changes,
+       but just look at the calls.
+    */
+    func setUI
+        ( visibleControls:     (controls: Controls, titles: [String])
+        , isRecordEnabled:     Bool
+        , navLeftButton:       (title: String, active: Bool)
+        , navRightButton:      (title: String, active: Bool)
+        , selectedPublication: String
+        , articleStatus:       String
+        , controlStatus:       (text: String, colour: UIColor)
+      //, articleTitle:        String /* needs to be wired up */
+        )
+    {
+        let navItem = self.navigationItem
+        /* left */
+        navItem.leftBarButtonItem?.title = navLeftButton.title
+        navItem.leftBarButtonItem?.isEnabled = navLeftButton.active
+        /* right */
+        navItem.rightBarButtonItem?.title = navRightButton.title
+        navItem.rightBarButtonItem?.isEnabled = navRightButton.active
+
+        self.updateControlsAndStatus(
+            visibleControls:  (visibleControls),
+            controlStatus:    controlStatus,
+            isRecordEnabled:  isRecordEnabled
+        )
+
+        self.selectedPublication = selectedPublication
+        self.articleStatus.text  = articleStatus
+
+    }
+
     // Creates URL relative to apps Document directory
     func createNewRecordingURL(_ filename: String = "") -> URL {
 
@@ -107,13 +157,9 @@ class RecordViewController: UIViewController {
         dateFormatter.dateFormat = "yyyy-MM-dd-HHmmss"
         let datetime = dateFormatter.string(from: Date())
 
-        let documentDir =
-            FileManager.default.urls(
-                            for: .documentDirectory,
-                            in:  .userDomainMask
-            ).first!
+        let fileURL = filename + datetime + ".m4a"
 
-        return documentDir.appendingPathComponent(filename + datetime + ".m4a")
+        return self.documentDir.appendingPathComponent(fileURL)
     }
 
     func startRecorder(publication: String) {
@@ -208,9 +254,9 @@ class RecordViewController: UIViewController {
 
         self.queuePlayer?.play()
 
-        self.updateControlsAndStatus(
-            activeControls: [.stop],
-            controlStatus:  nil)
+//        self.updateControlsAndStatus(
+//            activeControls: [.stop],
+//            controlStatus:  nil)
     }
 
     func stopPlayer() {
@@ -220,9 +266,9 @@ class RecordViewController: UIViewController {
 
     func newArticleReset(activeControls: Controls) {
 
-        self.updateControlsAndStatus(
-            activeControls: activeControls,
-            controlStatus:  nil)
+//        self.updateControlsAndStatus(
+//            activeControls: activeControls,
+//            controlStatus:  nil)
 
         /* TODO Add article title (see issue #14 and #21) */
 
@@ -317,10 +363,10 @@ class RecordViewController: UIViewController {
             self.startRecorder(publication: self.selectedPublication)
         }
 
-        self.updateControlsAndStatus(
-            activeControls: [.pause, .stop],
-            controlStatus: ("Recording...", .red)
-        )
+//        self.updateControlsAndStatus(
+//            activeControls: [.pause, .stop],
+//            controlStatus: ("Recording...", .red)
+//        )
     }
 
     @objc func pauseTapped() {
@@ -334,16 +380,16 @@ class RecordViewController: UIViewController {
             status = ("Playback paused.", .green)
         }
 
-        self.updateControlsAndStatus(
-            activeControls: [.record, .play, .stop],
-            controlStatus:  status)
+//        self.updateControlsAndStatus(
+//            activeControls: [.record, .play, .stop],
+//            controlStatus:  status)
     }
 
     @objc func playTapped() {
         self.startPlayer()
-        updateControlsAndStatus(
-            activeControls: [.pause, .stop],
-            controlStatus:  nil)
+//        updateControlsAndStatus(
+//            activeControls: [.pause, .stop],
+//            controlStatus:  nil)
     }
 
     /* Issue #27: Allow appending to finalized (i.e. exported) recordings
@@ -358,9 +404,9 @@ class RecordViewController: UIViewController {
         } else {
             self.stopPlayer()
             status = ("Playback stopped.", .green)
-            self.updateControlsAndStatus(
-                activeControls: [.record, .play, .submit],
-                controlStatus: nil)
+//            self.updateControlsAndStatus(
+//                activeControls: [.record, .play, .submit],
+//                controlStatus: nil)
         }
     }
 
@@ -415,9 +461,9 @@ class RecordViewController: UIViewController {
 
     func updateControlsAndStatus
         ( visibleControls: (controls: Controls, titles: [String])
-        , controlStatus:   (text: String, colour: UIColor)?
-        , isRecordEnabled: Bool = true
-    )
+        , controlStatus:   (text: String, colour: UIColor)
+        , isRecordEnabled: Bool
+        )
     {
         func flexSpace() -> UIBarButtonItem {
             return UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
@@ -492,10 +538,8 @@ class RecordViewController: UIViewController {
         */
         self.toolbarItems?[1].isEnabled = isRecordEnabled
 
-        if controlStatus != nil {
-            self.controlStatus.textColor = controlStatus!.colour
-            self.controlStatus.text      = controlStatus!.text
-        }
+        self.controlStatus.textColor = controlStatus.colour
+        self.controlStatus.text      = controlStatus.text
     }
 
     // MARK: - Navigation
