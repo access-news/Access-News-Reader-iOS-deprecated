@@ -26,18 +26,12 @@ class RecordViewController: UIViewController {
     @IBOutlet weak var articleStatus: UILabel!
     @IBOutlet weak var controlStatus: UILabel!
 
-    var mainTVCCells: [UITableViewCell] {
-        get {
-            return self.mainTVC.tableView.visibleCells
-        }
-    }
-
     var selectedPublication: String {
         get {
-            return (mainTVCCells[0].textLabel?.text)!
+            return self.mainTVC.selectedPublication.text!
         }
         set(newPublication) {
-            mainTVCCells[0].textLabel?.text = newPublication
+            self.mainTVC.selectedPublication.text = newPublication
         }
     }
 
@@ -98,7 +92,7 @@ class RecordViewController: UIViewController {
                     self.setUI(
                         navLeftButton:        ("Profile", true),
                         navRightButton:       ("Queued Recordings", self.recordings.isEmpty),
-                        selectedPublication:  "",
+                        selectedPublication:  "semmi",
                         articleStatus:        "",
                         controlStatus:        controlStatus!,
                         visibleControls:      [.record : ("Start Recording", false)]

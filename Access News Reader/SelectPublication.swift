@@ -89,20 +89,26 @@ class SelectPublication: UITableViewController {
            `RecordViewController` is the navigation controller's top view
            controller below.
         */
-        self.navigationController?.popViewController(animated: true)
 
-        let recordViewController = self.navigationController?.topViewController
+
+        let recordViewController = self.navigationController?.viewControllers[0] as! RecordViewController
+
 
         /* Enable "Record" button, because a publication has been
            selected here.
         */
-        recordViewController?.toolbarItems?[1].isEnabled = true
+        recordViewController.toolbarItems?[1].isEnabled = true
         
-        let mainTVC = recordViewController?.childViewControllers.first as! MainTableViewController
-        let publicationCellLabel = mainTVC.tableView.visibleCells[0].textLabel!
-        publicationCellLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        publicationCellLabel.textColor = UIColor(red: 0.0, green: 0.478, blue: 1.0, alpha: 1.0)
-        publicationCellLabel.text = self.publications[indexPath.row]
+        let mainTVC = recordViewController.childViewControllers.first as! MainTableViewController
+//        let publicationCellLabel = mainTVC.tableView.visibleCells[0].textLabel!
+//        publicationCellLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+//        publicationCellLabel.textColor = UIColor(red: 0.0, green: 0.478, blue: 1.0, alpha: 1.0)
+//        publicationCellLabel.text = self.publications[indexPath.row]
+
+
+        mainTVC.selectedPublication.text = self.publications[indexPath.row]
+
+        self.navigationController?.popViewController(animated: true)
     }
     /*
     // Override to support conditional editing of the table view.

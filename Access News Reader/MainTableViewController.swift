@@ -15,6 +15,7 @@ import UIKit
 class MainTableViewController: UITableViewController {
 
     @IBOutlet weak var articleTitle: UITextField!
+    @IBOutlet weak var selectedPublication: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +23,24 @@ class MainTableViewController: UITableViewController {
         self.articleTitle.delegate = self
         self.articleTitle.clearButtonMode = .always
         self.articleTitle.spellCheckingType = .yes
+    }
+
+    /* An otherwise unnecessary override to fix a stupid issue, where
+       the intermediate view controller (i.e., MainViewController) would
+       mask the publication field after setting it in RecordVC. This
+       function would actually fire sooner than the UI update in
+       RecordVC#viewDidLoad, as it is called async.
+
+       Anyway, this works. (Until introducing some other changes probably.)
+    */
+    override func viewWillAppear(_ animated: Bool) {
+        let t = self.selectedPublication.text
+
+        if t == "" {
+            self.selectedPublication.text = "temp"
+        } else {
+            self.selectedPublication.text = self.selectedPublication.text
+        }
     }
 
     override func didReceiveMemoryWarning() {
