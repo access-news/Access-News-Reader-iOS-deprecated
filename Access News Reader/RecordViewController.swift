@@ -81,7 +81,7 @@ class RecordViewController: UIViewController {
 
                     if allowed == true {
 //                        tooltip = "Please choose a publication first to start recording."
-                        controlStatus = ("Choose publication to record.", .black)
+                        controlStatus = ("Please select a publication.", .black)
                     } else {
 //                        tooltip = "Please enable recording at \"Settings > Privacy > Microphone\"."
                         controlStatus = ("Recording disabled.", .magenta)
@@ -91,13 +91,12 @@ class RecordViewController: UIViewController {
                      */
 
                     self.setUI(
-                        visibleControls:      ([.record], ["Start Recording"]),
-                        isRecordEnabled:      false,
                         navLeftButton:        ("Profile", true),
                         navRightButton:       ("Queued Recordings", self.recordings.isEmpty),
                         selectedPublication:  "",
                         articleStatus:        "",
-                        controlStatus:        ("Please select a publication", UIColor.orange)
+                        controlStatus:        controlStatus!,
+                        visibleControls:      [.record : ("Start Recording", false)]
                     )
                 }
             }
@@ -114,42 +113,6 @@ class RecordViewController: UIViewController {
 
     // MARK: - Helper functions
 
-    /* Not messing around conditionals and default parameters,
-       requiring everything explicit. The rationale is the same
-       as with `updateControlsAndStatus`: if I come back to this
-       after months, I don't have to track down state changes,
-       but just look at the calls.
-    */
-    func setUI
-        ( visibleControls:     (controls: Controls, titles: [String])
-        , isRecordEnabled:     Bool
-        , navLeftButton:       (title: String, active: Bool)
-        , navRightButton:      (title: String, active: Bool)
-        , selectedPublication: String
-        , articleStatus:       String
-        , controlStatus:       (text: String, colour: UIColor)
-      //, articleTitle:        String /* needs to be wired up */
-        )
-    {
-        let navItem = self.navigationItem
-        /* left */
-        navItem.leftBarButtonItem?.title = navLeftButton.title
-        navItem.leftBarButtonItem?.isEnabled = navLeftButton.active
-        /* right */
-        navItem.rightBarButtonItem?.title = navRightButton.title
-        navItem.rightBarButtonItem?.isEnabled = navRightButton.active
-
-        self.updateControlsAndStatus(
-            visibleControls:  (visibleControls),
-            controlStatus:    controlStatus,
-            isRecordEnabled:  isRecordEnabled
-        )
-
-        self.selectedPublication = selectedPublication
-        self.articleStatus.text  = articleStatus
-
-    }
-
     // Creates URL relative to apps Document directory
     func createNewRecordingURL(_ filename: String = "") -> URL {
 
@@ -163,12 +126,12 @@ class RecordViewController: UIViewController {
     }
 
     func startRecorder(publication: String) {
-        let settings = [
-            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-            AVSampleRateKey: 44100,
-            AVNumberOfChannelsKey: 1,
-            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue,
-            AVEncoderBitRateKey: 128000,
+        let settings =
+            [ AVFormatIDKey:             Int(kAudioFormatMPEG4AAC)
+            , AVSampleRateKey:           44100
+            , AVNumberOfChannelsKey:     1
+            , AVEncoderAudioQualityKey:  AVAudioQuality.high.rawValue
+            , AVEncoderBitRateKey:       128000
             ]
         let url = self.createNewRecordingURL()
 
@@ -448,30 +411,86 @@ class RecordViewController: UIViewController {
         changeViewControllers(from: self.mainTVC, to: listRecordingsTVC)
     }
 
-    // https://cocoacasts.com/how-to-work-with-bitmasks-in-swift/
-    struct Controls: OptionSet {
-        let rawValue: Int
+    // MARK: - Navigation
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destinationViewController.
+        // Pass the selected object to the new view controller.
+    }
+}
 
-        static let record = Controls(rawValue: 1 << 0)
-        static let pause  = Controls(rawValue: 1 << 1)
-        static let play   = Controls(rawValue: 1 << 2)
-        static let stop   = Controls(rawValue: 1 << 3)
-        static let submit = Controls(rawValue: 1 << 4)
+extension RecordViewController: RecordUIDelegate {
+
+    /* Not messing around conditionals and default parameters,
+       requiring everything explicit. The rationale is the same
+       as with `updateControlsAndStatus`: if I come back to this
+       after months, I don't have to track down state changes,
+       but just look at the calls.
+    */
+    // MARK: - RecordUIDelegate implementation
+    func setUI
+        ( navLeftButton:       (title: String, active: Bool)
+        , navRightButton:      (title: String, active: Bool)
+        , selectedPublication: String
+        , articleStatus:       String
+        , controlStatus:       (text: String, colour: UIColor)
+        , visibleControls:     [Controls: (title: String, isEnabled: Bool)]
+      //, articleTitle:        String /* needs to be wired up */
+        )
+    {
+        let navItem = self.navigationItem
+        /* left */
+        navItem.leftBarButtonItem?.title = navLeftButton.title
+        navItem.leftBarButtonItem?.isEnabled = navLeftButton.active
+        /* right */
+        navItem.rightBarButtonItem?.title = navRightButton.title
+        navItem.rightBarButtonItem?.isEnabled = navRightButton.active
+
+        self.updateControlsAndStatus(
+            visibleControls:  visibleControls,
+            controlStatus:    controlStatus
+        )
+
+        self.selectedPublication = selectedPublication
+        self.articleStatus.text  = articleStatus
+
     }
 
+    // MARK: RecordUIDelegate helpers
     func updateControlsAndStatus
-        ( visibleControls: (controls: Controls, titles: [String])
+        ( visibleControls: [Controls: (title: String, isEnabled: Bool)]
         , controlStatus:   (text: String, colour: UIColor)
-        , isRecordEnabled: Bool
         )
     {
         func flexSpace() -> UIBarButtonItem {
-            return UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+            return UIBarButtonItem(
+                       barButtonSystemItem: .flexibleSpace,
+                       target: nil,
+                       action: nil
+                   )
         }
 
         var buttons: [UIBarButtonItem] = [flexSpace()]
-        var titles = visibleControls.titles
 
+        let actions: [Controls: Selector] =
+            [ .record : #selector(self.recordTapped)
+            , .pause  : #selector(self.pauseTapped)
+            , .play   : #selector(self.playTapped)
+            , .stop   : #selector(self.stopTapped)
+            , .submit : #selector(self.submitTapped)
+            ]
+
+        for c in visibleControls.keys {
+            let control = visibleControls[c]!
+            let button = UIBarButtonItem(
+                             title: control.title,
+                             style: .plain,
+                             target: self,
+                             action: actions[c]
+                         )
+            button.isEnabled = control.isEnabled
+            buttons += [button, flexSpace()]
+        }
         /* There are more clever ways to do this, but this solution is
             + easy on the eyes
             + quickly updateable
@@ -480,72 +499,61 @@ class RecordViewController: UIViewController {
             + and, most importantly, I will know what I did when I return to this
            ¡¡¡¡¡   after months
         */
-        if visibleControls.controls.contains(.record) {
-            buttons +=
-                [ UIBarButtonItem(title: titles.removeFirst(),
-                                  style: .plain,
-                                  target: self,
-                                  action: #selector(self.recordTapped))
-                , flexSpace()
-                ]
-        }
+        // if visibleControls.controls.contains(.record) {
+        //     buttons +=
+        //         [ UIBarButtonItem(title: titles.removeFirst(),
+        //                           style: .plain,
+        //                           target: self,
+        //                           action: #selector(self.recordTapped))
+        //         , flexSpace()
+        //         ]
+        // }
 
-        if visibleControls.controls.contains(.pause) {
-            buttons +=
-                [ UIBarButtonItem(title: titles.removeFirst(),
-                                  style: .plain,
-                                  target: self,
-                                  action: #selector(self.pauseTapped))
-                , flexSpace()
-                ]
-        }
+        // if visibleControls.controls.contains(.pause) {
+        //     buttons +=
+        //         [ UIBarButtonItem(title: titles.removeFirst(),
+        //                           style: .plain,
+        //                           target: self,
+        //                           action: #selector(self.pauseTapped))
+        //         , flexSpace()
+        //         ]
+        // }
 
-        if visibleControls.controls.contains(.play) {
-            buttons +=
-                [ UIBarButtonItem(title: titles.removeFirst(),
-                                  style: .plain,
-                                  target: self,
-                                  action: #selector(self.playTapped))
-                , flexSpace()
-                ]
-        }
+        // if visibleControls.controls.contains(.play) {
+        //     buttons +=
+        //         [ UIBarButtonItem(title: titles.removeFirst(),
+        //                           style: .plain,
+        //                           target: self,
+        //                           action: #selector(self.playTapped))
+        //         , flexSpace()
+        //         ]
+        // }
 
-        if visibleControls.controls.contains(.stop) {
-            buttons +=
-                [ UIBarButtonItem(title: titles.removeFirst(),
-                                  style: .plain,
-                                  target: self,
-                                  action: #selector(self.stopTapped))
-                , flexSpace()
-                ]
-        }
+        // if visibleControls.controls.contains(.stop) {
+        //     buttons +=
+        //         [ UIBarButtonItem(title: titles.removeFirst(),
+        //                           style: .plain,
+        //                           target: self,
+        //                           action: #selector(self.stopTapped))
+        //         , flexSpace()
+        //         ]
+        // }
 
-        if visibleControls.controls.contains(.submit) {
-            buttons +=
-                [ UIBarButtonItem(title: titles.removeFirst(),
-                                  style: .plain,
-                                  target: self,
-                                  action: #selector(self.submitTapped))
-                , flexSpace()
-                ]
-        }
+        // if visibleControls.controls.contains(.submit) {
+        //     buttons +=
+        //         [ UIBarButtonItem(title: titles.removeFirst(),
+        //                           style: .plain,
+        //                           target: self,
+        //                           action: #selector(self.submitTapped))
+        //         , flexSpace()
+        //         ]
+        // }
 
         // https://stackoverflow.com/questions/10825572/uitoolbar-not-showing-uibarbuttonitem
         self.setToolbarItems(buttons, animated: false)
-
-        /* Not pretty, but the only control ever to be dissabled is the
-           "Record" button.
-        */
-        self.toolbarItems?[1].isEnabled = isRecordEnabled
 
         self.controlStatus.textColor = controlStatus.colour
         self.controlStatus.text      = controlStatus.text
     }
 
-    // MARK: - Navigation
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
 }
