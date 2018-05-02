@@ -171,6 +171,9 @@
                         <barButtonItem key="rightBarButtonItem" title="Recordings" id="8Bn-90-ixL"/>
                     </navigationItem>
                     <nil key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="articleTitle" destination="hpM-wB-Gdz" id="ISM-yF-R0Y"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jRg-hl-Sly" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="vK8-3Q-m2w">

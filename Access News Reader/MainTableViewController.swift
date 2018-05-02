@@ -14,8 +14,14 @@ import UIKit
 
 class MainTableViewController: UITableViewController {
 
+    @IBOutlet weak var articleTitle: UITextField!
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        self.articleTitle.delegate = self
+        self.articleTitle.clearButtonMode = .always
+        self.articleTitle.spellCheckingType = .yes
     }
 
     override func didReceiveMemoryWarning() {
@@ -38,4 +44,11 @@ class MainTableViewController: UITableViewController {
         // Pass the selected object to the new view controller.
     }
     */
+}
+
+extension MainTableViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
 }

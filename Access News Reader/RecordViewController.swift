@@ -15,7 +15,7 @@ class RecordViewController: UIViewController {
 //    private static var playerItemContext = 0
 
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    var mainTVC: UITableViewController!
+    var mainTVC: MainTableViewController!
 
     var recordingSession: AVAudioSession!
     var audioRecorder:    AVAudioRecorder?
@@ -80,14 +80,19 @@ class RecordViewController: UIViewController {
                     let controlStatus: (String, UIColor)?
 
                     if allowed == true {
-//                        tooltip = "Please choose a publication first to start recording."
-                        controlStatus = ("Please select a publication.", .black)
+                        controlStatus =
+                            ( "Please select a publication."
+                            , .black
+                            )
                     } else {
-//                        tooltip = "Please enable recording at \"Settings > Privacy > Microphone\"."
-                        controlStatus = ("Recording disabled.", .magenta)
+                        controlStatus =
+                            ( "Recording disabled."
+                            , .magenta
+                            )
                     }
 
-                    /* Disable "Record" button until publication is selected. Enabled in SelectPublication view controller.
+                    /* Disable "Record" button until publication is selected.
+                       Enabled in SelectPublication view controller.
                      */
 
                     self.setUI(
@@ -322,6 +327,7 @@ class RecordViewController: UIViewController {
     }
 
     @objc func recordTapped() {
+
         if self.audioRecorder == nil {
             self.startRecorder(publication: self.selectedPublication)
         }
@@ -491,63 +497,6 @@ extension RecordViewController: RecordUIDelegate {
             button.isEnabled = control.isEnabled
             buttons += [button, flexSpace()]
         }
-        /* There are more clever ways to do this, but this solution is
-            + easy on the eyes
-            + quickly updateable
-            + there is a finite number of items
-            + (so far) not used anywhere else in the UI
-            + and, most importantly, I will know what I did when I return to this
-           ¡¡¡¡¡   after months
-        */
-        // if visibleControls.controls.contains(.record) {
-        //     buttons +=
-        //         [ UIBarButtonItem(title: titles.removeFirst(),
-        //                           style: .plain,
-        //                           target: self,
-        //                           action: #selector(self.recordTapped))
-        //         , flexSpace()
-        //         ]
-        // }
-
-        // if visibleControls.controls.contains(.pause) {
-        //     buttons +=
-        //         [ UIBarButtonItem(title: titles.removeFirst(),
-        //                           style: .plain,
-        //                           target: self,
-        //                           action: #selector(self.pauseTapped))
-        //         , flexSpace()
-        //         ]
-        // }
-
-        // if visibleControls.controls.contains(.play) {
-        //     buttons +=
-        //         [ UIBarButtonItem(title: titles.removeFirst(),
-        //                           style: .plain,
-        //                           target: self,
-        //                           action: #selector(self.playTapped))
-        //         , flexSpace()
-        //         ]
-        // }
-
-        // if visibleControls.controls.contains(.stop) {
-        //     buttons +=
-        //         [ UIBarButtonItem(title: titles.removeFirst(),
-        //                           style: .plain,
-        //                           target: self,
-        //                           action: #selector(self.stopTapped))
-        //         , flexSpace()
-        //         ]
-        // }
-
-        // if visibleControls.controls.contains(.submit) {
-        //     buttons +=
-        //         [ UIBarButtonItem(title: titles.removeFirst(),
-        //                           style: .plain,
-        //                           target: self,
-        //                           action: #selector(self.submitTapped))
-        //         , flexSpace()
-        //         ]
-        // }
 
         // https://stackoverflow.com/questions/10825572/uitoolbar-not-showing-uibarbuttonitem
         self.setToolbarItems(buttons, animated: false)
@@ -555,5 +504,7 @@ extension RecordViewController: RecordUIDelegate {
         self.controlStatus.textColor = controlStatus.colour
         self.controlStatus.text      = controlStatus.text
     }
+
+    // MARK: RecordUI (i.e., main user interface) change shortcuts
 
 }
