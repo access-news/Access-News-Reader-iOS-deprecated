@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 struct Constants {
     static let userLoggedIn: String = "userLoggedIn"
@@ -14,4 +15,8 @@ struct Constants {
     // storyboard IDs
     static let  mainViewController = "MainViewController"
     static let loginViewController = "LoginViewController"
+
+    enum PublicationLabelType {
+        case selected, not_selected
+    }
 }

@@ -15,7 +15,6 @@ class RecordViewController: UIViewController {
 //    private static var playerItemContext = 0
 
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    var mainTVC: MainTableViewController!
 
     var recordingSession: AVAudioSession!
     var audioRecorder:    AVAudioRecorder?
@@ -26,14 +25,9 @@ class RecordViewController: UIViewController {
     @IBOutlet weak var articleStatus: UILabel!
     @IBOutlet weak var controlStatus: UILabel!
 
-    var selectedPublication: String {
-        get {
-            return self.mainTVC.selectedPublication.text!
-        }
-        set(newPublication) {
-            self.mainTVC.selectedPublication.text = newPublication
-        }
-    }
+    var mainTVC: MainTableViewController!
+    var selectedPublication: UILabel!
+    var articleTitle: UITextField!
 
     var documentDir: URL {
         get {
@@ -61,7 +55,12 @@ class RecordViewController: UIViewController {
         super.viewDidLoad()
 
         self.navigationController?.isToolbarHidden = false
-        self.mainTVC = self.childViewControllers.first as! MainTableViewController
+
+        self.mainTVC =
+            self.childViewControllers.first
+            as! MainTableViewController
+        self.selectedPublication = self.mainTVC.selectedPublication
+        self.articleTitle =        self.mainTVC.articleTitle
 
         /* https://www.hackingwithswift.com/example-code/media/how-to-record-audio-using-avaudiorecorder
         */
@@ -90,12 +89,15 @@ class RecordViewController: UIViewController {
                      */
 
                     self.setUI(
-                        navLeftButton:        ("Profile", true),
-                        navRightButton:       ("Queued Recordings", self.recordings.isEmpty),
-                        selectedPublication:  "semmi",
-                        articleStatus:        "",
-                        controlStatus:        controlStatus!,
-                        visibleControls:      [.record : ("Start Recording", false)]
+                        navLeftButton:   ("Profile", true),
+                        navRightButton:  ( "Queued Recordings",
+                                           self.recordings.isEmpty
+                                         ),
+                        publication:     (.not_selected, nil),
+                        article:         nil,
+                        articleStatus:   nil,
+                        controlStatus:   controlStatus!,
+                        visibleControls: [.record : ("Start Recording", false)]
                     )
                 }
             }
@@ -239,7 +241,7 @@ class RecordViewController: UIViewController {
     }
 
     func newPublicationReset(activeControls: Controls) {
-        self.selectedPublication = ""
+//        self.selectedPublication = ""
         self.newArticleReset(activeControls: activeControls)
     }
 
@@ -323,7 +325,7 @@ class RecordViewController: UIViewController {
     @objc func recordTapped() {
 
         if self.audioRecorder == nil {
-            self.startRecorder(publication: self.selectedPublication)
+//            self.startRecorder(publication: self.selectedPublication)
         }
 
 //        self.updateControlsAndStatus(
@@ -421,21 +423,17 @@ class RecordViewController: UIViewController {
 
 extension RecordViewController: RecordUIDelegate {
 
-    /* Not messing around conditionals and default parameters,
-       requiring everything explicit. The rationale is the same
-       as with `updateControlsAndStatus`: if I come back to this
-       after months, I don't have to track down state changes,
-       but just look at the calls.
-    */
     // MARK: - RecordUIDelegate implementation
     func setUI
-        ( navLeftButton:       (title: String, active: Bool)
-        , navRightButton:      (title: String, active: Bool)
-        , selectedPublication: String
-        , articleStatus:       String
-        , controlStatus:       (text: String, colour: UIColor)
-        , visibleControls:     [Controls: (title: String, isEnabled: Bool)]
-      //, articleTitle:        String /* needs to be wired up */
+        ( navLeftButton:   (title: String, active: Bool)
+        , navRightButton:  (title: String, active: Bool)
+        , publication:     ( type: Constants.PublicationLabelType
+                           , title: String?
+                           )?
+        , article:         String?
+        , articleStatus:   String?
+        , controlStatus:   (text: String, colour: UIColor)
+        , visibleControls: [Controls: (title: String, isEnabled: Bool)]
         )
     {
         let navItem = self.navigationItem
@@ -446,20 +444,72 @@ extension RecordViewController: RecordUIDelegate {
         navItem.rightBarButtonItem?.title = navRightButton.title
         navItem.rightBarButtonItem?.isEnabled = navRightButton.active
 
+        if publication != nil {
+            self.publicationLabel(
+                type:  publication!.type,
+                title: publication!.title
+            )
+        }
+
+        if article != nil {
+            self.articleTitle.text = article
+        }
+
+        self.updateArticleStatus(articleStatus)
+
         self.updateControlsAndStatus(
-            visibleControls:  visibleControls,
-            controlStatus:    controlStatus
+            controlStatus:   controlStatus,
+            visibleControls: visibleControls
         )
-
-        self.selectedPublication = selectedPublication
-        self.articleStatus.text  = articleStatus
-
     }
 
     // MARK: RecordUIDelegate helpers
+
+    func updateArticleStatus(_ status: String?) {
+
+        if status == nil {
+            self.articleStatus.text = ""
+        } else {
+            self.articleStatus.text =
+                self.selectedPublication.text!
+                + " - "
+                + self.articleTitle.text!
+        }
+    }
+
+    /* Only 2 possible scenarios:
+     + `publicationLabel(.not_selected)
+     + `publicationLabel(.selected, title: "mzperx")
+     */
+    func publicationLabel
+        ( type:  Constants.PublicationLabelType
+        , title: String?
+        )
+    {
+        switch type {
+
+        case .not_selected:
+            self.selectedPublication.font =
+                UIFont.systemFont(ofSize: 14, weight: .bold)
+            self.selectedPublication.textColor =
+                UIColor(red: 0.606, green: 0.606, blue: 0.606, alpha: 1.0)
+            self.selectedPublication.text =
+                "Please select publication to record"
+
+        case .selected:
+            self.selectedPublication.font =
+                UIFont.systemFont(ofSize: 17, weight: .regular)
+            self.selectedPublication.textColor =
+                UIColor(red: 0.0, green: 0.478, blue: 1.0, alpha: 1.0)
+            self.selectedPublication.text =
+                title
+        }
+    }
+
+
     func updateControlsAndStatus
-        ( visibleControls: [Controls: (title: String, isEnabled: Bool)]
-        , controlStatus:   (text: String, colour: UIColor)
+        ( controlStatus:   (text: String, colour: UIColor)
+        , visibleControls: [Controls: (title: String, isEnabled: Bool)]
         )
     {
         func flexSpace() -> UIBarButtonItem {
