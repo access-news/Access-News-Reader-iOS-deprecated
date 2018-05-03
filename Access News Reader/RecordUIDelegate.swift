@@ -18,7 +18,7 @@ protocol RecordUIDelegate: class {
                            , title: String?
                            )?
         , article:         String?
-        , articleStatus:   String?
+        , articleStatus:   Bool?
         , controlStatus:   (text: String, colour: UIColor)?
         , visibleControls: [Controls: (title: String, isEnabled: Bool)]
         )

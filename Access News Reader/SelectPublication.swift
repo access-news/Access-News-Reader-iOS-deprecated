@@ -69,14 +69,26 @@ class SelectPublication: UITableViewController {
         return 1
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView
+        ( _ tableView:                   UITableView
+        , numberOfRowsInSection section: Int
+        )
+        -> Int
+    {
         // #warning Incomplete implementation, return the number of rows
         return self.publications.count
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView
+        ( _ tableView:            UITableView
+        , cellForRowAt indexPath: IndexPath
+        )
+        -> UITableViewCell
+    {
         // https://stackoverflow.com/questions/34730848/xcode-error-unable-to-dequeue-a-cell-with-identifier-mealtableviewcell
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(
+                       withIdentifier: "cell",
+                       for:            indexPath)
 
         // Configure the cell...
         cell.textLabel?.text = self.publications[indexPath.row]
@@ -97,24 +109,10 @@ class SelectPublication: UITableViewController {
             navRightButton:  nil,
             publication:     (.selected, selectedPublication),
             article:         nil,
-            articleStatus:   nil,
-            controlStatus:   nil,
+            articleStatus:   true,
+            controlStatus:   ("Ready to record!", .blue),
             visibleControls: [.record : ("Start Recording", true)]
         )
-
-        /* Enable "Record" button, because a publication has been
-           selected here.
-//        */
-//        recordViewController.toolbarItems?[1].isEnabled = true
-//
-//        let mainTVC = recordViewController.childViewControllers.first as! MainTableViewController
-////        let publicationCellLabel = mainTVC.tableView.visibleCells[0].textLabel!
-////        publicationCellLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-////        publicationCellLabel.textColor = UIColor(red: 0.0, green: 0.478, blue: 1.0, alpha: 1.0)
-////        publicationCellLabel.text = self.publications[indexPath.row]
-//
-//
-//        mainTVC.selectedPublication.text = self.publications[indexPath.row]
 
         self.navigationController?.popViewController(animated: true)
     }

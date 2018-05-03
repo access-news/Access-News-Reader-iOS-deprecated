@@ -75,7 +75,7 @@ class RecordViewController: UIViewController {
                     if allowed == true {
                         controlStatus =
                             ( "Please select a publication."
-                            , .black
+                            , .gray
                             )
                     } else {
                         controlStatus =
@@ -110,7 +110,98 @@ class RecordViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+
+    // MARK: - Control actions
+    @objc func recordTapped() {
+
+        if self.audioRecorder == nil {
+            //            self.startRecorder(publication: self.selectedPublication)
+        }
+
+        //        self.updateControlsAndStatus(
+        //            activeControls: [.pause, .stop],
+        //            controlStatus: ("Recording...", .red)
+        //        )
+    }
+
+    @objc func pauseTapped() {
+        let status: (String, UIColor)
+
+        if self.audioRecorder?.isRecording == true {
+            self.stopRecorder()
+            status = ("Recording paused.", .red)
+        } else {
+            self.queuePlayer?.pause()
+            status = ("Playback paused.", .green)
+        }
+
+        //        self.updateControlsAndStatus(
+        //            activeControls: [.record, .play, .stop],
+        //            controlStatus:  status)
+    }
+
+    @objc func playTapped() {
+        self.startPlayer()
+        //        updateControlsAndStatus(
+        //            activeControls: [.pause, .stop],
+        //            controlStatus:  nil)
+    }
+
+    /* Issue #27: Allow appending to finalized (i.e. exported) recordings
+     */
+    @objc func stopTapped() {
+        let status: (String, UIColor)
+
+        if self.audioRecorder?.isRecording == true {
+            self.stopRecorder()
+            self.concatChunks()
+            self.newArticleReset(activeControls: [.record, .submit])
+        } else {
+            self.stopPlayer()
+            status = ("Playback stopped.", .green)
+            //            self.updateControlsAndStatus(
+            //                activeControls: [.record, .play, .submit],
+            //                controlStatus: nil)
+        }
+    }
+
+    /* Issue #26 - cellular upload considerations
+     */
+    @objc func submitTapped() {
+        self.upload()
+
+        /* + https://developer.apple.com/library/content/featuredarticles/ViewControllerPGforiPhoneOS/ImplementingaContainerViewController.html#//apple_ref/doc/uid/TP40007457-CH11-SW12
+         + https://developer.apple.com/documentation/uikit/uiviewcontroller#1652844
+         + https://stackoverflow.com/questions/37370801/how-to-add-a-container-view-programmatically
+         */
+        func changeViewControllers          // no animation
+            ( from oldVC: UIViewController
+            , to   newVC: UIViewController
+            )
+        {
+            /* 1. Add new view controller to container view controller's children */
+            self.addChildViewController(newVC)
+            /* 2. Add the child’s root view to your container’s view hierarchy. */
+            self.view.addSubview(newVC.view)
+            /* 3. Add any constraints for managing the size and position of
+             the child’s root view (i.e., making it the same position and
+             dimensions of the old view controller's view).
+
+             The definition of a view frame: "a rectangle, which describes
+             the view’s location and size in its superview’s coordinate
+             system".
+             */
+            newVC.view.frame = oldVC.view.frame
+            /* 4. Remove the currently visible view controller from the container. */
+            oldVC.removeFromParentViewController()
+            /* 5. Finishing the transition */
+            newVC.didMove(toParentViewController: self)
+        }
+
+        let listRecordingsTVC = self.appDelegate.storyboard.instantiateViewController(withIdentifier: "ListRecordings")
+
+        changeViewControllers(from: self.mainTVC, to: listRecordingsTVC)
+    }
 
     // MARK: - Helper functions
 
@@ -322,108 +413,16 @@ class RecordViewController: UIViewController {
         //        }
     }
 
-    @objc func recordTapped() {
-
-        if self.audioRecorder == nil {
-//            self.startRecorder(publication: self.selectedPublication)
-        }
-
-//        self.updateControlsAndStatus(
-//            activeControls: [.pause, .stop],
-//            controlStatus: ("Recording...", .red)
-//        )
-    }
-
-    @objc func pauseTapped() {
-        let status: (String, UIColor)
-
-        if self.audioRecorder?.isRecording == true {
-            self.stopRecorder()
-            status = ("Recording paused.", .red)
-        } else {
-            self.queuePlayer?.pause()
-            status = ("Playback paused.", .green)
-        }
-
-//        self.updateControlsAndStatus(
-//            activeControls: [.record, .play, .stop],
-//            controlStatus:  status)
-    }
-
-    @objc func playTapped() {
-        self.startPlayer()
-//        updateControlsAndStatus(
-//            activeControls: [.pause, .stop],
-//            controlStatus:  nil)
-    }
-
-    /* Issue #27: Allow appending to finalized (i.e. exported) recordings
-     */
-    @objc func stopTapped() {
-        let status: (String, UIColor)
-
-        if self.audioRecorder?.isRecording == true {
-            self.stopRecorder()
-            self.concatChunks()
-            self.newArticleReset(activeControls: [.record, .submit])
-        } else {
-            self.stopPlayer()
-            status = ("Playback stopped.", .green)
-//            self.updateControlsAndStatus(
-//                activeControls: [.record, .play, .submit],
-//                controlStatus: nil)
-        }
-    }
-
-    /* Issue #26 - cellular upload considerations
-    */
-    @objc func submitTapped() {
-        self.upload()
-
-        /* + https://developer.apple.com/library/content/featuredarticles/ViewControllerPGforiPhoneOS/ImplementingaContainerViewController.html#//apple_ref/doc/uid/TP40007457-CH11-SW12
-           + https://developer.apple.com/documentation/uikit/uiviewcontroller#1652844
-           + https://stackoverflow.com/questions/37370801/how-to-add-a-container-view-programmatically
-        */
-        func changeViewControllers          // no animation
-            ( from oldVC: UIViewController
-            , to   newVC: UIViewController
-            )
-        {
-            /* 1. Add new view controller to container view controller's children */
-            self.addChildViewController(newVC)
-            /* 2. Add the child’s root view to your container’s view hierarchy. */
-            self.view.addSubview(newVC.view)
-            /* 3. Add any constraints for managing the size and position of
-                  the child’s root view (i.e., making it the same position and
-                  dimensions of the old view controller's view).
-
-                  The definition of a view frame: "a rectangle, which describes
-                  the view’s location and size in its superview’s coordinate
-                  system".
-             */
-            newVC.view.frame = oldVC.view.frame
-            /* 4. Remove the currently visible view controller from the container. */
-            oldVC.removeFromParentViewController()
-            /* 5. Finishing the transition */
-            newVC.didMove(toParentViewController: self)
-        }
-
-        let listRecordingsTVC = self.appDelegate.storyboard.instantiateViewController(withIdentifier: "ListRecordings")
-
-        changeViewControllers(from: self.mainTVC, to: listRecordingsTVC)
-    }
-
-    // MARK: - Navigation
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
+//    // In a storyboard-based application, you will often want to do a little preparation before navigation
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        // Get the new view controller using segue.destinationViewController.
+//        // Pass the selected object to the new view controller.
+//    }
 }
 
+// MARK: - RecordUIDelegate implementation
 extension RecordViewController: RecordUIDelegate {
 
-    // MARK: - RecordUIDelegate implementation
     func setUI
         ( navLeftButton:   (title: String, active: Bool)?
         , navRightButton:  (title: String, active: Bool)?
@@ -431,7 +430,7 @@ extension RecordViewController: RecordUIDelegate {
                            , title: String?
                            )?
         , article:         String?
-        , articleStatus:   String?
+        , articleStatus:   Bool?
         , controlStatus:   (text: String, colour: UIColor)?
         , visibleControls: [Controls: (title: String, isEnabled: Bool)]
         )
@@ -459,7 +458,9 @@ extension RecordViewController: RecordUIDelegate {
             self.articleTitle.text = article
         }
 
-        self.updateArticleStatus(articleStatus)
+        if articleStatus != nil {
+            self.updateArticleStatus(articleStatus!)
+        }
 
         if controlStatus != nil {
             self.controlStatus.textColor = controlStatus!.colour
@@ -469,17 +470,24 @@ extension RecordViewController: RecordUIDelegate {
         self.updateControls(visibleControls)
     }
 
-    // MARK: RecordUIDelegate helpers
+    // MARK: - RecordUIDelegate helpers
 
-    func updateArticleStatus(_ status: String?) {
+    func updateArticleStatus(_ status: Bool) {
 
-        if status == nil {
+        let title: String!
+        if self.articleTitle.text != "" {
+            title = self.articleTitle.text
+        } else {
+            title = "(Untitled)"
+        }
+
+        if status == false {
             self.articleStatus.text = ""
         } else {
             self.articleStatus.text =
                 self.selectedPublication.text!
                 + " - "
-                + self.articleTitle.text!
+                + title
         }
     }
 
