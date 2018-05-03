@@ -425,24 +425,28 @@ extension RecordViewController: RecordUIDelegate {
 
     // MARK: - RecordUIDelegate implementation
     func setUI
-        ( navLeftButton:   (title: String, active: Bool)
-        , navRightButton:  (title: String, active: Bool)
+        ( navLeftButton:   (title: String, active: Bool)?
+        , navRightButton:  (title: String, active: Bool)?
         , publication:     ( type: Constants.PublicationLabelType
                            , title: String?
                            )?
         , article:         String?
         , articleStatus:   String?
-        , controlStatus:   (text: String, colour: UIColor)
+        , controlStatus:   (text: String, colour: UIColor)?
         , visibleControls: [Controls: (title: String, isEnabled: Bool)]
         )
     {
         let navItem = self.navigationItem
         /* left */
-        navItem.leftBarButtonItem?.title = navLeftButton.title
-        navItem.leftBarButtonItem?.isEnabled = navLeftButton.active
+        if navLeftButton != nil {
+            navItem.leftBarButtonItem?.title = navLeftButton!.title
+            navItem.leftBarButtonItem?.isEnabled = navLeftButton!.active
+        }
         /* right */
-        navItem.rightBarButtonItem?.title = navRightButton.title
-        navItem.rightBarButtonItem?.isEnabled = navRightButton.active
+        if navRightButton != nil {
+            navItem.rightBarButtonItem?.title = navRightButton!.title
+            navItem.rightBarButtonItem?.isEnabled = navRightButton!.active
+        }
 
         if publication != nil {
             self.publicationLabel(
@@ -457,10 +461,12 @@ extension RecordViewController: RecordUIDelegate {
 
         self.updateArticleStatus(articleStatus)
 
-        self.updateControlsAndStatus(
-            controlStatus:   controlStatus,
-            visibleControls: visibleControls
-        )
+        if controlStatus != nil {
+            self.controlStatus.textColor = controlStatus!.colour
+            self.controlStatus.text      = controlStatus!.text
+        }
+
+        self.updateControls(visibleControls)
     }
 
     // MARK: RecordUIDelegate helpers
@@ -507,10 +513,8 @@ extension RecordViewController: RecordUIDelegate {
     }
 
 
-    func updateControlsAndStatus
-        ( controlStatus:   (text: String, colour: UIColor)
-        , visibleControls: [Controls: (title: String, isEnabled: Bool)]
-        )
+    func updateControls
+        (_ visibleControls: [Controls: (title: String, isEnabled: Bool)])
     {
         func flexSpace() -> UIBarButtonItem {
             return UIBarButtonItem(
@@ -544,9 +548,6 @@ extension RecordViewController: RecordUIDelegate {
 
         // https://stackoverflow.com/questions/10825572/uitoolbar-not-showing-uibarbuttonitem
         self.setToolbarItems(buttons, animated: false)
-
-        self.controlStatus.textColor = controlStatus.colour
-        self.controlStatus.text      = controlStatus.text
     }
 
     // MARK: RecordUI (i.e., main user interface) change shortcuts
