@@ -91,7 +91,7 @@ class RecordViewController: UIViewController {
                     self.setUI(
                         navLeftButton:   ("Profile", true),
                         navRightButton:  ( "Queued Recordings",
-                                           self.recordings.isEmpty
+                                           !self.recordings.isEmpty
                                          ),
                         publication:     (.not_selected, nil),
                         article:         nil,
