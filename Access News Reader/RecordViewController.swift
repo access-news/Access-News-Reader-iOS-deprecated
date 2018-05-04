@@ -112,16 +112,19 @@ class RecordViewController: UIViewController {
     }
 
     // MARK: - Control actions
+
     @objc func recordTapped() {
 
         if self.audioRecorder == nil {
             //            self.startRecorder(publication: self.selectedPublication)
         }
 
+        self.showListRecordings()
         //        self.updateControlsAndStatus(
         //            activeControls: [.pause, .stop],
         //            controlStatus: ("Recording...", .red)
         //        )
+         self.setUI(navLeftButton: nil, navRightButton: nil, publication: nil, article: nil, articleStatus: nil, controlStatus: nil, visibleControls: [.stop: ("Stop", true)])
     }
 
     @objc func pauseTapped() {
@@ -152,58 +155,29 @@ class RecordViewController: UIViewController {
     @objc func stopTapped() {
         let status: (String, UIColor)
 
-        if self.audioRecorder?.isRecording == true {
-            self.stopRecorder()
-            self.concatChunks()
-            self.newArticleReset(activeControls: [.record, .submit])
-        } else {
-            self.stopPlayer()
-            status = ("Playback stopped.", .green)
-            //            self.updateControlsAndStatus(
-            //                activeControls: [.record, .play, .submit],
-            //                controlStatus: nil)
-        }
+        self.showMainTVC()
+
+
+//        if self.audioRecorder?.isRecording == true {
+//            self.stopRecorder()
+//            self.concatChunks()
+//            self.newArticleReset(activeControls: [.record, .submit])
+//        } else {
+//            self.stopPlayer()
+//            status = ("Playback stopped.", .green)
+//            //            self.updateControlsAndStatus(
+//            //                activeControls: [.record, .play, .submit],
+//            //                controlStatus: nil)
+//        }
     }
 
     /* Issue #26 - cellular upload considerations
      */
     @objc func submitTapped() {
         self.upload()
-
-        /* + https://developer.apple.com/library/content/featuredarticles/ViewControllerPGforiPhoneOS/ImplementingaContainerViewController.html#//apple_ref/doc/uid/TP40007457-CH11-SW12
-         + https://developer.apple.com/documentation/uikit/uiviewcontroller#1652844
-         + https://stackoverflow.com/questions/37370801/how-to-add-a-container-view-programmatically
-         */
-        func changeViewControllers          // no animation
-            ( from oldVC: UIViewController
-            , to   newVC: UIViewController
-            )
-        {
-            /* 1. Add new view controller to container view controller's children */
-            self.addChildViewController(newVC)
-            /* 2. Add the child’s root view to your container’s view hierarchy. */
-            self.view.addSubview(newVC.view)
-            /* 3. Add any constraints for managing the size and position of
-             the child’s root view (i.e., making it the same position and
-             dimensions of the old view controller's view).
-
-             The definition of a view frame: "a rectangle, which describes
-             the view’s location and size in its superview’s coordinate
-             system".
-             */
-            newVC.view.frame = oldVC.view.frame
-            /* 4. Remove the currently visible view controller from the container. */
-            oldVC.removeFromParentViewController()
-            /* 5. Finishing the transition */
-            newVC.didMove(toParentViewController: self)
-        }
-
-        let listRecordingsTVC = self.appDelegate.storyboard.instantiateViewController(withIdentifier: "ListRecordings")
-
-        changeViewControllers(from: self.mainTVC, to: listRecordingsTVC)
     }
 
-    // MARK: - Helper functions
+    // MARK: - Audio Helpers
 
     // Creates URL relative to apps Document directory
     func createNewRecordingURL(_ filename: String = "") -> URL {
@@ -318,6 +292,57 @@ class RecordViewController: UIViewController {
         self.queuePlayer?.pause()
         self.queuePlayer = nil
     }
+
+    // MARK: - General Helpers
+
+    /* + https://developer.apple.com/library/content/featuredarticles/ViewControllerPGforiPhoneOS/ImplementingaContainerViewController.html#//apple_ref/doc/uid/TP40007457-CH11-SW12
+       + https://developer.apple.com/documentation/uikit/uiviewcontroller#1652844
+       + https://stackoverflow.com/questions/37370801/how-to-add-a-container-view-programmatically
+     */
+    func changeViewControllers          // no animation
+        ( from oldVC: UIViewController
+        , to   newVC: UIViewController
+        )
+    {
+        /* 1. Add new view controller to container view controller's children */
+        self.addChildViewController(newVC)
+        /* 2. Add the child’s root view to your container’s view hierarchy. */
+        self.view.addSubview(newVC.view)
+        /* 3. Add any constraints for managing the size and position of
+         the child’s root view (i.e., making it the same position and
+         dimensions of the old view controller's view).
+
+         The definition of a view frame: "a rectangle, which describes
+         the view’s location and size in its superview’s coordinate
+         system".
+         */
+        newVC.view.frame = oldVC.view.frame
+        /* 4. Remove the currently visible view controller from the container. */
+        oldVC.removeFromParentViewController()
+        /* 5. Finishing the transition */
+        newVC.didMove(toParentViewController: self)
+    }
+
+    func showListRecordings() {
+        let listRecordingsTVC = self.appDelegate.storyboard.instantiateViewController(
+                withIdentifier: "ListRecordings"
+            )
+        self.changeViewControllers(
+            from: self.mainTVC,
+            to:   listRecordingsTVC
+        )
+    }
+
+    func showMainTVC() {
+        let listRecordingsTVC =
+            self.childViewControllers.first!
+
+        self.changeViewControllers(
+            from: listRecordingsTVC,
+            to:   self.mainTVC
+        )
+    }
+
 
     func newArticleReset(activeControls: Controls) {
 
