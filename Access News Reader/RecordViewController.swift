@@ -26,8 +26,6 @@ class RecordViewController: UIViewController {
     @IBOutlet weak var controlStatus: UILabel!
 
     var mainTVC: MainTableViewController!
-    var selectedPublication: UILabel!
-    var articleTitle: UITextField!
 
     var documentDir: URL {
         get {
@@ -59,8 +57,12 @@ class RecordViewController: UIViewController {
         self.mainTVC =
             self.childViewControllers.first
             as! MainTableViewController
-        self.selectedPublication = self.mainTVC.selectedPublication
-        self.articleTitle =        self.mainTVC.articleTitle
+
+        // https://stackoverflow.com/questions/4865458/dynamically-changing-font-size-of-uilabel
+        self.controlStatus.numberOfLines = 1
+        self.controlStatus.minimumScaleFactor =
+            8.0 / self.controlStatus.font.pointSize
+        self.controlStatus.adjustsFontSizeToFitWidth = true
 
         /* https://www.hackingwithswift.com/example-code/media/how-to-record-audio-using-avaudiorecorder
         */
@@ -74,8 +76,8 @@ class RecordViewController: UIViewController {
 
                     if allowed == true {
                         controlStatus =
-                            ( "Please select a publication."
-                            , .gray
+                            ( "Please select a publication first."
+                            , Constants.errorColor
                             )
                     } else {
                         controlStatus =
@@ -90,12 +92,15 @@ class RecordViewController: UIViewController {
 
                     self.setUI(
                         navLeftButton:   ("Profile", true),
-                        navRightButton:  ( "Queued Recordings",
-                                           !self.recordings.isEmpty
+                        navRightButton:  ( "Queued Recordings"
+                                         , !self.recordings.isEmpty
                                          ),
                         publication:     (.not_selected, nil),
-                        article:         nil,
-                        articleStatus:   nil,
+                        articleTitle:    ( "Please choose a publication first"
+                                         , false
+                                         , Constants.errorColor
+                                         ),
+                        articleStatus:   false,
                         controlStatus:   controlStatus!,
                         visibleControls: [.record : ("Start Recording", false)]
                     )
@@ -124,7 +129,7 @@ class RecordViewController: UIViewController {
         //            activeControls: [.pause, .stop],
         //            controlStatus: ("Recording...", .red)
         //        )
-         self.setUI(navLeftButton: nil, navRightButton: nil, publication: nil, article: nil, articleStatus: nil, controlStatus: nil, visibleControls: [.stop: ("Stop", true)])
+         self.setUI(navLeftButton: nil, navRightButton: nil, publication: nil, articleTitle: nil, articleStatus: nil, controlStatus: nil, visibleControls: [.stop: ("Stop", true)])
     }
 
     @objc func pauseTapped() {
@@ -454,7 +459,10 @@ extension RecordViewController: RecordUIDelegate {
         , publication:     ( type: Constants.PublicationLabelType
                            , title: String?
                            )?
-        , article:         String?
+        , articleTitle:    ( title: String
+                           , enabled: Bool
+                           , colour: UIColor
+                           )?
         , articleStatus:   Bool?
         , controlStatus:   (text: String, colour: UIColor)?
         , visibleControls: [Controls: (title: String, isEnabled: Bool)]
@@ -479,8 +487,10 @@ extension RecordViewController: RecordUIDelegate {
             )
         }
 
-        if article != nil {
-            self.articleTitle.text = article
+        if articleTitle != nil {
+            self.mainTVC.articleTitle.text =      articleTitle!.title
+            self.mainTVC.articleTitle.isEnabled = articleTitle!.enabled
+            self.mainTVC.articleTitle.textColor = articleTitle!.colour
         }
 
         if articleStatus != nil {
@@ -500,8 +510,8 @@ extension RecordViewController: RecordUIDelegate {
     func updateArticleStatus(_ status: Bool) {
 
         let title: String!
-        if self.articleTitle.text != "" {
-            title = self.articleTitle.text
+        if self.mainTVC.articleTitle.text != "" {
+            title = self.mainTVC.articleTitle.text
         } else {
             title = "(Untitled)"
         }
@@ -510,7 +520,7 @@ extension RecordViewController: RecordUIDelegate {
             self.articleStatus.text = ""
         } else {
             self.articleStatus.text =
-                self.selectedPublication.text!
+                self.mainTVC.selectedPublication.text!
                 + " - "
                 + title
         }
@@ -528,19 +538,19 @@ extension RecordViewController: RecordUIDelegate {
         switch type {
 
         case .not_selected:
-            self.selectedPublication.font =
+            self.mainTVC.selectedPublication.font =
                 UIFont.systemFont(ofSize: 14, weight: .bold)
-            self.selectedPublication.textColor =
-                UIColor(red: 0.606, green: 0.606, blue: 0.606, alpha: 1.0)
-            self.selectedPublication.text =
-                "Please select publication to record"
+            self.mainTVC.selectedPublication.textColor =
+                Constants.errorColor
+            self.mainTVC.selectedPublication.text =
+                "None selected"
 
         case .selected:
-            self.selectedPublication.font =
+            self.mainTVC.selectedPublication.font =
                 UIFont.systemFont(ofSize: 17, weight: .regular)
-            self.selectedPublication.textColor =
+            self.mainTVC.selectedPublication.textColor =
                 UIColor(red: 0.0, green: 0.478, blue: 1.0, alpha: 1.0)
-            self.selectedPublication.text =
+            self.mainTVC.selectedPublication.text =
                 title
         }
     }

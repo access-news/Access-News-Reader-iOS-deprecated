@@ -67,6 +67,16 @@ class MainTableViewController: UITableViewController {
 
 extension MainTableViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        (self.parent as! RecordViewController).setUI(
+            navLeftButton:   nil,
+            navRightButton:  nil,
+            publication:     nil,
+            articleTitle:    nil,
+            articleStatus:   true,
+            controlStatus:   ( "", .black),
+            visibleControls: [.record : ("Start Recording", true)]
+        )
+
         textField.resignFirstResponder()
         return true
     }

@@ -108,11 +108,15 @@ class SelectPublication: UITableViewController {
             navLeftButton:   nil,
             navRightButton:  nil,
             publication:     (.selected, selectedPublication),
-            article:         nil,
+            articleTitle:    ("", true, .black),
             articleStatus:   true,
-            controlStatus:   ("Ready to record!", .blue),
-            visibleControls: [.record : ("Start Recording", true)]
+            controlStatus:   ( "Please add the title of the article."
+                             , Constants.errorColor
+                             ),
+            visibleControls: [.record : ("Start Recording", false)]
         )
+
+        (recordViewController.childViewControllers.first! as! MainTableViewController).articleTitle.becomeFirstResponder()
 
         self.navigationController?.popViewController(animated: true)
     }

@@ -17,9 +17,12 @@ protocol RecordUIDelegate: class {
         , publication:     ( type: Constants.PublicationLabelType
                            , title: String?
                            )?
-        , article:         String?
+        , articleTitle:    ( title: String
+                           , enabled: Bool
+                           , colour: UIColor
+                           )?
         , articleStatus:   Bool?
         , controlStatus:   (text: String, colour: UIColor)?
         , visibleControls: [Controls: (title: String, isEnabled: Bool)]
-        )
+    )
 }

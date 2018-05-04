@@ -16,6 +16,8 @@ struct Constants {
     static let  mainViewController = "MainViewController"
     static let loginViewController = "LoginViewController"
 
+    static let errorColor = UIColor(red: 0.345, green: 0.337, blue: 0.839, alpha: 0.5)
+
     enum PublicationLabelType {
         case selected, not_selected
     }
