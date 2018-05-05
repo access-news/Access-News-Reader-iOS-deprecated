@@ -369,11 +369,7 @@
                                 <segue destination="t3a-7H-JZg" kind="show" id="VzQ-Fj-9HI"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Queued recordings" id="wQh-Oq-aKB">
-                            <connections>
-                                <segue destination="DeF-8F-YJ4" kind="show" id="zNr-BA-AlE"/>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Queued recordings" id="wQh-Oq-aKB"/>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>

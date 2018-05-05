@@ -75,7 +75,7 @@ extension MainTableViewController: UITextFieldDelegate {
             publicationStatus: nil,
             articleStatus:     true,
             controlStatus:     ( "", .black),
-            visibleControls:   [.record : ("Start Recording", true)]
+            visibleControls:   [(.record, "Start Recording", true)]
         )
 
         textField.resignFirstResponder()

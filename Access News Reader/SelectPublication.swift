@@ -114,7 +114,7 @@ class SelectPublication: UITableViewController {
             controlStatus:     ( "Please add the title of the article."
                                , Constants.errorColor
                                ),
-            visibleControls:   [.record : ("Start Recording", false)]
+            visibleControls:   [(.record, "Start Recording", false)]
         )
 
         (recordViewController.childViewControllers.first! as! MainTableViewController).articleTitle.becomeFirstResponder()

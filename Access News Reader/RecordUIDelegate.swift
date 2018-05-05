@@ -13,7 +13,9 @@ protocol RecordUIDelegate: class {
 
     func setUI
         ( navLeftButton:     (title: String, active: Bool)?
-        , navRightButton:    (title: String, active: Bool)?
+        , navRightButton:    ( type:   Constants.RecordUINavRightBarButton
+                             , active: Bool
+                             )?
         , publication:       ( type: Constants.PublicationLabelType
                              , title: String?
                              )?
@@ -24,6 +26,10 @@ protocol RecordUIDelegate: class {
         , publicationStatus: Bool?
         , articleStatus:     Bool?
         , controlStatus:     (text: String, colour: UIColor)?
-        , visibleControls:   [Controls: (title: String, isEnabled: Bool)]
-    )
+        , visibleControls:   [ ( control:   Controls
+                               , title:     String
+                               , isEnabled: Bool
+                               )
+                             ]
+        )
 }

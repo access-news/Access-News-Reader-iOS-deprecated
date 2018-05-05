@@ -21,4 +21,9 @@ struct Constants {
     enum PublicationLabelType {
         case selected, not_selected
     }
+
+    enum RecordUINavRightBarButton: String {
+        case queued = "Queued Recordings"
+        case edit   = "Edit"
+    }
 }

@@ -54,7 +54,9 @@ class RecordViewController: UIViewController {
         super.viewDidLoad()
 
         self.navigationController?.isToolbarHidden = false
+//        self.navigationItem.rightBarButtonItem!.action = #selector(self.navRightButtonTapped)
 
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: #selector(self.navRightButtonTapped))
         self.mainTVC =
             self.childViewControllers.first
             as! MainTableViewController
@@ -93,7 +95,7 @@ class RecordViewController: UIViewController {
 
                     self.setUI(
                         navLeftButton:     ("Profile", true),
-                        navRightButton:    ( "Queued Recordings"
+                        navRightButton:    ( .queued
                                            , !self.recordings.isEmpty
                                            ),
                         publication:       (.not_selected, nil),
@@ -104,7 +106,11 @@ class RecordViewController: UIViewController {
                         publicationStatus: false,
                         articleStatus:     false,
                         controlStatus:     controlStatus,
-                        visibleControls:   [.record : ("Start Recording", false)]
+                        visibleControls:   [ ( .record
+                                             , "Start Recording"
+                                             , false
+                                             )
+                                           ]
                     )
                 }
             }
@@ -118,7 +124,7 @@ class RecordViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    // MARK: - Control actions
+    // MARK: - Audio & Main UI Control Actions
 
     @objc func recordTapped() {
 
@@ -131,7 +137,7 @@ class RecordViewController: UIViewController {
         /* Coming from `SelectPublication` so: */
         self.setUI(
             navLeftButton:     ("Profile", false),
-            navRightButton:    ("Edit",    false),
+            navRightButton:    (.edit,     false),
             /* publication is already selected, won't mess with it */
             publication:       nil,
             /* also set (either "" or something else) */
@@ -141,8 +147,8 @@ class RecordViewController: UIViewController {
             /* detto */
             articleStatus:     nil,
             controlStatus:     ("Recording", .red),
-            visibleControls:   [ .pause: ("Pause", true)
-                               , .stop:  ("Stop",  true)
+            visibleControls:   [ (.pause, "Pause", true)
+                               , (.stop,  "Stop",  true)
                                ]
         )
     }
@@ -192,6 +198,32 @@ class RecordViewController: UIViewController {
      */
     @objc func submitTapped() {
         self.upload()
+    }
+
+    @objc func navRightButtonTapped() {
+        let navRightButton = self.navigationItem.rightBarButtonItem!
+
+        switch navRightButton.title! {
+        case Constants.RecordUINavRightBarButton.queued.rawValue:
+            showListRecordings()
+            self.setUI(
+                navLeftButton:     nil,
+                navRightButton:    (.edit, true),
+                publication:       nil,
+                articleTitle:      nil,
+                publicationStatus: nil,
+                articleStatus:     nil,
+                controlStatus:     nil,
+                visibleControls:   [ (.record, "Start New Recording", true)
+                                   , (.submit, "Submit",              true)
+                                   ]
+            )
+        case Constants.RecordUINavRightBarButton.edit.rawValue:
+            // TODO: implement allowing the editing of recordings
+            break
+        default:
+            break
+        }
     }
 
     // MARK: - Audio Helpers
@@ -471,7 +503,9 @@ extension RecordViewController: RecordUIDelegate {
 
     func setUI
         ( navLeftButton:     (title: String, active: Bool)?
-        , navRightButton:    (title: String, active: Bool)?
+        , navRightButton:    ( type:   Constants.RecordUINavRightBarButton
+                             , active: Bool
+                             )?
         , publication:       ( type: Constants.PublicationLabelType
                              , title: String?
                              )?
@@ -482,26 +516,29 @@ extension RecordViewController: RecordUIDelegate {
         , publicationStatus: Bool?
         , articleStatus:     Bool?
         , controlStatus:     (text: String, colour: UIColor)?
-        , visibleControls:   [Controls: (title: String, isEnabled: Bool)]
+        , visibleControls:  [ ( control:   Controls
+                              , title:     String
+                              , isEnabled: Bool
+                              )
+                            ]
         )
     {
         let navItem = self.navigationItem
         /* left */
         if navLeftButton != nil {
-            navItem.leftBarButtonItem?.title = navLeftButton!.title
+            navItem.leftBarButtonItem?.title =     navLeftButton!.title
             navItem.leftBarButtonItem?.isEnabled = navLeftButton!.active
         }
         /* right */
         if navRightButton != nil {
-            navItem.rightBarButtonItem?.title = navRightButton!.title
+            navItem.rightBarButtonItem?.title =     navRightButton!.type.rawValue
             navItem.rightBarButtonItem?.isEnabled = navRightButton!.active
         }
 
         if publication != nil {
             self.publicationLabel(
                 type:  publication!.type,
-                title: publication!.title
-            )
+                title: publication!.title)
         }
 
         if articleTitle != nil {
@@ -603,7 +640,13 @@ extension RecordViewController: RecordUIDelegate {
 
 
     func updateControls
-        (_ visibleControls: [Controls: (title: String, isEnabled: Bool)])
+        (_ visibleControls:
+            [ ( control:   Controls
+              , title:     String
+              , isEnabled: Bool
+              )
+            ]
+        )
     {
         func flexSpace() -> UIBarButtonItem {
             return UIBarButtonItem(
@@ -623,15 +666,14 @@ extension RecordViewController: RecordUIDelegate {
             , .submit : #selector(self.submitTapped)
             ]
 
-        for c in visibleControls.keys {
-            let control = visibleControls[c]!
+        for c in visibleControls {
             let button = UIBarButtonItem(
-                             title: control.title,
+                             title: c.title,
                              style: .plain,
                              target: self,
-                             action: actions[c]
+                             action: actions[c.control]
                          )
-            button.isEnabled = control.isEnabled
+            button.isEnabled = c.isEnabled
             buttons += [button, flexSpace()]
         }
 
