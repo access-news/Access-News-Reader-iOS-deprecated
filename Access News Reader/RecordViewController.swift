@@ -22,8 +22,9 @@ class RecordViewController: UIViewController {
 
     var articleChunks = [AVURLAsset]()
 
-    @IBOutlet weak var articleStatus: UILabel!
-    @IBOutlet weak var controlStatus: UILabel!
+    @IBOutlet weak var publicationStatus: UILabel!
+    @IBOutlet weak var articleStatus:     UILabel!
+    @IBOutlet weak var controlStatus:     UILabel!
 
     var mainTVC: MainTableViewController!
 
@@ -72,7 +73,7 @@ class RecordViewController: UIViewController {
             try self.recordingSession.setActive(true)
             self.recordingSession.requestRecordPermission() { [unowned self] allowed in
                 DispatchQueue.main.async {
-                    let controlStatus: (String, UIColor)?
+                    let controlStatus: (String, UIColor)
 
                     if allowed == true {
                         controlStatus =
@@ -91,18 +92,19 @@ class RecordViewController: UIViewController {
                      */
 
                     self.setUI(
-                        navLeftButton:   ("Profile", true),
-                        navRightButton:  ( "Queued Recordings"
-                                         , !self.recordings.isEmpty
-                                         ),
-                        publication:     (.not_selected, nil),
-                        articleTitle:    ( "Please choose a publication first"
-                                         , false
-                                         , Constants.errorColor
-                                         ),
-                        articleStatus:   false,
-                        controlStatus:   controlStatus!,
-                        visibleControls: [.record : ("Start Recording", false)]
+                        navLeftButton:     ("Profile", true),
+                        navRightButton:    ( "Queued Recordings"
+                                           , !self.recordings.isEmpty
+                                           ),
+                        publication:       (.not_selected, nil),
+                        articleTitle:      ( "Please choose a publication first"
+                                           , false
+                                           , Constants.errorColor
+                                           ),
+                        publicationStatus: false,
+                        articleStatus:     false,
+                        controlStatus:     controlStatus,
+                        visibleControls:   [.record : ("Start Recording", false)]
                     )
                 }
             }
@@ -121,15 +123,28 @@ class RecordViewController: UIViewController {
     @objc func recordTapped() {
 
         if self.audioRecorder == nil {
-            //            self.startRecorder(publication: self.selectedPublication)
+            self.startRecorder()
         }
 
         self.showListRecordings()
-        //        self.updateControlsAndStatus(
-        //            activeControls: [.pause, .stop],
-        //            controlStatus: ("Recording...", .red)
-        //        )
-         self.setUI(navLeftButton: nil, navRightButton: nil, publication: nil, articleTitle: nil, articleStatus: nil, controlStatus: nil, visibleControls: [.stop: ("Stop", true)])
+
+        /* Coming from `SelectPublication` so: */
+        self.setUI(
+            navLeftButton:     ("Profile", false),
+            navRightButton:    ("Edit",    false),
+            /* publication is already selected, won't mess with it */
+            publication:       nil,
+            /* also set (either "" or something else) */
+            articleTitle:      nil,
+            /* detto */
+            publicationStatus: nil,
+            /* detto */
+            articleStatus:     nil,
+            controlStatus:     ("Recording", .red),
+            visibleControls:   [ .pause: ("Pause", true)
+                               , .stop:  ("Stop",  true)
+                               ]
+        )
     }
 
     @objc func pauseTapped() {
@@ -160,20 +175,17 @@ class RecordViewController: UIViewController {
     @objc func stopTapped() {
         let status: (String, UIColor)
 
-        self.showMainTVC()
-
-
-//        if self.audioRecorder?.isRecording == true {
-//            self.stopRecorder()
-//            self.concatChunks()
+        if self.audioRecorder?.isRecording == true {
+            self.stopRecorder()
+            self.concatChunks()
 //            self.newArticleReset(activeControls: [.record, .submit])
-//        } else {
-//            self.stopPlayer()
-//            status = ("Playback stopped.", .green)
-//            //            self.updateControlsAndStatus(
-//            //                activeControls: [.record, .play, .submit],
-//            //                controlStatus: nil)
-//        }
+        } else {
+            self.stopPlayer()
+            status = ("Playback stopped.", .green)
+            //            self.updateControlsAndStatus(
+            //                activeControls: [.record, .play, .submit],
+            //                controlStatus: nil)
+        }
     }
 
     /* Issue #26 - cellular upload considerations
@@ -196,7 +208,7 @@ class RecordViewController: UIViewController {
         return self.documentDir.appendingPathComponent(fileURL)
     }
 
-    func startRecorder(publication: String) {
+    func startRecorder() {
         let settings =
             [ AVFormatIDKey:             Int(kAudioFormatMPEG4AAC)
             , AVSampleRateKey:           44100
@@ -372,7 +384,9 @@ class RecordViewController: UIViewController {
         var insertAt = CMTimeRange(start: kCMTimeZero, end: kCMTimeZero)
 
         for asset in self.articleChunks {
-            let assetTimeRange = CMTimeRange(start: kCMTimeZero, end: asset.duration)
+            let assetTimeRange = CMTimeRange(
+                                     start: kCMTimeZero,
+                                     end:   asset.duration)
 
             do {
                 try composition.insertTimeRange(assetTimeRange,
@@ -383,7 +397,9 @@ class RecordViewController: UIViewController {
             }
 
             let nextDuration = insertAt.duration + assetTimeRange.duration
-            insertAt = CMTimeRange(start: kCMTimeZero, duration: nextDuration)
+            insertAt = CMTimeRange(
+                           start:    kCMTimeZero,
+                           duration: nextDuration)
         }
 
         let exportSession =
@@ -394,7 +410,7 @@ class RecordViewController: UIViewController {
         exportSession?.outputFileType = AVFileType.m4a
         exportSession?.outputURL = self.createNewRecordingURL("exported-")
 
-        // TODO exportSession?.metadata = ...
+        // TODO: exportSession?.metadata = ...
 
         exportSession?.canPerformMultiplePassesOverSourceMediaData = true
         /* TODO? According to the docs, if multiple passes are enabled and
@@ -454,18 +470,19 @@ class RecordViewController: UIViewController {
 extension RecordViewController: RecordUIDelegate {
 
     func setUI
-        ( navLeftButton:   (title: String, active: Bool)?
-        , navRightButton:  (title: String, active: Bool)?
-        , publication:     ( type: Constants.PublicationLabelType
-                           , title: String?
-                           )?
-        , articleTitle:    ( title: String
-                           , enabled: Bool
-                           , colour: UIColor
-                           )?
-        , articleStatus:   Bool?
-        , controlStatus:   (text: String, colour: UIColor)?
-        , visibleControls: [Controls: (title: String, isEnabled: Bool)]
+        ( navLeftButton:     (title: String, active: Bool)?
+        , navRightButton:    (title: String, active: Bool)?
+        , publication:       ( type: Constants.PublicationLabelType
+                             , title: String?
+                             )?
+        , articleTitle:      ( title: String
+                             , enabled: Bool
+                             , colour: UIColor
+                             )?
+        , publicationStatus: Bool?
+        , articleStatus:     Bool?
+        , controlStatus:     (text: String, colour: UIColor)?
+        , visibleControls:   [Controls: (title: String, isEnabled: Bool)]
         )
     {
         let navItem = self.navigationItem
@@ -493,8 +510,18 @@ extension RecordViewController: RecordUIDelegate {
             self.mainTVC.articleTitle.textColor = articleTitle!.colour
         }
 
+        if publicationStatus != nil {
+            self.updateStatus(
+                of:   self.publicationStatus,
+                with: self.mainTVC.selectedPublication.text!,
+                when: publicationStatus!)
+        }
+
         if articleStatus != nil {
-            self.updateArticleStatus(articleStatus!)
+            self.updateStatus(
+                of:   self.articleStatus,
+                with: self.mainTVC.articleTitle.text!,
+                when: articleStatus!)
         }
 
         if controlStatus != nil {
@@ -507,13 +534,32 @@ extension RecordViewController: RecordUIDelegate {
 
     // MARK: - RecordUIDelegate helpers
 
+    func updateStatus
+        ( of   statusLabel: UILabel
+        , with nameOrTitle: String
+        , when:             Bool)
+    {
+        let t: String
+        if nameOrTitle != "" {
+            t = nameOrTitle
+        } else {
+            t = "Untitled"
+        }
+
+        if when == false {
+            statusLabel.text = ""
+        } else {
+            statusLabel.text = t
+        }
+    }
+
     func updateArticleStatus(_ status: Bool) {
 
         let title: String!
         if self.mainTVC.articleTitle.text != "" {
             title = self.mainTVC.articleTitle.text
         } else {
-            title = "(Untitled)"
+            title = "Untitled"
         }
 
         if status == false {

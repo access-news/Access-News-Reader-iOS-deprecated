@@ -12,17 +12,18 @@ import UIKit
 protocol RecordUIDelegate: class {
 
     func setUI
-        ( navLeftButton:   (title: String, active: Bool)?
-        , navRightButton:  (title: String, active: Bool)?
-        , publication:     ( type: Constants.PublicationLabelType
-                           , title: String?
-                           )?
-        , articleTitle:    ( title: String
-                           , enabled: Bool
-                           , colour: UIColor
-                           )?
-        , articleStatus:   Bool?
-        , controlStatus:   (text: String, colour: UIColor)?
-        , visibleControls: [Controls: (title: String, isEnabled: Bool)]
+        ( navLeftButton:     (title: String, active: Bool)?
+        , navRightButton:    (title: String, active: Bool)?
+        , publication:       ( type: Constants.PublicationLabelType
+                             , title: String?
+                             )?
+        , articleTitle:      ( title: String
+                             , enabled: Bool
+                             , colour: UIColor
+                             )?
+        , publicationStatus: Bool?
+        , articleStatus:     Bool?
+        , controlStatus:     (text: String, colour: UIColor)?
+        , visibleControls:   [Controls: (title: String, isEnabled: Bool)]
     )
 }
