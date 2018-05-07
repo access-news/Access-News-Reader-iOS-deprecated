@@ -15,6 +15,8 @@ class RecordViewController: UIViewController {
 //    private static var playerItemContext = 0
 
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    var mainTVC: MainTableViewController!
+    var listRecordings: ListRecordings!
 
     var recordingSession: AVAudioSession!
     var audioRecorder:    AVAudioRecorder?
@@ -25,8 +27,6 @@ class RecordViewController: UIViewController {
     @IBOutlet weak var publicationStatus: UILabel!
     @IBOutlet weak var articleStatus:     UILabel!
     @IBOutlet weak var controlStatus:     UILabel!
-
-    var mainTVC: MainTableViewController!
 
     var isRecordEnabled: Bool {
         get {
@@ -58,6 +58,11 @@ class RecordViewController: UIViewController {
         self.mainTVC =
             self.childViewControllers.first
             as! MainTableViewController
+
+        self.listRecordings =
+            self.appDelegate.storyboard.instantiateViewController(
+                withIdentifier: "ListRecordings")
+                as! ListRecordings
 
         // https://stackoverflow.com/questions/4865458/dynamically-changing-font-size-of-uilabel
         self.controlStatus.numberOfLines = 1
@@ -143,7 +148,7 @@ class RecordViewController: UIViewController {
         self.showListRecordings()
 
         self.toggleCells(
-            of: self.childViewControllers[0] as! ListRecordings,
+            of: self.listRecordings,
             to: false)
 
         self.setUI([
@@ -196,7 +201,7 @@ class RecordViewController: UIViewController {
         let status: (String, UIColor)
 
         self.toggleCells(
-            of: self.childViewControllers[0] as! ListRecordings,
+            of: self.listRecordings,
             to: true)
 
         if self.audioRecorder?.isRecording == true {
@@ -461,12 +466,9 @@ class RecordViewController: UIViewController {
     }
 
     func showListRecordings() {
-        let listRecordingsTVC = self.appDelegate.storyboard.instantiateViewController(
-                withIdentifier: "ListRecordings")
-
         self.changeViewControllers(
             from: self.mainTVC,
-            to:   listRecordingsTVC)
+            to:   self.listRecordings)
     }
 
     func showMainTVC() {
