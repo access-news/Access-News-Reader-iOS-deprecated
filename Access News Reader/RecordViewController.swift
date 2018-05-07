@@ -28,6 +28,15 @@ class RecordViewController: UIViewController {
 
     var mainTVC: MainTableViewController!
 
+    var isRecordEnabled: Bool {
+        get {
+            return
+                self.publicationStatus.text!
+                + self.articleStatus.text!
+                != ""
+        }
+    }
+
     var documentDir: URL {
         get {
             let documentURLs = FileManager.default.urls(
@@ -56,7 +65,18 @@ class RecordViewController: UIViewController {
         self.navigationController?.isToolbarHidden = false
 //        self.navigationItem.rightBarButtonItem!.action = #selector(self.navRightButtonTapped)
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: #selector(self.navRightButtonTapped))
+        self.navigationItem.rightBarButtonItem =
+            UIBarButtonItem(title:  "",
+                            style:  .plain,
+                            target: self,
+                            action: #selector(self.navRightButtonTapped))
+
+        self.navigationItem.leftBarButtonItem =
+            UIBarButtonItem(title:  "",
+                            style:  .plain,
+                            target: self,
+                            action: #selector(self.navLeftButtonTapped))
+
         self.mainTVC =
             self.childViewControllers.first
             as! MainTableViewController
@@ -212,23 +232,72 @@ class RecordViewController: UIViewController {
         self.upload()
     }
 
+    @objc func navLeftButtonTapped() {
+        let navLeftButton = self.navigationItem.leftBarButtonItem!
+
+        switch navLeftButton.title! {
+        case Constants.RecordUINavButton.profile.rawValue:
+
+            let profile =
+                self.appDelegate.storyboard.instantiateViewController(
+                    withIdentifier: "Profile")
+            self.navigationController?.pushViewController(profile, animated: true)
+
+            self.setUI([
+                .navRightButton:
+                    [ "type":   Constants.RecordUINavButton.queued
+                    , "status": !self.recordings.isEmpty
+                    ],
+                ],
+                controls: []
+            )
+
+        case Constants.RecordUINavButton.main.rawValue:
+
+            self.showMainTVC()
+
+            self.setUI([
+                .navRightButton:
+                    [ "type":   Constants.RecordUINavButton.queued
+                    , "status": !self.recordings.isEmpty
+                    ],
+                .navLeftButton:
+                    [ "type": Constants.RecordUINavButton.profile
+                    , "status": true
+                    ]
+                ],
+                controls:
+                    [ (.record, "Start New Recording", self.isRecordEnabled)
+                    , (.submit, "Submit", !self.recordings.isEmpty)
+                    ]
+            )
+
+        default:
+            break
+        }
+    }
+
     @objc func navRightButtonTapped() {
         let navRightButton = self.navigationItem.rightBarButtonItem!
 
         switch navRightButton.title! {
         case Constants.RecordUINavButton.queued.rawValue:
 
-            showListRecordings()
+            self.showListRecordings()
 
             self.setUI([
                 .navRightButton:
                     [ "type":   Constants.RecordUINavButton.edit
                     , "status": true
                     ],
+                .navLeftButton:
+                    [ "type": Constants.RecordUINavButton.main
+                    , "status": true
+                    ]
                 ],
                 controls:
-                    [ (.record, "Start New Recording", true)
-                    , (.submit, "Submit",              true)
+                    [ (.record, "Start New Recording", self.isRecordEnabled)
+                    , (.submit, "Submit", !self.recordings.isEmpty)
                     ]
             )
 
@@ -356,7 +425,7 @@ class RecordViewController: UIViewController {
         self.queuePlayer = nil
     }
 
-    // MARK: - General Helpers
+    // MARK: - Change View Controllers
 
     /* + https://developer.apple.com/library/content/featuredarticles/ViewControllerPGforiPhoneOS/ImplementingaContainerViewController.html#//apple_ref/doc/uid/TP40007457-CH11-SW12
        + https://developer.apple.com/documentation/uikit/uiviewcontroller#1652844
@@ -388,20 +457,17 @@ class RecordViewController: UIViewController {
 
     func showListRecordings() {
         let listRecordingsTVC = self.appDelegate.storyboard.instantiateViewController(
-                withIdentifier: "ListRecordings"
-            )
+                withIdentifier: "ListRecordings")
+        
         self.changeViewControllers(
             from: self.mainTVC,
-            to:   listRecordingsTVC
-        )
+            to:   listRecordingsTVC)
     }
 
     func showMainTVC() {
-        let listRecordingsTVC =
-            self.childViewControllers.first!
-
+        /* Always go back from the currently loaded subVC */
         self.changeViewControllers(
-            from: listRecordingsTVC,
+            from: self.childViewControllers.first!,
             to:   self.mainTVC
         )
     }

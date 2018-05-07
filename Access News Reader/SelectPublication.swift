@@ -113,11 +113,9 @@ class SelectPublication: UITableViewController {
                 [ "title":  ""
                 , "status": true
                 , "colour": UIColor.black
-            ],
+                ],
             .publicationStatus:
                 [ "update": true ],
-//            .articleStatus:
-//                [ "update": true ],
             .controlStatus:
                 [ "title": "Please add the title of the article."
                 , "colour": Constants.noTitleColor

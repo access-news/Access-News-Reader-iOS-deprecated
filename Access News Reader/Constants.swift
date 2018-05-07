@@ -32,6 +32,7 @@ struct Constants {
         case queued  = "Queued Recordings"
         case edit    = "Edit"
         case profile = "Profile"
+        case main    = "Back to Main"
     }
 
     enum RecordUIComponent: String {

@@ -228,7 +228,7 @@
         <!--Settings-->
         <scene sceneID="HcL-vU-o0v">
             <objects>
-                <tableViewController id="t3a-7H-JZg" customClass="Settings" customModule="Access_News_Reader" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="Profile" useStoryboardIdentifierAsRestorationIdentifier="YES" id="t3a-7H-JZg" customClass="Settings" customModule="Access_News_Reader" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="VuC-75-lR2">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -295,7 +295,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nWM-28-0s1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3077.5999999999999" y="-252.32383808095955"/>
+            <point key="canvasLocation" x="3158" y="215"/>
         </scene>
         <!--Record View Controller-->
         <scene sceneID="aY0-bA-IJ5">
@@ -341,7 +341,7 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="No publication selected" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XLT-bA-oSX">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XLT-bA-oSX">
                                         <rect key="frame" x="7" y="8" width="360" height="31"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="17"/>
@@ -364,11 +364,7 @@
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="Cxj-31-tf2">
-                        <barButtonItem key="leftBarButtonItem" title="Profile" id="oiD-of-Osz">
-                            <connections>
-                                <segue destination="t3a-7H-JZg" kind="show" id="VzQ-Fj-9HI"/>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem key="leftBarButtonItem" title="Profile" id="oiD-of-Osz"/>
                         <barButtonItem key="rightBarButtonItem" title="Queued recordings" id="wQh-Oq-aKB"/>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
