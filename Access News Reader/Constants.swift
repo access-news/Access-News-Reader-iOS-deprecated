@@ -49,6 +49,7 @@ struct Constants {
         case right
         case queued  = "Queued Recordings"
         case edit    = "Edit"
+        case finish  = "Finish Editing"
         case profile = "Profile"
         case main    = "Back to Main"
     }

@@ -501,6 +501,10 @@ class RecordViewController: UIViewController {
 
         case Constants.RecordUINavButton.main.rawValue:
 
+            if self.listRecordings.isEditing == true {
+                self.listRecordings.setEditing(false, animated: false)
+            }
+
             self.showMainTVC()
 
             self.setUI([
@@ -548,8 +552,38 @@ class RecordViewController: UIViewController {
             )
 
         case Constants.RecordUINavButton.edit.rawValue:
-            // TODO: implement allowing the editing of recordings
-            break
+
+            self.listRecordings.setEditing(true, animated: true)
+
+            self.setUI([
+                .navRightButton:
+                    [ "type":   Constants.RecordUINavButton.finish
+                    , "status": true
+                    ],
+                .navLeftButton:
+                    [ "type":   Constants.RecordUINavButton.main
+                    , "status": true
+                    ],
+                ],
+                controls: []
+            )
+
+        case Constants.RecordUINavButton.finish.rawValue:
+
+            self.listRecordings.setEditing(false, animated: true)
+
+            self.setUI([
+                .navRightButton:
+                    [ "type":   Constants.RecordUINavButton.edit
+                    , "status": true
+                    ],
+                ],
+                controls:
+                    [ (.record, "Start New Recording", self.isRecordEnabled)
+                    , (.submit, "Submit", !Constants.recordings.isEmpty)
+                    ]
+            )
+
         default:
             break
         }
