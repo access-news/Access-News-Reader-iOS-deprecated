@@ -30,10 +30,10 @@ class RecordViewController: UIViewController {
 
     var isRecordEnabled: Bool {
         get {
-            return
-                self.publicationStatus.text!
-                + self.articleStatus.text!
-                != ""
+            let isPublicationSelected = self.publicationStatus.text! != ""
+            let hasArticleTitle       = self.articleStatus.text! != ""
+
+            return isPublicationSelected && hasArticleTitle
         }
     }
 
@@ -164,6 +164,10 @@ class RecordViewController: UIViewController {
 
         self.showListRecordings()
 
+        self.toggleCells(
+            of: self.childViewControllers[0] as! ListRecordings,
+            to: false)
+
         self.setUI([
             .navLeftButton:
                 [ "type":   Constants.RecordUINavButton.profile
@@ -213,6 +217,10 @@ class RecordViewController: UIViewController {
     @objc func stopTapped() {
         let status: (String, UIColor)
 
+        self.toggleCells(
+            of: self.childViewControllers[0] as! ListRecordings,
+            to: true)
+
         if self.audioRecorder?.isRecording == true {
             self.stopRecorder()
             self.concatChunks()
@@ -232,82 +240,6 @@ class RecordViewController: UIViewController {
         self.upload()
     }
 
-    @objc func navLeftButtonTapped() {
-        let navLeftButton = self.navigationItem.leftBarButtonItem!
-
-        switch navLeftButton.title! {
-        case Constants.RecordUINavButton.profile.rawValue:
-
-            let profile =
-                self.appDelegate.storyboard.instantiateViewController(
-                    withIdentifier: "Profile")
-            self.navigationController?.pushViewController(profile, animated: true)
-
-            self.setUI([
-                .navRightButton:
-                    [ "type":   Constants.RecordUINavButton.queued
-                    , "status": !self.recordings.isEmpty
-                    ],
-                ],
-                controls: []
-            )
-
-        case Constants.RecordUINavButton.main.rawValue:
-
-            self.showMainTVC()
-
-            self.setUI([
-                .navRightButton:
-                    [ "type":   Constants.RecordUINavButton.queued
-                    , "status": !self.recordings.isEmpty
-                    ],
-                .navLeftButton:
-                    [ "type": Constants.RecordUINavButton.profile
-                    , "status": true
-                    ]
-                ],
-                controls:
-                    [ (.record, "Start New Recording", self.isRecordEnabled)
-                    , (.submit, "Submit", !self.recordings.isEmpty)
-                    ]
-            )
-
-        default:
-            break
-        }
-    }
-
-    @objc func navRightButtonTapped() {
-        let navRightButton = self.navigationItem.rightBarButtonItem!
-
-        switch navRightButton.title! {
-        case Constants.RecordUINavButton.queued.rawValue:
-
-            self.showListRecordings()
-
-            self.setUI([
-                .navRightButton:
-                    [ "type":   Constants.RecordUINavButton.edit
-                    , "status": true
-                    ],
-                .navLeftButton:
-                    [ "type": Constants.RecordUINavButton.main
-                    , "status": true
-                    ]
-                ],
-                controls:
-                    [ (.record, "Start New Recording", self.isRecordEnabled)
-                    , (.submit, "Submit", !self.recordings.isEmpty)
-                    ]
-            )
-
-        case Constants.RecordUINavButton.edit.rawValue:
-            // TODO: implement allowing the editing of recordings
-            break
-        default:
-            break
-        }
-    }
 
     // MARK: - Audio Helpers
 
@@ -425,6 +357,101 @@ class RecordViewController: UIViewController {
         self.queuePlayer = nil
     }
 
+    func concatChunks() {
+        let composition = AVMutableComposition()
+
+        var insertAt = CMTimeRange(start: kCMTimeZero, end: kCMTimeZero)
+
+        for asset in self.articleChunks {
+            let assetTimeRange = CMTimeRange(
+                start: kCMTimeZero,
+                end:   asset.duration)
+
+            do {
+                try composition.insertTimeRange(assetTimeRange,
+                                                of: asset,
+                                                at: insertAt.end)
+            } catch {
+                NSLog("Unable to compose asset track.")
+            }
+
+            let nextDuration = insertAt.duration + assetTimeRange.duration
+            insertAt = CMTimeRange(
+                start:    kCMTimeZero,
+                duration: nextDuration)
+        }
+
+        let exportSession =
+            AVAssetExportSession(
+                asset:      composition,
+                presetName: AVAssetExportPresetAppleM4A)
+
+        exportSession?.outputFileType = AVFileType.m4a
+        exportSession?.outputURL = self.createNewRecordingURL("exported-")
+
+        // TODO: exportSession?.metadata = ...
+
+        exportSession?.canPerformMultiplePassesOverSourceMediaData = true
+        /* TODO? According to the docs, if multiple passes are enabled and
+         "When the value of this property is nil, the export session
+         will choose a suitable location when writing temporary files."
+         */
+        // exportSession?.directoryForTemporaryFiles = ...
+
+        /* TODO?
+         Listing all cases for completeness sake, but may just use `.completed`
+         and ignore the rest with a `default` clause.
+         OR
+         because the completion handler is run async, KVO would be more appropriate
+         */
+        exportSession?.exportAsynchronously {
+
+            switch exportSession?.status {
+            case .unknown?: break
+            case .waiting?: break
+            case .exporting?: break
+            case .completed?:
+                /* Cleaning up partial recordings
+                 */
+                for asset in self.articleChunks {
+                    try! FileManager.default.removeItem(at: asset.url)
+                }
+                /* Resetting `articleChunks` here, because this function is
+                 called asynchronously and calling it from `queueTapped` or
+                 `submitTapped` may delete the files prematurely.
+                 */
+                self.articleChunks = [AVURLAsset]()
+            case .failed?: break
+            case .cancelled?: break
+            case .none: break
+            }
+        }
+    }
+
+    // MARK: - General Helpers
+
+    func upload() {
+        //        let storage = Storage.storage()
+        //        let storageRef = storage.reference()
+        //        let audioRef = storageRef.child("audio/")
+        //
+        //        for n in 1..<self.recordings.count {
+        //            audioRef.child(String(n) + ".m4a").putFile(from: self.recordings[n])
+        //        }
+    }
+
+    func toggleCells
+        ( of tableViewController: UITableViewController
+        , to status: Bool
+        )
+    {
+        for cell in tableViewController.tableView.visibleCells {
+            cell.isUserInteractionEnabled   = status
+            cell.textLabel?.isEnabled       = status
+            cell.detailTextLabel?.isEnabled = status
+        }
+    }
+
     // MARK: - Change View Controllers
 
     /* + https://developer.apple.com/library/content/featuredarticles/ViewControllerPGforiPhoneOS/ImplementingaContainerViewController.html#//apple_ref/doc/uid/TP40007457-CH11-SW12
@@ -458,7 +485,7 @@ class RecordViewController: UIViewController {
     func showListRecordings() {
         let listRecordingsTVC = self.appDelegate.storyboard.instantiateViewController(
                 withIdentifier: "ListRecordings")
-        
+
         self.changeViewControllers(
             from: self.mainTVC,
             to:   listRecordingsTVC)
@@ -470,6 +497,82 @@ class RecordViewController: UIViewController {
             from: self.childViewControllers.first!,
             to:   self.mainTVC
         )
+    }
+
+    @objc func navLeftButtonTapped() {
+        let navLeftButton = self.navigationItem.leftBarButtonItem!
+
+        switch navLeftButton.title! {
+        case Constants.RecordUINavButton.profile.rawValue:
+
+            let profile =
+                self.appDelegate.storyboard.instantiateViewController(
+                    withIdentifier: "Profile")
+            self.navigationController?.pushViewController(profile, animated: true)
+
+            self.setUI([
+                .navRightButton:
+                    [ "type":   Constants.RecordUINavButton.queued
+                    , "status": !self.recordings.isEmpty
+                    ],
+                ],
+                controls: []
+            )
+
+        case Constants.RecordUINavButton.main.rawValue:
+
+            self.showMainTVC()
+
+            self.setUI([
+                .navRightButton:
+                    [ "type":   Constants.RecordUINavButton.queued
+                    , "status": !self.recordings.isEmpty
+                    ],
+                .navLeftButton:
+                    [ "type": Constants.RecordUINavButton.profile
+                    , "status": true
+                    ]
+                ],
+                controls:
+                    [ (.record, "Start New Recording", self.isRecordEnabled)
+                    ]
+            )
+
+        default:
+            break
+        }
+    }
+
+    @objc func navRightButtonTapped() {
+        let navRightButton = self.navigationItem.rightBarButtonItem!
+
+        switch navRightButton.title! {
+        case Constants.RecordUINavButton.queued.rawValue:
+
+            self.showListRecordings()
+
+            self.setUI([
+                .navRightButton:
+                    [ "type":   Constants.RecordUINavButton.edit
+                    , "status": true
+                    ],
+                .navLeftButton:
+                    [ "type": Constants.RecordUINavButton.main
+                    , "status": true
+                    ]
+                ],
+                controls:
+                    [ (.record, "Start New Recording", self.isRecordEnabled)
+                    , (.submit, "Submit", !self.recordings.isEmpty)
+                    ]
+            )
+
+        case Constants.RecordUINavButton.edit.rawValue:
+            // TODO: implement allowing the editing of recordings
+            break
+        default:
+            break
+        }
     }
 
 
@@ -488,87 +591,6 @@ class RecordViewController: UIViewController {
     func newPublicationReset(activeControls: Controls) {
 //        self.selectedPublication = ""
         self.newArticleReset(activeControls: activeControls)
-    }
-
-    func concatChunks() {
-        let composition = AVMutableComposition()
-
-        var insertAt = CMTimeRange(start: kCMTimeZero, end: kCMTimeZero)
-
-        for asset in self.articleChunks {
-            let assetTimeRange = CMTimeRange(
-                                     start: kCMTimeZero,
-                                     end:   asset.duration)
-
-            do {
-                try composition.insertTimeRange(assetTimeRange,
-                                                of: asset,
-                                                at: insertAt.end)
-            } catch {
-                NSLog("Unable to compose asset track.")
-            }
-
-            let nextDuration = insertAt.duration + assetTimeRange.duration
-            insertAt = CMTimeRange(
-                           start:    kCMTimeZero,
-                           duration: nextDuration)
-        }
-
-        let exportSession =
-            AVAssetExportSession(
-                asset:      composition,
-                presetName: AVAssetExportPresetAppleM4A)
-
-        exportSession?.outputFileType = AVFileType.m4a
-        exportSession?.outputURL = self.createNewRecordingURL("exported-")
-
-        // TODO: exportSession?.metadata = ...
-
-        exportSession?.canPerformMultiplePassesOverSourceMediaData = true
-        /* TODO? According to the docs, if multiple passes are enabled and
-                 "When the value of this property is nil, the export session
-                 will choose a suitable location when writing temporary files."
-         */
-        // exportSession?.directoryForTemporaryFiles = ...
-
-        /* TODO?
-           Listing all cases for completeness sake, but may just use `.completed`
-           and ignore the rest with a `default` clause.
-           OR
-           because the completion handler is run async, KVO would be more appropriate
-        */
-        exportSession?.exportAsynchronously {
-
-            switch exportSession?.status {
-            case .unknown?: break
-            case .waiting?: break
-            case .exporting?: break
-            case .completed?:
-                /* Cleaning up partial recordings
-                */
-                for asset in self.articleChunks {
-                    try! FileManager.default.removeItem(at: asset.url)
-                }
-                /* Resetting `articleChunks` here, because this function is
-                   called asynchronously and calling it from `queueTapped` or
-                   `submitTapped` may delete the files prematurely.
-                */
-                self.articleChunks = [AVURLAsset]()
-            case .failed?: break
-            case .cancelled?: break
-            case .none: break
-            }
-        }
-    }
-
-    func upload() {
-        //        let storage = Storage.storage()
-        //        let storageRef = storage.reference()
-        //        let audioRef = storageRef.child("audio/")
-        //
-        //        for n in 1..<self.recordings.count {
-        //            audioRef.child(String(n) + ".m4a").putFile(from: self.recordings[n])
-        //        }
     }
 
 //    // In a storyboard-based application, you will often want to do a little preparation before navigation
