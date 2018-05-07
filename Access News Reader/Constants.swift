@@ -10,6 +10,24 @@ import Foundation
 import UIKit
 
 struct Constants {
+
+    static var documentDir: URL {
+        get {
+            let documentURLs = FileManager.default.urls(
+                for: .documentDirectory,
+                in:  .userDomainMask
+            )
+            return documentURLs.first!
+        }
+    }
+
+    static var recordings: [URL] {
+        get {
+            let fileURLs = try? FileManager.default.contentsOfDirectory(at: self.documentDir, includingPropertiesForKeys: nil, options: [])
+            return fileURLs ?? []
+        }
+    }
+
     static let userLoggedIn: String = "userLoggedIn"
 
     // storyboard IDs

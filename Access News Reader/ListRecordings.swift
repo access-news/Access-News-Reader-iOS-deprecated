@@ -14,14 +14,6 @@ class ListRecordings: UITableViewController {
 
     var audioPlayer: AVAudioPlayer?
 
-    var recordings: [URL] {
-        get {
-            let documentDirURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            let lsDocumentDir  = try? FileManager.default.contentsOfDirectory(at: documentDirURL, includingPropertiesForKeys: nil, options: [])
-            return lsDocumentDir ?? []
-        }
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -47,13 +39,13 @@ class ListRecordings: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return self.recordings.count
+        return Constants.recordings.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "recording", for: indexPath)
 
-        cell.textLabel?.text = self.recordings[indexPath.row].lastPathComponent
+        cell.textLabel?.text = Constants.recordings[indexPath.row].lastPathComponent
         return cell
     }
 
@@ -75,7 +67,7 @@ class ListRecordings: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.audioPlayer = try! AVAudioPlayer(contentsOf: self.recordings[indexPath.row])
+        self.audioPlayer = try! AVAudioPlayer(contentsOf: Constants.recordings[indexPath.row])
         self.audioPlayer!.play()
         self.tableView.deselectRow(at: indexPath, animated: false)
     }

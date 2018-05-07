@@ -37,28 +37,6 @@ class RecordViewController: UIViewController {
         }
     }
 
-    var documentDir: URL {
-        get {
-            let documentURLs = FileManager.default.urls(
-                for: .documentDirectory,
-                in:  .userDomainMask
-            )
-            return documentURLs.first!
-        }
-    }
-
-    var recordings: [URL] {
-        get {
-            let fileURLs = try? FileManager.default.contentsOfDirectory(at: self.documentDir, includingPropertiesForKeys: nil, options: [])
-            return fileURLs ?? []
-        }
-    }
-//    var articleTitle: String {
-//        get {
-//            return mainTVCCells[1].text...
-//        }
-//    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -120,7 +98,7 @@ class RecordViewController: UIViewController {
                             ],
                         .navRightButton:
                             [ "type":   Constants.RecordUINavButton.queued
-                            , "status": !self.recordings.isEmpty
+                            , "status": !Constants.recordings.isEmpty
                             ],
                         .selectedPublication:
                             [ "type": Constants.PublicationLabelType.not_selected
@@ -252,7 +230,7 @@ class RecordViewController: UIViewController {
 
         let fileURL = filename + datetime + ".m4a"
 
-        return self.documentDir.appendingPathComponent(fileURL)
+        return Constants.documentDir.appendingPathComponent(fileURL)
     }
 
     func startRecorder() {
@@ -513,7 +491,7 @@ class RecordViewController: UIViewController {
             self.setUI([
                 .navRightButton:
                     [ "type":   Constants.RecordUINavButton.queued
-                    , "status": !self.recordings.isEmpty
+                    , "status": !Constants.recordings.isEmpty
                     ],
                 ],
                 controls: []
@@ -526,7 +504,7 @@ class RecordViewController: UIViewController {
             self.setUI([
                 .navRightButton:
                     [ "type":   Constants.RecordUINavButton.queued
-                    , "status": !self.recordings.isEmpty
+                    , "status": !Constants.recordings.isEmpty
                     ],
                 .navLeftButton:
                     [ "type": Constants.RecordUINavButton.profile
@@ -563,7 +541,7 @@ class RecordViewController: UIViewController {
                 ],
                 controls:
                     [ (.record, "Start New Recording", self.isRecordEnabled)
-                    , (.submit, "Submit", !self.recordings.isEmpty)
+                    , (.submit, "Submit", !Constants.recordings.isEmpty)
                     ]
             )
 
