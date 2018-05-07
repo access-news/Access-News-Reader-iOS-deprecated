@@ -10,26 +10,8 @@ import Foundation
 import UIKit
 
 protocol RecordUIDelegate: class {
-
     func setUI
-        ( navLeftButton:     (title: String, active: Bool)?
-        , navRightButton:    ( type:   Constants.RecordUINavRightBarButton
-                             , active: Bool
-                             )?
-        , publication:       ( type: Constants.PublicationLabelType
-                             , title: String?
-                             )?
-        , articleTitle:      ( title: String
-                             , enabled: Bool
-                             , colour: UIColor
-                             )?
-        , publicationStatus: Bool?
-        , articleStatus:     Bool?
-        , controlStatus:     (text: String, colour: UIColor)?
-        , visibleControls:   [ ( control:   Controls
-                               , title:     String
-                               , isEnabled: Bool
-                               )
-                             ]
+        ( _ components: [Constants.RecordUIComponent: Any]
+        , controls:     [(control: Controls, title: String, status: Bool)]?
         )
 }

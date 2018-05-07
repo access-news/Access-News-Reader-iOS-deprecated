@@ -75,12 +75,12 @@ class RecordViewController: UIViewController {
             try self.recordingSession.setActive(true)
             self.recordingSession.requestRecordPermission() { [unowned self] allowed in
                 DispatchQueue.main.async {
-                    let controlStatus: (String, UIColor)
+                    let controlStatus: (title: String, colour: UIColor)
 
                     if allowed == true {
                         controlStatus =
                             ( "Please select a publication first."
-                            , Constants.errorColor
+                            , Constants.noTitleColor
                             )
                     } else {
                         controlStatus =
@@ -93,24 +93,34 @@ class RecordViewController: UIViewController {
                        Enabled in SelectPublication view controller.
                      */
 
-                    self.setUI(
-                        navLeftButton:     ("Profile", true),
-                        navRightButton:    ( .queued
-                                           , !self.recordings.isEmpty
-                                           ),
-                        publication:       (.not_selected, nil),
-                        articleTitle:      ( "Please choose a publication first"
-                                           , false
-                                           , Constants.errorColor
-                                           ),
-                        publicationStatus: false,
-                        articleStatus:     false,
-                        controlStatus:     controlStatus,
-                        visibleControls:   [ ( .record
-                                             , "Start Recording"
-                                             , false
-                                             )
-                                           ]
+                    self.setUI([
+                        .navLeftButton:
+                            [ "type":   Constants.RecordUINavButton.profile
+                            , "status": true
+                            ],
+                        .navRightButton:
+                            [ "type":   Constants.RecordUINavButton.queued
+                            , "status": !self.recordings.isEmpty
+                            ],
+                        .selectedPublication:
+                            [ "type": Constants.PublicationLabelType.not_selected
+                            , "title": "None selected"
+                            ],
+                        .articleTitle:
+                            [ "title" : "Please choose a publication first"
+                            , "status": false
+                            , "colour": Constants.noTitleColor
+                            ],
+                        .controlStatus:
+                            [ "title":  controlStatus.title
+                            , "colour": controlStatus.colour
+                            ],
+                        ],
+                        controls:
+                            [( .record
+                             , "Start Recording"
+                             , false )
+                            ]
                     )
                 }
             }
@@ -134,22 +144,24 @@ class RecordViewController: UIViewController {
 
         self.showListRecordings()
 
-        /* Coming from `SelectPublication` so: */
-        self.setUI(
-            navLeftButton:     ("Profile", false),
-            navRightButton:    (.edit,     false),
-            /* publication is already selected, won't mess with it */
-            publication:       nil,
-            /* also set (either "" or something else) */
-            articleTitle:      nil,
-            /* detto */
-            publicationStatus: nil,
-            /* detto */
-            articleStatus:     nil,
-            controlStatus:     ("Recording", .red),
-            visibleControls:   [ (.pause, "Pause", true)
-                               , (.stop,  "Stop",  true)
-                               ]
+        self.setUI([
+            .navLeftButton:
+                [ "type":   Constants.RecordUINavButton.profile
+                , "status": false
+                ],
+            .navRightButton:
+                [ "type":   Constants.RecordUINavButton.edit
+                , "status": false
+                ],
+            .controlStatus:
+                [ "title":  "Recording"
+                , "colour": UIColor.red
+                ],
+            ],
+            controls:
+                [ (.pause, "Pause", true)
+                , (.stop,  "Stop",  true)
+                ]
         )
     }
 
@@ -204,21 +216,23 @@ class RecordViewController: UIViewController {
         let navRightButton = self.navigationItem.rightBarButtonItem!
 
         switch navRightButton.title! {
-        case Constants.RecordUINavRightBarButton.queued.rawValue:
+        case Constants.RecordUINavButton.queued.rawValue:
+
             showListRecordings()
-            self.setUI(
-                navLeftButton:     nil,
-                navRightButton:    (.edit, true),
-                publication:       nil,
-                articleTitle:      nil,
-                publicationStatus: nil,
-                articleStatus:     nil,
-                controlStatus:     nil,
-                visibleControls:   [ (.record, "Start New Recording", true)
-                                   , (.submit, "Submit",              true)
-                                   ]
+
+            self.setUI([
+                .navRightButton:
+                    [ "type":   Constants.RecordUINavButton.edit
+                    , "status": true
+                    ],
+                ],
+                controls:
+                    [ (.record, "Start New Recording", true)
+                    , (.submit, "Submit",              true)
+                    ]
             )
-        case Constants.RecordUINavRightBarButton.edit.rawValue:
+
+        case Constants.RecordUINavButton.edit.rawValue:
             // TODO: implement allowing the editing of recordings
             break
         default:
@@ -502,92 +516,99 @@ class RecordViewController: UIViewController {
 extension RecordViewController: RecordUIDelegate {
 
     func setUI
-        ( navLeftButton:     (title: String, active: Bool)?
-        , navRightButton:    ( type:   Constants.RecordUINavRightBarButton
-                             , active: Bool
-                             )?
-        , publication:       ( type: Constants.PublicationLabelType
-                             , title: String?
-                             )?
-        , articleTitle:      ( title: String
-                             , enabled: Bool
-                             , colour: UIColor
-                             )?
-        , publicationStatus: Bool?
-        , articleStatus:     Bool?
-        , controlStatus:     (text: String, colour: UIColor)?
-        , visibleControls:  [ ( control:   Controls
-                              , title:     String
-                              , isEnabled: Bool
-                              )
-                            ]
+        ( _ components: [Constants.RecordUIComponent : Any]
+        , controls:     [(control: Controls, title: String, status: Bool)]?
         )
     {
-        let navItem = self.navigationItem
-        /* left */
-        if navLeftButton != nil {
-            navItem.leftBarButtonItem?.title =     navLeftButton!.title
-            navItem.leftBarButtonItem?.isEnabled = navLeftButton!.active
-        }
-        /* right */
-        if navRightButton != nil {
-            navItem.rightBarButtonItem?.title =     navRightButton!.type.rawValue
-            navItem.rightBarButtonItem?.isEnabled = navRightButton!.active
+        if controls != nil {
+            self.updateControls(controls!)
         }
 
-        if publication != nil {
-            self.publicationLabel(
-                type:  publication!.type,
-                title: publication!.title)
-        }
+        for key in components.keys {
 
-        if articleTitle != nil {
-            self.mainTVC.articleTitle.text =      articleTitle!.title
-            self.mainTVC.articleTitle.isEnabled = articleTitle!.enabled
-            self.mainTVC.articleTitle.textColor = articleTitle!.colour
-        }
+            let value = components[key]! as! [String: Any]
 
-        if publicationStatus != nil {
-            self.updateStatus(
-                of:   self.publicationStatus,
-                with: self.mainTVC.selectedPublication.text!,
-                when: publicationStatus!)
-        }
+            switch key {
 
-        if articleStatus != nil {
-            self.updateStatus(
-                of:   self.articleStatus,
-                with: self.mainTVC.articleTitle.text!,
-                when: articleStatus!)
-        }
+                case .navLeftButton:
+                    self.setNavButton(
+                        side:   .left,
+                        type:   value["type"]   as! Constants.RecordUINavButton,
+                        status: value["status"] as! Bool)
 
-        if controlStatus != nil {
-            self.controlStatus.textColor = controlStatus!.colour
-            self.controlStatus.text      = controlStatus!.text
-        }
+                case .navRightButton:
+                    self.setNavButton(
+                        side:   .right,
+                        type:   value["type"]   as! Constants.RecordUINavButton,
+                        status: value["status"] as! Bool)
 
-        self.updateControls(visibleControls)
+                case .selectedPublication:
+                    self.publicationLabel(
+                        type:  value["type"]  as! Constants.PublicationLabelType,
+                        title: value["title"] as! String)
+
+                case .articleTitle:
+                    let t = self.mainTVC.articleTitle!
+
+                    t.text =      (value["title"]  as! String)
+                    t.isEnabled = value["status"]  as! Bool
+                    t.textColor = (value["colour"] as! UIColor)
+
+                /* For `publicationStatus` and `articleStatus` the only important
+                   fact is whether these keys are included or not, therefore I
+                   chose the arbitrary dictionary entry below whenever these need
+                   to be updated:
+                   `[ "update": true ]`
+                 */
+                case .publicationStatus:
+                    self.updateStatus(
+                        of:   self.publicationStatus,
+                        with: self.mainTVC.selectedPublication.text!)
+
+                case .articleStatus:
+                    self.updateStatus(
+                        of:   self.articleStatus,
+                        with: self.mainTVC.articleTitle.text!)
+
+                case .controlStatus:
+                    self.controlStatus.textColor =
+                        value["colour"] as! UIColor
+                    self.controlStatus.text =
+                        (value["title"] as! String)
+            }
+        }
+    }
+
+    func setNavButton
+        ( side:   Constants.RecordUINavButton
+        , type:   Constants.RecordUINavButton
+        , status: Bool
+        )
+    {
+        let button =
+            side == .left
+                ? self.navigationItem.leftBarButtonItem!
+                : self.navigationItem.rightBarButtonItem!
+
+        button.title =     type.rawValue
+        button.isEnabled = status
     }
 
     // MARK: - RecordUIDelegate helpers
 
     func updateStatus
         ( of   statusLabel: UILabel
-        , with nameOrTitle: String
-        , when:             Bool)
+        , with nameOrTitle: String)
     {
         let t: String
+
         if nameOrTitle != "" {
             t = nameOrTitle
         } else {
             t = "Untitled"
         }
 
-        if when == false {
-            statusLabel.text = ""
-        } else {
-            statusLabel.text = t
-        }
+        statusLabel.text = t
     }
 
     func updateArticleStatus(_ status: Bool) {
@@ -609,13 +630,11 @@ extension RecordViewController: RecordUIDelegate {
         }
     }
 
-    /* Only 2 possible scenarios:
-     + `publicationLabel(.not_selected)
-     + `publicationLabel(.selected, title: "mzperx")
+    /* If `.not_selected` is chosen, the `title` argument is ignored.
      */
     func publicationLabel
         ( type:  Constants.PublicationLabelType
-        , title: String?
+        , title: String
         )
     {
         switch type {
@@ -624,26 +643,24 @@ extension RecordViewController: RecordUIDelegate {
             self.mainTVC.selectedPublication.font =
                 UIFont.systemFont(ofSize: 14, weight: .bold)
             self.mainTVC.selectedPublication.textColor =
-                Constants.errorColor
-            self.mainTVC.selectedPublication.text =
-                "None selected"
+                Constants.noTitleColor
 
         case .selected:
             self.mainTVC.selectedPublication.font =
                 UIFont.systemFont(ofSize: 17, weight: .regular)
             self.mainTVC.selectedPublication.textColor =
                 UIColor(red: 0.0, green: 0.478, blue: 1.0, alpha: 1.0)
-            self.mainTVC.selectedPublication.text =
-                title
         }
+
+        self.mainTVC.selectedPublication.text = title
     }
 
 
     func updateControls
         (_ visibleControls:
-            [ ( control:   Controls
-              , title:     String
-              , isEnabled: Bool
+            [ ( control: Controls
+              , title:   String
+              , status:  Bool
               )
             ]
         )
@@ -673,7 +690,7 @@ extension RecordViewController: RecordUIDelegate {
                              target: self,
                              action: actions[c.control]
                          )
-            button.isEnabled = c.isEnabled
+            button.isEnabled = c.status
             buttons += [button, flexSpace()]
         }
 

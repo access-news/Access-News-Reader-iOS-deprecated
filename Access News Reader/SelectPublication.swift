@@ -104,17 +104,26 @@ class SelectPublication: UITableViewController {
 
         let selectedPublication = self.publications[indexPath.row]
 
-        recordViewController.setUI(
-            navLeftButton:     nil,
-            navRightButton:    nil,
-            publication:       (.selected, selectedPublication),
-            articleTitle:      ("", true, .black),
-            publicationStatus: true,
-            articleStatus:     true,
-            controlStatus:     ( "Please add the title of the article."
-                               , Constants.errorColor
-                               ),
-            visibleControls:   [(.record, "Start Recording", false)]
+        recordViewController.setUI([
+            .selectedPublication:
+                [ "type": Constants.PublicationLabelType.selected
+                , "title": selectedPublication
+                ],
+            .articleTitle:
+                [ "title":  ""
+                , "status": true
+                , "colour": UIColor.black
+            ],
+            .publicationStatus:
+                [ "update": true ],
+            .articleStatus:
+                [ "update": true ],
+            .controlStatus:
+                [ "title": "Please add the title of the article."
+                , "colour": Constants.noTitleColor
+                ],
+            ],
+            controls: nil
         )
 
         (recordViewController.childViewControllers.first! as! MainTableViewController).articleTitle.becomeFirstResponder()
