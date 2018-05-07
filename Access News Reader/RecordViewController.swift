@@ -554,11 +554,14 @@ extension RecordViewController: RecordUIDelegate {
                     t.isEnabled = value["status"]  as! Bool
                     t.textColor = (value["colour"] as! UIColor)
 
-                /* For `publicationStatus` and `articleStatus` the only important
-                   fact is whether these keys are included or not, therefore I
-                   chose the arbitrary dictionary entry below whenever these need
-                   to be updated:
-                   `[ "update": true ]`
+                /* For `publicationStatus` and `articleStatus` dict entries:
+
+                   + `[ "update": true ]`
+                      Automatically update the status labels with their input
+                      counterparts
+
+                   + `[ "title": "whatever" ]`
+                     Update the status labels with the provided string.
                  */
                 case .publicationStatus:
                     self.updateStatus(
