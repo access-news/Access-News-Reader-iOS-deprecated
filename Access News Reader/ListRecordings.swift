@@ -63,7 +63,18 @@ class ListRecordings: UITableViewController {
             let url = Constants.recordings[indexPath.row]
             try? FileManager.default.removeItem(at: url)
 
+            if Constants.recordings.count == 0 {
+                let recordVC = self.navigationController?.viewControllers[0]
+                    as! RecordViewController
 
+                recordVC.setUI(
+                    [:],
+                    controls:
+                        [ (.record, "Start New Recording", recordVC.isRecordEnabled)
+                        , (.submit, "Submit", false)
+                        ]
+                )
+            }
 
             // Delete the row from the data source
             tableView.deleteRows(at: [indexPath], with: .right)

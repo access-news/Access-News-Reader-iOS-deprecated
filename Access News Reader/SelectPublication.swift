@@ -98,13 +98,13 @@ class SelectPublication: UITableViewController {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
-        let recordViewController =
+        let recordVC =
             self.navigationController?.viewControllers[0]
             as! RecordViewController
 
         let selectedPublication = self.publications[indexPath.row]
 
-        recordViewController.setUI([
+        recordVC.setUI([
             .selectedPublication:
                 [ "type": Constants.PublicationLabelType.selected
                 , "title": selectedPublication
@@ -124,7 +124,7 @@ class SelectPublication: UITableViewController {
             controls: nil
         )
 
-        (recordViewController.childViewControllers.first! as! MainTableViewController).articleTitle.becomeFirstResponder()
+        (recordVC.childViewControllers.first! as! MainTableViewController).articleTitle.becomeFirstResponder()
 
         self.navigationController?.popViewController(animated: true)
     }
