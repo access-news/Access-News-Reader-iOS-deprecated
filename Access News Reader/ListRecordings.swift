@@ -59,11 +59,18 @@ class ListRecordings: UITableViewController {
 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
+
+            let url = Constants.recordings[indexPath.row]
+            try? FileManager.default.removeItem(at: url)
+
+
+
             // Delete the row from the data source
-//            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
+            tableView.deleteRows(at: [indexPath], with: .right)
+        }
+        /* else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+        } */
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
