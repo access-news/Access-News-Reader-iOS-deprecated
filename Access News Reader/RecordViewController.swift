@@ -205,9 +205,34 @@ class RecordViewController: UIViewController {
             to: true)
 
         if self.audioRecorder?.isRecording == true {
+
             self.stopRecorder()
+
+            /* `ListRecordings` is updated in `self.concatChunks` as temporary
+               files are deleted there asynchronously, and calling `reloadData`
+               here would result in runtime crash.
+            */
             self.concatChunks()
-//            self.newArticleReset(activeControls: [.record, .submit])
+
+            self.setUI([
+                .navLeftButton:
+                    [ "type":   Constants.RecordUINavButton.profile
+                    , "status": true
+                    ],
+                .navRightButton:
+                    [ "type":   Constants.RecordUINavButton.edit
+                    , "status": true
+                    ],
+                .controlStatus:
+                    [ "title":  "Finished recording article"
+                    , "colour": UIColor.red
+                    ],
+                ],
+                controls:
+                    [ (.record, "Record new", true)
+                    , (.submit, "Submit",     true)
+                    ]
+            )
         } else {
             self.stopPlayer()
             status = ("Playback stopped.", .green)
@@ -399,6 +424,13 @@ class RecordViewController: UIViewController {
                 for asset in self.articleChunks {
                     try! FileManager.default.removeItem(at: asset.url)
                 }
+
+                /* https://stackoverflow.com/questions/26277371/swift-uitableview-reloaddata-in-a-closure
+                */
+                DispatchQueue.main.async {
+                    self.listRecordings.tableView.reloadData()
+                }
+
                 /* Resetting `articleChunks` here, because this function is
                  called asynchronously and calling it from `queueTapped` or
                  `submitTapped` may delete the files prematurely.
