@@ -166,23 +166,45 @@ class RecordViewController: UIViewController {
                 ],
             ],
             controls:
-                [ (.pause, "Pause", true)
-                , (.stop,  "Stop",  true)
+                [ (.pause, "Pause",  true)
+                , (.stop,  "Finish", true)
                 ]
         )
     }
 
     @objc func pauseTapped() {
-        let status: (String, UIColor)
+        let status: [String: Any]
 
         if self.audioRecorder?.isRecording == true {
             self.stopRecorder()
-            status = ("Recording paused.", .red)
+            status = [ "title":  "Recording paused"
+                     , "colour": UIColor.red
+                     ]
         } else {
             self.queuePlayer?.pause()
-            status = ("Playback paused.", .green)
+            status = [ "title":  "Playback paused"
+                     , "colour": UIColor.green
+                     ]
         }
 
+        self.setUI([
+            .navLeftButton:
+                [ "type":   Constants.RecordUINavButton.profile
+                , "status": false
+                ],
+            .navRightButton:
+                [ "type":   Constants.RecordUINavButton.edit
+                , "status": false
+                ],
+            .controlStatus:
+                status
+            ],
+            controls:
+                [ (.record, "Continue", true)
+                , (.play,   "Play",     true)
+                , (.stop,   "Finish",   true)
+                ]
+        )
         //        self.updateControlsAndStatus(
         //            activeControls: [.record, .play, .stop],
         //            controlStatus:  status)
