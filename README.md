@@ -1,3 +1,6 @@
+`restore-point` git tag:  
+Commits with this tag seemed to be useful to fall back to when things go awry. Learned that seemingly simple things such as `pod update` can mess up the entire project, making me bogged down for days with troubleshooting. (Not kidding.) Put on the list of priorities to ditch Firebase with a custom backend because Cocoapods seems to break with every update. Or just get rid of Cocoapods?
+
 UI TODO
 =======
 
