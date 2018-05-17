@@ -276,11 +276,9 @@ class RecordViewController: UIViewController {
     // Creates URL relative to apps Document directory
     func createNewRecordingURL(_ filename: String = "") -> URL {
 
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd-HHmmss"
-        let datetime = dateFormatter.string(from: Date())
+        let now = Constants.dateString(Date())
 
-        let fileURL = filename + datetime + ".m4a"
+        let fileURL = filename + "_" + now + ".m4a"
 
         return Constants.documentDir.appendingPathComponent(fileURL)
     }
@@ -416,10 +414,19 @@ class RecordViewController: UIViewController {
                 asset:      composition,
                 presetName: AVAssetExportPresetAppleM4A)
 
-        exportSession?.outputFileType = AVFileType.m4a
-        exportSession?.outputURL = self.createNewRecordingURL("exported-")
+        let filename =
+              self.publicationStatus.text!
+            + "-"
+            + self.articleStatus.text!
 
-        // TODO: exportSession?.metadata = ...
+        exportSession?.outputFileType = AVFileType.m4a
+        exportSession?.outputURL = self.createNewRecordingURL(filename)
+
+     // Leaving here for debugging purposes.
+     // exportSession?.outputURL = self.createNewRecordingURL("exported-")
+
+     // TODO: #36
+     // exportSession?.metadata = ...
 
         exportSession?.canPerformMultiplePassesOverSourceMediaData = true
         /* TODO? According to the docs, if multiple passes are enabled and

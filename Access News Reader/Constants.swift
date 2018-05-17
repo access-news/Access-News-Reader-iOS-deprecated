@@ -28,6 +28,7 @@ struct Constants {
         }
     }
 
+    // Return URLs in a descending order.
     static var recordingsOrderedByDate: [URL] {
         get {
 
