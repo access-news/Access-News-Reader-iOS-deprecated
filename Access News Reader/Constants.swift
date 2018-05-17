@@ -28,6 +28,28 @@ struct Constants {
         }
     }
 
+    static var recordingsOrderedByDate: [URL] {
+        get {
+
+            func compareValue(_ url: URL) -> Int {
+                func getURLDateTime(_ url: URL) -> Date {
+                    let urlAttrs = try! FileManager.default.attributesOfItem(atPath: url.path)
+                    return urlAttrs[FileAttributeKey.creationDate] as! Date
+                }
+
+                // I miss built in function composition.
+                return Int(self.dateString(getURLDateTime(url)))!
+            }
+
+            return self.recordings.sorted { f,g in
+                let fi = compareValue(f)
+                let gi = compareValue(g)
+
+                return fi > gi
+            }
+        }
+    }
+
     static let userLoggedIn: String = "userLoggedIn"
 
     // storyboard IDs
@@ -62,5 +84,12 @@ struct Constants {
         case publicationStatus
         case articleStatus
         case controlStatus
+    }
+
+    static func dateString(_ date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMddHHmmss"
+
+        return dateFormatter.string(from: date)
     }
 }

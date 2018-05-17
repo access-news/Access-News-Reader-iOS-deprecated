@@ -308,7 +308,7 @@ class RecordViewController: UIViewController {
 
     func stopRecorder() {
         self.audioRecorder?.stop()
-        let assetURL  = self.audioRecorder!.url
+        let assetURL = self.audioRecorder!.url
         self.audioRecorder = nil
 
         /* https://developer.apple.com/documentation/avfoundation/avurlassetpreferprecisedurationandtimingkey
@@ -450,7 +450,7 @@ class RecordViewController: UIViewController {
                 /* https://stackoverflow.com/questions/26277371/swift-uitableview-reloaddata-in-a-closure
                 */
                 DispatchQueue.main.async {
-                    self.listRecordings.tableView.reloadData()
+                    self.listRecordings.tableView.reloadData()	
                 }
 
                 /* Resetting `articleChunks` here, because this function is

@@ -45,7 +45,7 @@ class ListRecordings: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "recording", for: indexPath)
 
-        cell.textLabel?.text = Constants.recordings[indexPath.row].lastPathComponent
+        cell.textLabel?.text = Constants.recordingsOrderedByDate[indexPath.row].lastPathComponent
         return cell
     }
 

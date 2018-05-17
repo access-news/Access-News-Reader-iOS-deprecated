@@ -40,10 +40,8 @@
 /* Begin PBXFileReference section */
 		060A3A345D35559C83F33DAD /* Pods-Access News-Access News Reader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Access News-Access News Reader.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Access News-Access News Reader/Pods-Access News-Access News Reader.debug.xcconfig"; sourceTree = "<group>"; };
 		0F91C5A3003CDD6DEE0E6972 /* Pods-Access News Reader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Access News Reader.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Access News Reader/Pods-Access News Reader.debug.xcconfig"; sourceTree = "<group>"; };
-		1FE11983D67928BEECF01140 /* Pods-Access News-Access News Uploader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Access News-Access News Uploader.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Access News-Access News Uploader/Pods-Access News-Access News Uploader.debug.xcconfig"; sourceTree = "<group>"; };
 		62F8AD8DD606B5FD65DF2E11 /* Pods-Access News-Access News Reader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Access News-Access News Reader.release.xcconfig"; path = "Pods/Target Support Files/Pods-Access News-Access News Reader/Pods-Access News-Access News Reader.release.xcconfig"; sourceTree = "<group>"; };
 		68CA5F9F6EF6B17DC9E56AFA /* Pods_Access_News_Access_News_Reader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Access_News_Access_News_Reader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		87ABE1F52C6D931406B859D9 /* Pods-Access News-Access News Uploader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Access News-Access News Uploader.release.xcconfig"; path = "Pods/Target Support Files/Pods-Access News-Access News Uploader/Pods-Access News-Access News Uploader.release.xcconfig"; sourceTree = "<group>"; };
 		9E1ED6F0BB7F58219438637B /* Pods_Access_News_Access_News_Uploader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Access_News_Access_News_Uploader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A90FC11762C15309122EA314 /* Pods_Access_News_Reader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Access_News_Reader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D911B7CB20815BC1001DF415 /* SelectPublication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPublication.swift; sourceTree = "<group>"; };
@@ -92,8 +90,6 @@
 				FE9F87F6C19E3D77F76B2C4A /* Pods-Access News Reader.release.xcconfig */,
 				060A3A345D35559C83F33DAD /* Pods-Access News-Access News Reader.debug.xcconfig */,
 				62F8AD8DD606B5FD65DF2E11 /* Pods-Access News-Access News Reader.release.xcconfig */,
-				1FE11983D67928BEECF01140 /* Pods-Access News-Access News Uploader.debug.xcconfig */,
-				87ABE1F52C6D931406B859D9 /* Pods-Access News-Access News Uploader.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
