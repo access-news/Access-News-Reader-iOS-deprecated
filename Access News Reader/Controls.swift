@@ -24,10 +24,38 @@ extension Controls: Hashable {
         let c: Controls = [.record, .pause, .play, .stop, .submit]
         return c.rawValue
     }
+}
+
+// MARK: - Extras
+
+extension Controls {
 
     enum RecordLabel: String {
         case new   = "Record New"
         case start = "Start Recording"
     }
 
+    enum UIPreset {
+        case duringRecording
+    }
+
+    enum ControlUINavButton: String {
+        case left
+        case right
+        case queued  = "Queued Recordings"
+        case edit    = "Edit"
+        case finish  = "Finish Editing"
+        case profile = "Profile"
+        case main    = "Back to Main"
+    }
+
+    enum ControlUIComponent: String {
+        case navLeftButton
+        case navRightButton
+        case selectedPublication
+        case articleTitle
+        case publicationStatus
+        case articleStatus
+        case controlStatus
+    }
 }

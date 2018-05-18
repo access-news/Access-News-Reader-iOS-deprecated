@@ -11,7 +11,7 @@ import UIKit
 
 protocol RecordUIDelegate: class {
     func setUI
-        ( _ components: [Constants.RecordUIComponent: Any]
+        ( _ components: [Controls.ControlUIComponent: Any]
         , controls:     [(control: Controls, title: String, status: Bool)]?
         )
 }

@@ -98,11 +98,11 @@ class RecordViewController: UIViewController {
 
                     self.setUI([
                         .navLeftButton:
-                            [ "type":   Constants.RecordUINavButton.profile
+                            [ "type":   Controls.ControlUINavButton.profile
                             , "status": true
                             ],
                         .navRightButton:
-                            [ "type":   Constants.RecordUINavButton.queued
+                            [ "type":   Controls.ControlUINavButton.queued
                             , "status": !Constants.recordings.isEmpty
                             ],
                         .selectedPublication:
@@ -142,39 +142,13 @@ class RecordViewController: UIViewController {
     // https://stackoverflow.com/questions/43251708/passing-arguments-to-selector-in-swift3/43252561#43252561
     @objc func recordTapped(sender: UIBarButtonItem) {
 
-        func loadRecordingUI() {
-            self.toggleCellsInteractivity(
-                of: self.listRecordings,
-                to: false)
-
-            self.setUI([
-                .navLeftButton:
-                    [ "type":   Constants.RecordUINavButton.profile
-                    , "status": false
-                    ],
-                .navRightButton:
-                    [ "type":   Constants.RecordUINavButton.edit
-                    , "status": false
-                    ],
-                .controlStatus:
-                    [ "title":  "Recording"
-                    , "colour": UIColor.red
-                    ],
-                ],
-                controls:
-                    [ (.pause, "Pause",  true)
-                    , (.stop,  "Finish", true)
-                    ]
-            )
-        }
-
         switch sender.title {
 
         case Controls.RecordLabel.start.rawValue:
 
-            self.showListRecordings()
+            self.loadMiddleUIPreset(.listRecordings)
             self.startRecorder()
-            loadRecordingUI()
+            self.loadControlUIPreset(.duringRecording)
 
         case Controls.RecordLabel.new.rawValue:
 
@@ -226,11 +200,11 @@ class RecordViewController: UIViewController {
 
         self.setUI([
             .navLeftButton:
-                [ "type":   Constants.RecordUINavButton.profile
+                [ "type":   Controls.ControlUINavButton.profile
                 , "status": false
                 ],
             .navRightButton:
-                [ "type":   Constants.RecordUINavButton.edit
+                [ "type":   Controls.ControlUINavButton.edit
                 , "status": false
                 ],
             .controlStatus:
@@ -275,11 +249,11 @@ class RecordViewController: UIViewController {
 
             self.setUI([
                 .navLeftButton:
-                    [ "type":   Constants.RecordUINavButton.profile
+                    [ "type":   Controls.ControlUINavButton.profile
                     , "status": true
                     ],
                 .navRightButton:
-                    [ "type":   Constants.RecordUINavButton.edit
+                    [ "type":   Controls.ControlUINavButton.edit
                     , "status": true
                     ],
                 .controlStatus:
@@ -534,55 +508,101 @@ class RecordViewController: UIViewController {
         }
     }
 
+    func loadControlUIPreset(_ preset: Controls.UIPreset) {
+
+        switch preset {
+
+        case .duringRecording:
+            self.toggleCellsInteractivity(
+                of: self.listRecordings,
+                to: false)
+
+            self.setUI([
+                .navLeftButton:
+                    [ "type":   Controls.ControlUINavButton.profile
+                    , "status": false
+                    ],
+                .navRightButton:
+                    [ "type":   Controls.ControlUINavButton.edit
+                    , "status": false
+                    ],
+                .controlStatus:
+                    [ "title":  "Recording"
+                    , "colour": UIColor.red
+                    ],
+                ],
+                controls:
+                    [ (.pause, "Pause",  true)
+                    , (.stop,  "Finish", true)
+                    ]
+            )
+        }
+    }
+
     // MARK: - Change View Controllers
 
-    /* + https://developer.apple.com/library/content/featuredarticles/ViewControllerPGforiPhoneOS/ImplementingaContainerViewController.html#//apple_ref/doc/uid/TP40007457-CH11-SW12
-       + https://developer.apple.com/documentation/uikit/uiviewcontroller#1652844
-       + https://stackoverflow.com/questions/37370801/how-to-add-a-container-view-programmatically
-     */
-    func changeViewControllers          // no animation
-        ( from oldVC: UIViewController
-        , to   newVC: UIViewController
-        )
-    {
-        /* 1. Add new view controller to container view controller's children */
-        self.addChildViewController(newVC)
-        /* 2. Add the child’s root view to your container’s view hierarchy. */
-        self.view.addSubview(newVC.view)
-        /* 3. Add any constraints for managing the size and position of
-         the child’s root view (i.e., making it the same position and
-         dimensions of the old view controller's view).
+    func loadMiddleUIPreset(_ preset: Constants.MiddleUIPreset) {
 
-         The definition of a view frame: "a rectangle, which describes
-         the view’s location and size in its superview’s coordinate
-         system".
+        /* + https://developer.apple.com/library/content/featuredarticles/ViewControllerPGforiPhoneOS/ImplementingaContainerViewController.html#//apple_ref/doc/uid/TP40007457-CH11-SW12
+           + https://developer.apple.com/documentation/uikit/uiviewcontroller#1652844
+           + https://stackoverflow.com/questions/37370801/how-to-add-a-container-view-programmatically
          */
-        newVC.view.frame = oldVC.view.frame
-        /* 4. Remove the currently visible view controller from the container. */
-        oldVC.removeFromParentViewController()
-        /* 5. Finishing the transition */
-        newVC.didMove(toParentViewController: self)
+        func changeViewControllers          // no animation
+            ( from oldVC: UIViewController
+            , to   newVC: UIViewController
+            )
+        {
+            /* 1. Add new view controller to container view controller's children */
+            self.addChildViewController(newVC)
+            /* 2. Add the child’s root view to your container’s view hierarchy. */
+            self.view.addSubview(newVC.view)
+            /* 3. Add any constraints for managing the size and position of
+             the child’s root view (i.e., making it the same position and
+             dimensions of the old view controller's view).
+
+             The definition of a view frame: "a rectangle, which describes
+             the view’s location and size in its superview’s coordinate
+             system".
+             */
+            newVC.view.frame = oldVC.view.frame
+            /* 4. Remove the currently visible view controller from the container. */
+            oldVC.removeFromParentViewController()
+            /* 5. Finishing the transition */
+            newVC.didMove(toParentViewController: self)
+        }
+
+        /* Always switch away from the currently loaded sub-viewcontroller */
+        let current = self.childViewControllers.first!
+
+        switch preset {
+
+        case .listRecordings:
+            changeViewControllers(from: current, to: self.listRecordings)
+
+        case .mainTableViewController:
+            changeViewControllers(from: current, to: self.mainTVC)
+        }
     }
 
-    func showListRecordings() {
-        self.changeViewControllers(
-            from: self.mainTVC,
-            to:   self.listRecordings)
-    }
-
-    func showMainTVC() {
-        /* Always go back from the currently loaded subVC */
-        self.changeViewControllers(
-            from: self.childViewControllers.first!,
-            to:   self.mainTVC
-        )
-    }
+//    func showListRecordings() {
+//        self.changeViewControllers(
+//            from: self.mainTVC,
+//            to:   self.listRecordings)
+//    }
+//
+//    func showMainTVC() {
+//        /* Always go back from the currently loaded subVC */
+//        self.changeViewControllers(
+//            from: self.childViewControllers.first!,
+//            to:   self.mainTVC
+//        )
+//    }
 
     @objc func navLeftButtonTapped() {
         let navLeftButton = self.navigationItem.leftBarButtonItem!
 
         switch navLeftButton.title! {
-        case Constants.RecordUINavButton.profile.rawValue:
+        case Controls.ControlUINavButton.profile.rawValue:
 
             let profile =
                 self.appDelegate.storyboard.instantiateViewController(
@@ -591,28 +611,28 @@ class RecordViewController: UIViewController {
 
             self.setUI([
                 .navRightButton:
-                    [ "type":   Constants.RecordUINavButton.queued
+                    [ "type":   Controls.ControlUINavButton.queued
                     , "status": !Constants.recordings.isEmpty
                     ],
                 ],
                 controls: []
             )
 
-        case Constants.RecordUINavButton.main.rawValue:
+        case Controls.ControlUINavButton.main.rawValue:
 
             if self.listRecordings.isEditing == true {
                 self.listRecordings.setEditing(false, animated: false)
             }
 
-            self.showMainTVC()
+            self.loadMiddleUIPreset(.mainTableViewController)
 
             self.setUI([
                 .navRightButton:
-                    [ "type":   Constants.RecordUINavButton.queued
+                    [ "type":   Controls.ControlUINavButton.queued
                     , "status": !Constants.recordings.isEmpty
                     ],
                 .navLeftButton:
-                    [ "type": Constants.RecordUINavButton.profile
+                    [ "type": Controls.ControlUINavButton.profile
                     , "status": true
                     ]
                 ],
@@ -630,17 +650,17 @@ class RecordViewController: UIViewController {
         let navRightButton = self.navigationItem.rightBarButtonItem!
 
         switch navRightButton.title! {
-        case Constants.RecordUINavButton.queued.rawValue:
+        case Controls.ControlUINavButton.queued.rawValue:
 
-            self.showListRecordings()
+            self.loadMiddleUIPreset(.listRecordings)
 
             self.setUI([
                 .navRightButton:
-                    [ "type":   Constants.RecordUINavButton.edit
+                    [ "type":   Controls.ControlUINavButton.edit
                     , "status": true
                     ],
                 .navLeftButton:
-                    [ "type": Constants.RecordUINavButton.main
+                    [ "type": Controls.ControlUINavButton.main
                     , "status": true
                     ]
                 ],
@@ -650,30 +670,30 @@ class RecordViewController: UIViewController {
                     ]
             )
 
-        case Constants.RecordUINavButton.edit.rawValue:
+        case Controls.ControlUINavButton.edit.rawValue:
 
             self.listRecordings.setEditing(true, animated: true)
 
             self.setUI([
                 .navRightButton:
-                    [ "type":   Constants.RecordUINavButton.finish
+                    [ "type":   Controls.ControlUINavButton.finish
                     , "status": true
                     ],
                 .navLeftButton:
-                    [ "type":   Constants.RecordUINavButton.main
+                    [ "type":   Controls.ControlUINavButton.main
                     , "status": true
                     ],
                 ],
                 controls: []
             )
 
-        case Constants.RecordUINavButton.finish.rawValue:
+        case Controls.ControlUINavButton.finish.rawValue:
 
             self.listRecordings.setEditing(false, animated: true)
 
             self.setUI([
                 .navRightButton:
-                    [ "type":   Constants.RecordUINavButton.edit
+                    [ "type":   Controls.ControlUINavButton.edit
                     , "status": true
                     ],
                 ],
@@ -717,7 +737,7 @@ class RecordViewController: UIViewController {
 extension RecordViewController: RecordUIDelegate {
 
     func setUI
-        ( _ components: [Constants.RecordUIComponent : Any]
+        ( _ components: [Controls.ControlUIComponent : Any]
         , controls:     [(control: Controls, title: String, status: Bool)]?
         )
     {
@@ -734,13 +754,13 @@ extension RecordViewController: RecordUIDelegate {
                 case .navLeftButton:
                     self.setNavButton(
                         side:   .left,
-                        type:   value["type"]   as! Constants.RecordUINavButton,
+                        type:   value["type"]   as! Controls.ControlUINavButton,
                         status: value["status"] as! Bool)
 
                 case .navRightButton:
                     self.setNavButton(
                         side:   .right,
-                        type:   value["type"]   as! Constants.RecordUINavButton,
+                        type:   value["type"]   as! Controls.ControlUINavButton,
                         status: value["status"] as! Bool)
 
                 case .selectedPublication:
@@ -784,8 +804,8 @@ extension RecordViewController: RecordUIDelegate {
     }
 
     func setNavButton
-        ( side:   Constants.RecordUINavButton
-        , type:   Constants.RecordUINavButton
+        ( side:   Controls.ControlUINavButton
+        , type:   Controls.ControlUINavButton
         , status: Bool
         )
     {

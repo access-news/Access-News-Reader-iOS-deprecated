@@ -51,6 +51,13 @@ struct Constants {
         }
     }
 
+    static func dateString(_ date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMddHHmmss"
+
+        return dateFormatter.string(from: date)
+    }
+
     static let userLoggedIn: String = "userLoggedIn"
 
     // storyboard IDs
@@ -67,30 +74,8 @@ struct Constants {
         case selected, not_selected
     }
 
-    enum RecordUINavButton: String {
-        case left
-        case right
-        case queued  = "Queued Recordings"
-        case edit    = "Edit"
-        case finish  = "Finish Editing"
-        case profile = "Profile"
-        case main    = "Back to Main"
-    }
-
-    enum RecordUIComponent: String {
-        case navLeftButton
-        case navRightButton
-        case selectedPublication
-        case articleTitle
-        case publicationStatus
-        case articleStatus
-        case controlStatus
-    }
-
-    static func dateString(_ date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyyMMddHHmmss"
-
-        return dateFormatter.string(from: date)
+    enum MiddleUIPreset: String {
+        case listRecordings
+        case mainTableViewController
     }
 }
