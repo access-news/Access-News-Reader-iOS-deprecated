@@ -23,6 +23,7 @@ class RecordViewController: UIViewController {
     var queuePlayer:      AVQueuePlayer?
 
     var articleChunks = [AVURLAsset]()
+    var toolbarState: [UIBarButtonItem]?
 
     @IBOutlet weak var publicationStatus: UILabel!
     @IBOutlet weak var articleStatus:     UILabel!
@@ -148,7 +149,30 @@ class RecordViewController: UIViewController {
 
             self.loadMiddleUIPreset(.listRecordings)
             self.startRecorder()
-            self.loadControlUIPreset(.duringRecording)
+
+            self.toggleCellsInteractivity(
+                of: self.listRecordings,
+                to: false)
+
+            self.setUI([
+                .navLeftButton:
+                    [ "type":   Controls.ControlUINavButton.profile
+                    , "status": false
+                    ],
+                .navRightButton:
+                    [ "type":   Controls.ControlUINavButton.edit
+                    , "status": false
+                    ],
+                .controlStatus:
+                    [ "title":  "Recording"
+                    , "colour": UIColor.red
+                    ],
+                ],
+                controls:
+                    [ (.pause, "Pause",  true)
+                    , (.stop,  "Finish", true)
+                    ]
+            )
 
         case Controls.RecordLabel.new.rawValue:
 
@@ -508,37 +532,6 @@ class RecordViewController: UIViewController {
         }
     }
 
-    func loadControlUIPreset(_ preset: Controls.UIPreset) {
-
-        switch preset {
-
-        case .duringRecording:
-            self.toggleCellsInteractivity(
-                of: self.listRecordings,
-                to: false)
-
-            self.setUI([
-                .navLeftButton:
-                    [ "type":   Controls.ControlUINavButton.profile
-                    , "status": false
-                    ],
-                .navRightButton:
-                    [ "type":   Controls.ControlUINavButton.edit
-                    , "status": false
-                    ],
-                .controlStatus:
-                    [ "title":  "Recording"
-                    , "colour": UIColor.red
-                    ],
-                ],
-                controls:
-                    [ (.pause, "Pause",  true)
-                    , (.stop,  "Finish", true)
-                    ]
-            )
-        }
-    }
-
     // MARK: - Change View Controllers
 
     func loadMiddleUIPreset(_ preset: Constants.MiddleUIPreset) {
@@ -664,10 +657,10 @@ class RecordViewController: UIViewController {
                     , "status": true
                     ]
                 ],
-                controls:
-                    [ (.record, "Start New Recording", self.isRecordEnabled)
-                    , (.submit, "Submit", !Constants.recordings.isEmpty)
-                    ]
+                controls: nil
+//                    [ (.record, "Start New Recording", self.isRecordEnabled)
+//                    , (.submit, "Submit", !Constants.recordings.isEmpty)
+//                    ]
             )
 
         case Controls.ControlUINavButton.edit.rawValue:
@@ -687,6 +680,7 @@ class RecordViewController: UIViewController {
                 controls: []
             )
 
+            // how to restore toolbarstate after coming back from edit
         case Controls.ControlUINavButton.finish.rawValue:
 
             self.listRecordings.setEditing(false, animated: true)
@@ -884,7 +878,7 @@ extension RecordViewController: RecordUIDelegate {
         self.mainTVC.selectedPublication.text = title
     }
 
-
+    /* It also saves the previous state into `self.toolbarState` */
     func updateControls
         (_ visibleControls:
             [ ( control: Controls

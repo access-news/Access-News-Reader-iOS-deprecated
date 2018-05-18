@@ -35,10 +35,6 @@ extension Controls {
         case start = "Start Recording"
     }
 
-    enum UIPreset {
-        case duringRecording
-    }
-
     enum ControlUINavButton: String {
         case left
         case right
