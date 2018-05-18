@@ -736,6 +736,11 @@ class RecordViewController: UIViewController {
 // MARK: - RecordUIDelegate implementation
 extension RecordViewController: RecordUIDelegate {
 
+    /* This function starts to look like the DOM and it would be so easy to use
+       a virtual DOM solution. Imagine diffing and replacing the changes only. At
+       least, this approach works for static changes, but in `viewDidLoad` the
+       status depends on whether recording is allowed by the user or not.
+    */
     func setUI
         ( _ components: [Controls.ControlUIComponent : Any]
         , controls:     [(control: Controls, title: String, status: Bool)]?
