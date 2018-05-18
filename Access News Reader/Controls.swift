@@ -25,5 +25,9 @@ extension Controls: Hashable {
         return c.rawValue
     }
 
+    enum RecordLabel: String {
+        case new   = "Record New"
+        case start = "Start Recording"
+    }
 
 }

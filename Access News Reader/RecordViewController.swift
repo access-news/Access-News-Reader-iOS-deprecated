@@ -121,7 +121,7 @@ class RecordViewController: UIViewController {
                         ],
                         controls:
                             [( .record
-                             , "Start Recording"
+                             , Controls.RecordLabel.start.rawValue
                              , false )
                             ]
                     )
@@ -139,37 +139,74 @@ class RecordViewController: UIViewController {
 
     // MARK: - Audio & Main UI Control Actions
 
-    @objc func recordTapped() {
+    // https://stackoverflow.com/questions/43251708/passing-arguments-to-selector-in-swift3/43252561#43252561
+    @objc func recordTapped(sender: UIBarButtonItem) {
 
-        if self.audioRecorder == nil {
-            self.startRecorder()
+        func loadRecordingUI() {
+            self.toggleCellsInteractivity(
+                of: self.listRecordings,
+                to: false)
+
+            self.setUI([
+                .navLeftButton:
+                    [ "type":   Constants.RecordUINavButton.profile
+                    , "status": false
+                    ],
+                .navRightButton:
+                    [ "type":   Constants.RecordUINavButton.edit
+                    , "status": false
+                    ],
+                .controlStatus:
+                    [ "title":  "Recording"
+                    , "colour": UIColor.red
+                    ],
+                ],
+                controls:
+                    [ (.pause, "Pause",  true)
+                    , (.stop,  "Finish", true)
+                    ]
+            )
         }
 
-        self.showListRecordings()
+        switch sender.title {
 
-        self.toggleCells(
-            of: self.listRecordings,
-            to: false)
+        case Controls.RecordLabel.start.rawValue:
 
-        self.setUI([
-            .navLeftButton:
-                [ "type":   Constants.RecordUINavButton.profile
-                , "status": false
-                ],
-            .navRightButton:
-                [ "type":   Constants.RecordUINavButton.edit
-                , "status": false
-                ],
-            .controlStatus:
-                [ "title":  "Recording"
-                , "colour": UIColor.red
-                ],
-            ],
-            controls:
-                [ (.pause, "Pause",  true)
-                , (.stop,  "Finish", true)
-                ]
-        )
+            self.showListRecordings()
+            self.startRecorder()
+            loadRecordingUI()
+
+        case Controls.RecordLabel.new.rawValue:
+
+            let recordChoice =
+                UIAlertController(
+                    title:           nil,
+                    message:         nil,
+                    preferredStyle: .actionSheet)
+
+            recordChoice.addAction(
+                UIAlertAction(
+                    title: "Cancel",
+                    style: .cancel,
+                    handler: nil))
+
+            recordChoice.addAction(
+                UIAlertAction(
+                    title: "New article from current publication",
+                    style: .default,
+                    handler: nil))
+
+            recordChoice.addAction(
+                UIAlertAction(
+                    title: "Switch publication",
+                    style: .default,
+                    handler: nil))
+
+            self.present(recordChoice, animated: true, completion: nil)
+
+        default:
+            break
+        }
     }
 
     @objc func pauseTapped() {
@@ -222,7 +259,7 @@ class RecordViewController: UIViewController {
     @objc func stopTapped() {
         let status: (String, UIColor)
 
-        self.toggleCells(
+        self.toggleCellsInteractivity(
             of: self.listRecordings,
             to: true)
 
@@ -251,8 +288,8 @@ class RecordViewController: UIViewController {
                     ],
                 ],
                 controls:
-                    [ (.record, "Record new", true)
-                    , (.submit, "Submit",     true)
+                    [ (.record, Controls.RecordLabel.new.rawValue, true)
+                    , (.submit, "Submit",                          true)
                     ]
             )
         } else {
@@ -484,7 +521,8 @@ class RecordViewController: UIViewController {
         //        }
     }
 
-    func toggleCells
+    // TODO: issue #38
+    func toggleCellsInteractivity
         ( of tableViewController: UITableViewController
         , to status: Bool
         )
