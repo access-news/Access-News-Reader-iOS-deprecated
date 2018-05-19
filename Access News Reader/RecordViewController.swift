@@ -23,6 +23,7 @@ class RecordViewController: UIViewController {
     var queuePlayer:      AVQueuePlayer?
 
     var articleChunks = [AVURLAsset]()
+
     var toolbarState: [UIBarButtonItem]?
 
     @IBOutlet weak var publicationStatus: UILabel!
@@ -592,113 +593,109 @@ class RecordViewController: UIViewController {
 //    }
 
     @objc func navLeftButtonTapped() {
+
         let navLeftButton = self.navigationItem.leftBarButtonItem!
 
         switch navLeftButton.title! {
-        case Controls.ControlUINavButton.profile.rawValue:
 
-            let profile =
-                self.appDelegate.storyboard.instantiateViewController(
-                    withIdentifier: "Profile")
-            self.navigationController?.pushViewController(profile, animated: true)
+            case Controls.ControlUINavButton.profile.rawValue:
 
-            self.setUI([
-                .navRightButton:
-                    [ "type":   Controls.ControlUINavButton.queued
-                    , "status": !Constants.recordings.isEmpty
+                let profile =
+                    self.appDelegate.storyboard.instantiateViewController(
+                        withIdentifier: "Profile")
+
+                self.navigationController?.pushViewController(
+                    profile,
+                    animated: true)
+
+            case Controls.ControlUINavButton.main.rawValue:
+
+                if self.listRecordings.isEditing == true {
+                    self.listRecordings.setEditing(false, animated: false)
+                }
+
+                self.loadMiddleUIPreset(.mainTableViewController)
+
+                self.setUI([
+                    .navRightButton:
+                        [ "type":   Controls.ControlUINavButton.queued
+                        , "status": !Constants.recordings.isEmpty
+                        ],
+                    .navLeftButton:
+                        [ "type": Controls.ControlUINavButton.profile
+                        , "status": true
+                        ]
                     ],
-                ],
-                controls: []
-            )
+                    controls: nil,
+                    restoreToolbar: true
+                )
 
-        case Controls.ControlUINavButton.main.rawValue:
-
-            if self.listRecordings.isEditing == true {
-                self.listRecordings.setEditing(false, animated: false)
-            }
-
-            self.loadMiddleUIPreset(.mainTableViewController)
-
-            self.setUI([
-                .navRightButton:
-                    [ "type":   Controls.ControlUINavButton.queued
-                    , "status": !Constants.recordings.isEmpty
-                    ],
-                .navLeftButton:
-                    [ "type": Controls.ControlUINavButton.profile
-                    , "status": true
-                    ]
-                ],
-                controls:
-                    [ (.record, "Start New Recording", self.isRecordEnabled)
-                    ]
-            )
-
-        default:
-            break
+            default:
+                break
         }
     }
 
     @objc func navRightButtonTapped() {
+
         let navRightButton = self.navigationItem.rightBarButtonItem!
 
         switch navRightButton.title! {
-        case Controls.ControlUINavButton.queued.rawValue:
 
-            self.loadMiddleUIPreset(.listRecordings)
+            case Controls.ControlUINavButton.queued.rawValue:
 
-            self.setUI([
-                .navRightButton:
-                    [ "type":   Controls.ControlUINavButton.edit
-                    , "status": true
+                self.loadMiddleUIPreset(.listRecordings)
+
+                self.setUI([
+                    .navRightButton:
+                        [ "type":   Controls.ControlUINavButton.edit
+                        , "status": true
+                        ],
+                    .navLeftButton:
+                        [ "type": Controls.ControlUINavButton.main
+                        , "status": true
+                        ]
                     ],
-                .navLeftButton:
-                    [ "type": Controls.ControlUINavButton.main
-                    , "status": true
-                    ]
-                ],
-                controls: nil
-//                    [ (.record, "Start New Recording", self.isRecordEnabled)
-//                    , (.submit, "Submit", !Constants.recordings.isEmpty)
-//                    ]
-            )
+                    controls: nil
+                )
 
-        case Controls.ControlUINavButton.edit.rawValue:
+            case Controls.ControlUINavButton.edit.rawValue:
 
-            self.listRecordings.setEditing(true, animated: true)
+                self.listRecordings.setEditing(true, animated: true)
 
-            self.setUI([
-                .navRightButton:
-                    [ "type":   Controls.ControlUINavButton.finish
-                    , "status": true
+                self.setUI([
+                    .navRightButton:
+                        [ "type":   Controls.ControlUINavButton.done
+                        , "status": true
+                        ],
+                    .navLeftButton:
+                        [ "type":   Controls.ControlUINavButton.none
+                        , "status": false
+                        ],
                     ],
-                .navLeftButton:
-                    [ "type":   Controls.ControlUINavButton.main
-                    , "status": true
+                    controls: []
+                )
+
+                // how to restore toolbarstate after coming back from edit
+            case Controls.ControlUINavButton.done.rawValue:
+
+                self.listRecordings.setEditing(false, animated: true)
+
+                self.setUI([
+                    .navRightButton:
+                        [ "type":   Controls.ControlUINavButton.edit
+                        , "status": true
+                        ],
+                    .navLeftButton:
+                        [ "type": Controls.ControlUINavButton.none
+                        , "status": true
+                        ]
                     ],
-                ],
-                controls: []
-            )
+                    controls: nil,
+                    restoreToolbar: true
+                )
 
-            // how to restore toolbarstate after coming back from edit
-        case Controls.ControlUINavButton.finish.rawValue:
-
-            self.listRecordings.setEditing(false, animated: true)
-
-            self.setUI([
-                .navRightButton:
-                    [ "type":   Controls.ControlUINavButton.edit
-                    , "status": true
-                    ],
-                ],
-                controls:
-                    [ (.record, "Start New Recording", self.isRecordEnabled)
-                    , (.submit, "Submit", !Constants.recordings.isEmpty)
-                    ]
-            )
-
-        default:
-            break
+            default:
+                break
         }
     }
 
@@ -736,13 +733,33 @@ extension RecordViewController: RecordUIDelegate {
        status depends on whether recording is allowed by the user or not.
     */
     func setUI
-        ( _ components: [Controls.ControlUIComponent : Any]
-        , controls:     [(control: Controls, title: String, status: Bool)]?
+        ( _ components:   [Controls.ControlUIComponent : Any]
+        , controls:       [(control: Controls, title: String, status: Bool)]?
+        , restoreToolbar: Bool = false
         )
     {
-        if controls != nil {
-            self.updateControls(controls!)
+        /* If `restoreToolbar` is true, ignore control input and restore the
+           previous toolbar state. If it is false and `controls: []`, save the
+           state and finally set controls if it is not nil.
+
+           WARNING: This will cause the app to crash, if atate is not set
+           before trying to restore state, but that is fine: it is an internal
+           function and if I am an idiot, it's best for the app to crash.
+        */
+        if restoreToolbar == true {
+            self.setToolbarItems(self.toolbarState, animated: false)
+        } else {
+            if controls?.isEmpty == true {
+                toolbarState = self.toolbarItems
+            } else {
+                toolbarState = nil
+            }
+
+            if controls != nil {
+                self.updateControls(controls!)
+            }
         }
+
 
         for key in components.keys {
 
@@ -813,7 +830,10 @@ extension RecordViewController: RecordUIDelegate {
                 ? self.navigationItem.leftBarButtonItem!
                 : self.navigationItem.rightBarButtonItem!
 
-        button.title =     type.rawValue
+        if type != .none {
+            button.title = type.rawValue
+        }
+
         button.isEnabled = status
     }
 

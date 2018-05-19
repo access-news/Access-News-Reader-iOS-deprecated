@@ -6,12 +6,18 @@
 //  Copyright © 2018 Society for the Blind. All rights reserved.
 //
 
+/* TODO
+   This file should probably be deleted because other than being a pain,
+   there is no use to it.
+ */
+
 import Foundation
 import UIKit
 
 protocol RecordUIDelegate: class {
     func setUI
-        ( _ components: [Controls.ControlUIComponent: Any]
-        , controls:     [(control: Controls, title: String, status: Bool)]?
+        ( _ components:   [Controls.ControlUIComponent: Any]
+        , controls:       [(control: Controls, title: String, status: Bool)]?
+        , restoreToolbar: Bool
         )
 }

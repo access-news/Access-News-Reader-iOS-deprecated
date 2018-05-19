@@ -40,9 +40,10 @@ extension Controls {
         case right
         case queued  = "Queued Recordings"
         case edit    = "Edit"
-        case finish  = "Finish Editing"
+        case done    = "Done"
         case profile = "Profile"
         case main    = "Back to Main"
+        case none    = ""
     }
 
     enum ControlUIComponent: String {
