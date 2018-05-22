@@ -654,9 +654,7 @@ class RecordViewController: UIViewController {
                         [ "type": Controls.ControlUINavButton.profile
                         , "status": true
                         ]
-                    ],
-                    controls: nil,
-                    restoreToolbar: true
+                    ]
                 )
 
             default:
@@ -683,8 +681,7 @@ class RecordViewController: UIViewController {
                         [ "type": Controls.ControlUINavButton.main
                         , "status": true
                         ]
-                    ],
-                    controls: nil
+                    ]
                 )
 
             case Controls.ControlUINavButton.edit.rawValue:
@@ -719,9 +716,7 @@ class RecordViewController: UIViewController {
                         [ "type": Controls.ControlUINavButton.none
                         , "status": true
                         ]
-                    ],
-                    controls: nil,
-                    restoreToolbar: true
+                    ]
                 )
 
             default:
@@ -764,32 +759,10 @@ extension RecordViewController: RecordUIDelegate {
     */
     func setUI
         ( _ components:   [Controls.ControlUIComponent : Any]
-        , controls:       [(control: Controls, title: String, status: Bool)]?
-        , restoreToolbar: Bool = false
+        , controls:       [(control: Controls, title: String, status: Bool)]? = nil
         )
     {
-        /* If `restoreToolbar` is true, ignore control input and restore the
-           previous toolbar state. If it is false and `controls: []`, save the
-           state and finally set controls if it is not nil.
-
-           WARNING: This will cause the app to crash, if atate is not set
-           before trying to restore state, but that is fine: it is an internal
-           function and if I am an idiot, it's best for the app to crash.
-        */
-        if restoreToolbar == true {
-            self.setToolbarItems(self.toolbarState, animated: false)
-        } else {
-            if controls?.isEmpty == true {
-                toolbarState = self.toolbarItems
-            } else {
-                toolbarState = nil
-            }
-
-            if controls != nil {
-                self.updateControls(controls!)
-            }
-        }
-
+        self.updateControls(controls)
 
         for key in components.keys {
 
@@ -938,40 +911,68 @@ extension RecordViewController: RecordUIDelegate {
               , title:   String
               , status:  Bool
               )
-            ]
+            ]?
         )
     {
-        func flexSpace() -> UIBarButtonItem {
-            return UIBarButtonItem(
-                       barButtonSystemItem: .flexibleSpace,
-                       target: nil,
-                       action: nil
-                   )
+        var buttons: [UIBarButtonItem]?
+
+        if visibleControls != nil {
+
+            if visibleControls!.isEmpty {
+
+                self.toolbarState = self.toolbarItems
+                buttons = []
+                /* Could've passed `visibleControls!` just as well, but
+                   (IMO) the intention is clearer this way. Anyway, the
+                   thing is a mess
+                */
+            } else {
+
+                func flexSpace() -> UIBarButtonItem {
+                    return UIBarButtonItem(
+                        barButtonSystemItem: .flexibleSpace,
+                        target: nil,
+                        action: nil
+                    )
+                }
+
+                buttons = [flexSpace()]
+
+                let actions: [Controls: Selector] =
+                    [ .record : #selector(self.recordTapped)
+                    , .pause  : #selector(self.pauseTapped)
+                    , .play   : #selector(self.playTapped)
+                    , .stop   : #selector(self.stopTapped)
+                    , .submit : #selector(self.submitTapped)
+                    ]
+
+                for c in visibleControls! {
+                    let button = UIBarButtonItem(
+                        title: c.title,
+                        style: .plain,
+                        target: self,
+                        action: actions[c.control]
+                    )
+                    button.isEnabled = c.status
+                    buttons! += [button, flexSpace()]
+                }
+            }
+
+            // https://stackoverflow.com/questions/10825572/uitoolbar-not-showing-uibarbuttonitem
+            /* When `setToolbarItems` gets nil or [], it zeroes out the toolbar. */
+            self.setToolbarItems(buttons, animated: false)
+
+        } else { /* i.e., when `visibleControls` is nil */
+
+            /*      AND there is nothing in the toolbar
+                    THEN restore the previous state
+             */
+            if (self.toolbarItems != nil && self.toolbarItems!.isEmpty) {
+                self.setToolbarItems(self.toolbarState, animated: false)
+            }
+
+            /* OTHERWISE do nothing. */
         }
-
-        var buttons: [UIBarButtonItem] = [flexSpace()]
-
-        let actions: [Controls: Selector] =
-            [ .record : #selector(self.recordTapped)
-            , .pause  : #selector(self.pauseTapped)
-            , .play   : #selector(self.playTapped)
-            , .stop   : #selector(self.stopTapped)
-            , .submit : #selector(self.submitTapped)
-            ]
-
-        for c in visibleControls {
-            let button = UIBarButtonItem(
-                             title: c.title,
-                             style: .plain,
-                             target: self,
-                             action: actions[c.control]
-                         )
-            button.isEnabled = c.status
-            buttons += [button, flexSpace()]
-        }
-
-        // https://stackoverflow.com/questions/10825572/uitoolbar-not-showing-uibarbuttonitem
-        self.setToolbarItems(buttons, animated: false)
     }
 
     // MARK: RecordUI (i.e., main user interface) change shortcuts

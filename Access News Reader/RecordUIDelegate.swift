@@ -18,6 +18,5 @@ protocol RecordUIDelegate: class {
     func setUI
         ( _ components:   [Controls.ControlUIComponent: Any]
         , controls:       [(control: Controls, title: String, status: Bool)]?
-        , restoreToolbar: Bool
         )
 }

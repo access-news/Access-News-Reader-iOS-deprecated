@@ -85,8 +85,7 @@ extension MainTableViewController: UITextFieldDelegate {
                 [ "type":   Controls.ControlUINavButton.profile		
                 , "status": false
                 ],
-            ],
-            controls: nil
+            ]
         )
 
         return true

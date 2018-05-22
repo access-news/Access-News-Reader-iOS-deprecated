@@ -120,8 +120,7 @@ class SelectPublication: UITableViewController {
                 [ "title": "Please add the title of the article."
                 , "colour": Constants.noTitleColor
                 ],
-            ],
-            controls: nil
+            ]
         )
 
 //        (recordVC.childViewControllers.first! as! MainTableViewController).articleTitle.becomeFirstResponder()
