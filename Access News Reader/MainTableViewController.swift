@@ -17,6 +17,8 @@ class MainTableViewController: UITableViewController {
     @IBOutlet weak var articleTitle: UITextField!
     @IBOutlet weak var selectedPublication: UILabel!
 
+    var recordVC: RecordViewController!
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -66,9 +68,51 @@ class MainTableViewController: UITableViewController {
 }
 
 extension MainTableViewController: UITextFieldDelegate {
+
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+
+        /* Navbar buttons set to 'Profile' and 'Queued Recordings' because
+           this is the initial screen so if you edit the title, you would get
+           to the initial screen. */
+        self.recordVC.setUI([
+            .navRightButton:
+                /* See 7631a88 */
+                [ "type":   Controls.ControlUINavButton.queued
+                , "status": false
+                ],
+            .navLeftButton:
+                /* See 7631a88 */
+                [ "type":   Controls.ControlUINavButton.profile		
+                , "status": false
+                ],
+            ],
+            controls: nil
+        )
+
+        return true
+    }
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        (self.parent as! RecordViewController).setUI([
+
+        textField.resignFirstResponder()
+        return true
+    }
+
+    func textFieldDidEndEditing(_ textField: UITextField) {
+
+        self.recordVC.setUI([
+            .navRightButton:
+                /* See 7631a88 */
+                [ "type":   Controls.ControlUINavButton.none
+                , "status": true
+                ],
+            .navLeftButton:
+                /* See 7631a88 */
+                [ "type":   Controls.ControlUINavButton.none
+                , "status": true
+                ],
             .articleStatus:
+                /* See ee836c0 */
                 [ "update": true],
             .controlStatus:
                 [ "title":  ""
@@ -77,8 +121,5 @@ extension MainTableViewController: UITextFieldDelegate {
             ],
             controls: [(.record, "Start Recording", true)]
         )
-
-        textField.resignFirstResponder()
-        return true
     }
 }

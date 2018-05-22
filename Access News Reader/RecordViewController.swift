@@ -61,6 +61,8 @@ class RecordViewController: UIViewController {
             self.childViewControllers.first
             as! MainTableViewController
 
+        self.mainTVC.recordVC = self
+
         self.listRecordings =
             self.appDelegate.storyboard.instantiateViewController(
                 withIdentifier: "ListRecordings")
@@ -139,74 +141,99 @@ class RecordViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    // MARK: - Audio & Main UI Control Actions
+    // MARK: - `recordTapped`
 
     // https://stackoverflow.com/questions/43251708/passing-arguments-to-selector-in-swift3/43252561#43252561
     @objc func recordTapped(sender: UIBarButtonItem) {
 
         switch sender.title {
 
-        case Controls.RecordLabel.start.rawValue:
+            case Controls.RecordLabel.start.rawValue:
 
-            self.loadMiddleUIPreset(.listRecordings)
-            self.startRecorder()
+                self.loadMiddleUIPreset(.listRecordings)
+                self.startRecorder()
 
-            self.toggleCellsInteractivity(
-                of: self.listRecordings,
-                to: false)
+                self.toggleCellsInteractivity(
+                    of: self.listRecordings,
+                    to: false)
 
-            self.setUI([
-                .navLeftButton:
-                    [ "type":   Controls.ControlUINavButton.profile
-                    , "status": false
+                self.setUI([
+                    .navLeftButton:
+                        [ "type":   Controls.ControlUINavButton.profile
+                        , "status": false
+                        ],
+                    .navRightButton:
+                        [ "type":   Controls.ControlUINavButton.edit
+                        , "status": false
+                        ],
+                    .controlStatus:
+                        [ "title":  "Recording"
+                        , "colour": UIColor.red
+                        ],
                     ],
-                .navRightButton:
-                    [ "type":   Controls.ControlUINavButton.edit
-                    , "status": false
-                    ],
-                .controlStatus:
-                    [ "title":  "Recording"
-                    , "colour": UIColor.red
-                    ],
-                ],
-                controls:
-                    [ (.pause, "Pause",  true)
-                    , (.stop,  "Finish", true)
-                    ]
-            )
+                    controls:
+                        [ (.pause, "Pause",  true)
+                        , (.stop,  "Finish", true)
+                        ]
+                )
 
-        case Controls.RecordLabel.new.rawValue:
+            case Controls.RecordLabel.new.rawValue:
 
-            let recordChoice =
-                UIAlertController(
-                    title:           nil,
-                    message:         nil,
-                    preferredStyle: .actionSheet)
+                let recordChoice =
+                    UIAlertController(
+                        title:           nil,
+                        message:         nil,
+                        preferredStyle: .actionSheet)
 
-            recordChoice.addAction(
-                UIAlertAction(
-                    title: "Cancel",
-                    style: .cancel,
-                    handler: nil))
+                recordChoice.addAction(
+                    UIAlertAction(
+                        title: "Cancel",
+                        style: .cancel,
+                        handler: nil))
 
-            recordChoice.addAction(
-                UIAlertAction(
-                    title: "New article from current publication",
-                    style: .default,
-                    handler: nil))
+                recordChoice.addAction(
+                    UIAlertAction(
+                        title: "New article from current publication",
+                        style: .default) { _ in
 
-            recordChoice.addAction(
-                UIAlertAction(
-                    title: "Switch publication",
-                    style: .default,
-                    handler: nil))
+                            /* TODO
+                               It would be nice to just use `setUI` to be consistent,
+                               but its `components` argument is rigid: if I chose
+                               the `articleTitle` key, its representing dictionary
+                               keys are mandatory.
 
-            self.present(recordChoice, animated: true, completion: nil)
+                               One (terrible) workaround is 7631a88 (search for
+                               this string in this project).
+                            */
+                            self.mainTVC.articleTitle.text! = ""
+                            self.mainTVC.articleTitle.becomeFirstResponder()
+                            self.loadMiddleUIPreset(.mainTableViewController)
+                    })
 
-        default:
-            break
+                recordChoice.addAction(
+                    UIAlertAction(
+                        title: "Switch publication",
+                        style: .default) { _ in
+
+                            let selectPublication =
+                                self.appDelegate.storyboard.instantiateViewController(
+                                    withIdentifier: "SelectPublication")
+
+                            self.loadMiddleUIPreset(.mainTableViewController)
+
+                            self.navigationController?.pushViewController(
+                                selectPublication,
+                                animated: true)
+                    })
+
+                self.present(recordChoice, animated: true, completion: nil)
+
+            default:
+                break
         }
     }
+
+    // MARK: - `pauseTapped`
 
     @objc func pauseTapped() {
         let status: [String: Any]
@@ -546,23 +573,25 @@ class RecordViewController: UIViewController {
             , to   newVC: UIViewController
             )
         {
-            /* 1. Add new view controller to container view controller's children */
-            self.addChildViewController(newVC)
-            /* 2. Add the child’s root view to your container’s view hierarchy. */
-            self.view.addSubview(newVC.view)
-            /* 3. Add any constraints for managing the size and position of
-             the child’s root view (i.e., making it the same position and
-             dimensions of the old view controller's view).
+            if oldVC != newVC {
+                /* 1. Add new view controller to container view controller's children */
+                self.addChildViewController(newVC)
+                /* 2. Add the child’s root view to your container’s view hierarchy. */
+                self.view.addSubview(newVC.view)
+                /* 3. Add any constraints for managing the size and position of
+                 the child’s root view (i.e., making it the same position and
+                 dimensions of the old view controller's view).
 
-             The definition of a view frame: "a rectangle, which describes
-             the view’s location and size in its superview’s coordinate
-             system".
-             */
-            newVC.view.frame = oldVC.view.frame
-            /* 4. Remove the currently visible view controller from the container. */
-            oldVC.removeFromParentViewController()
-            /* 5. Finishing the transition */
-            newVC.didMove(toParentViewController: self)
+                 The definition of a view frame: "a rectangle, which describes
+                 the view’s location and size in its superview’s coordinate
+                 system".
+                 */
+                newVC.view.frame = oldVC.view.frame
+                /* 4. Remove the currently visible view controller from the container. */
+                oldVC.removeFromParentViewController()
+                /* 5. Finishing the transition */
+                newVC.didMove(toParentViewController: self)
+            }
         }
 
         /* Always switch away from the currently loaded sub-viewcontroller */
@@ -668,6 +697,7 @@ class RecordViewController: UIViewController {
                         , "status": true
                         ],
                     .navLeftButton:
+                        /* See 7631a88 */
                         [ "type":   Controls.ControlUINavButton.none
                         , "status": false
                         ],
@@ -675,7 +705,6 @@ class RecordViewController: UIViewController {
                     controls: []
                 )
 
-                // how to restore toolbarstate after coming back from edit
             case Controls.ControlUINavButton.done.rawValue:
 
                 self.listRecordings.setEditing(false, animated: true)
@@ -686,6 +715,7 @@ class RecordViewController: UIViewController {
                         , "status": true
                         ],
                     .navLeftButton:
+                        /* See 7631a88 */
                         [ "type": Controls.ControlUINavButton.none
                         , "status": true
                         ]
@@ -791,7 +821,10 @@ extension RecordViewController: RecordUIDelegate {
                     t.isEnabled = value["status"]  as! Bool
                     t.textColor = (value["colour"] as! UIColor)
 
-                /* For `publicationStatus` and `articleStatus` dict entries:
+                /* ee836c0
+                   - another terrible hack besides 7631a88
+
+                   For `publicationStatus` and `articleStatus` dict entries:
 
                    + `[ "update": true ]`
                       Automatically update the status labels with their input

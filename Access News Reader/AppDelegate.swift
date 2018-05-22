@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var authUI: FUIAuth?
 
-    func showStoryboardViewController(storyboardID: String){
+    func showViewControllerByStoryboardID(_ storyboardID: String){
         self.storyboard = UIStoryboard(name: "Main", bundle: .main)
         let vc = storyboard.instantiateViewController(withIdentifier: storyboardID)
         self.window?.rootViewController = vc
@@ -39,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.authUI?.delegate = self
 
         if self.defaults.bool(forKey: Constants.userLoggedIn) {
-            self.showStoryboardViewController(storyboardID: "nvc")
+            self.showViewControllerByStoryboardID("nvc")
         }
 
         return true
@@ -78,7 +78,7 @@ extension AppDelegate: FUIAuthDelegate {
         if user != nil {
             self.defaults.set(true, forKey: Constants.userLoggedIn)
 
-            self.showStoryboardViewController(storyboardID: "nvc")
+            self.showViewControllerByStoryboardID( "nvc")
         }
     }
 }

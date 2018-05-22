@@ -124,7 +124,8 @@ class SelectPublication: UITableViewController {
             controls: nil
         )
 
-        (recordVC.childViewControllers.first! as! MainTableViewController).articleTitle.becomeFirstResponder()
+//        (recordVC.childViewControllers.first! as! MainTableViewController).articleTitle.becomeFirstResponder()
+        recordVC.mainTVC.articleTitle.becomeFirstResponder()
 
         self.navigationController?.popViewController(animated: true)
     }

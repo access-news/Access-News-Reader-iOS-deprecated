@@ -43,6 +43,11 @@ extension Controls {
         case done    = "Done"
         case profile = "Profile"
         case main    = "Back to Main"
+        /* 7631a88
+           Because of the `RecordViewController.setUI` inflexibility, this
+           is included to allow leaving the button title unchanged, but make it
+           possible to enable/disable the button itself.
+        */
         case none    = ""
     }
 
