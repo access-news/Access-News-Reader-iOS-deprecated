@@ -228,6 +228,27 @@ class RecordViewController: UIViewController {
 
                 self.present(recordChoice, animated: true, completion: nil)
 
+            case Controls.RecordLabel.cont.rawValue:
+            /* Presuming a couple things, because this state can only be
+               reached after 'Pause' has been hit during recording:
+
+               + cells would already be toggled off
+                 (starting after "Start Recording" and will remain so
+                  until "Finish" is tapped)
+
+               + Navbarbuttons 'Profile' and 'Edit' are already disabled
+            */
+
+            self.startRecorder()
+
+            self.setUI(
+                [:],
+                controls:
+                    [ (.pause, "Pause",  true)
+                    , (.stop,  "Finish", true)
+                    ]
+            )
+
             default:
                 break
         }
@@ -263,7 +284,7 @@ class RecordViewController: UIViewController {
                 status
             ],
             controls:
-                [ (.record, "Continue", true)
+                [ (.record, Controls.RecordLabel.cont.rawValue, true)
                 , (.play,   "Play",     true)
                 , (.stop,   "Finish",   true)
                 ]

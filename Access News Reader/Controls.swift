@@ -33,6 +33,7 @@ extension Controls {
     enum RecordLabel: String {
         case new   = "Record New"
         case start = "Start Recording"
+        case cont  = "Continue"
     }
 
     enum ControlUINavButton: String {
