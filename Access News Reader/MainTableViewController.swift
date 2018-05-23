@@ -82,7 +82,7 @@ extension MainTableViewController: UITextFieldDelegate {
                 ],
             .navLeftButton:
                 /* See 7631a88 */
-                [ "type":   Controls.ControlUINavButton.profile		
+                [ "type":   Controls.ControlUINavButton.profile
                 , "status": false
                 ],
             ]
@@ -102,12 +102,12 @@ extension MainTableViewController: UITextFieldDelegate {
         self.recordVC.setUI([
             .navRightButton:
                 /* See 7631a88 */
-                [ "type":   Controls.ControlUINavButton.none
-                , "status": true
+                [ "type":   Controls.ControlUINavButton.queued
+                , "status": !Constants.recordings.isEmpty
                 ],
             .navLeftButton:
                 /* See 7631a88 */
-                [ "type":   Controls.ControlUINavButton.none
+                [ "type":   Controls.ControlUINavButton.profile
                 , "status": true
                 ],
             .articleStatus:
