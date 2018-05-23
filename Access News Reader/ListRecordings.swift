@@ -66,11 +66,12 @@ class ListRecordings: UITableViewController {
             if Constants.recordings.count == 0 {
                 let recordVC = self.navigationController?.viewControllers[0]
                     as! RecordViewController
+                let startNewRecording = Controls.RecordLabel.new.rawValue
 
                 recordVC.setUI(
                     [:],
                     controls:
-                        [ (.record, "Start New Recording", recordVC.isRecordEnabled)
+                        [ (.record, startNewRecording, recordVC.isRecordEnabled)
                         , (.submit, "Submit", false)
                         ]
                 )
