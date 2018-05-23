@@ -36,6 +36,11 @@ extension Controls {
         case cont  = "Continue"
     }
 
+    enum StopLabel: String {
+        case stopPlayback =    "Stop"
+        case finishRecording = "Finish Recording"
+    }
+
     enum ControlUINavButton: String {
         case left
         case right

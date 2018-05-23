@@ -172,8 +172,8 @@ class RecordViewController: UIViewController {
                         ],
                     ],
                     controls:
-                        [ (.pause, "Pause",  true)
-                        , (.stop,  "Finish", true)
+                        [ (.pause, "Pause",                                     true)
+                        , (.stop,  Controls.StopLabel.finishRecording.rawValue, true)
                         ]
                 )
 
@@ -244,8 +244,8 @@ class RecordViewController: UIViewController {
             self.setUI(
                 [:],
                 controls:
-                    [ (.pause, "Pause",  true)
-                    , (.stop,  "Finish", true)
+                    [ (.pause, "Pause",                                     true)
+                    , (.stop,  Controls.StopLabel.finishRecording.rawValue, true)
                     ]
             )
 
@@ -285,8 +285,8 @@ class RecordViewController: UIViewController {
             ],
             controls:
                 [ (.record, Controls.RecordLabel.cont.rawValue, true)
-                , (.play,   "Play",     true)
-                , (.stop,   "Finish",   true)
+                , (.play, "Play",                                      true)
+                , (.stop, Controls.StopLabel.finishRecording.rawValue, true)
                 ]
         )
         //        self.updateControlsAndStatus(
@@ -303,48 +303,55 @@ class RecordViewController: UIViewController {
 
     /* Issue #27: Allow appending to finalized (i.e. exported) recordings
      */
-    @objc func stopTapped() {
-        let status: (String, UIColor)
+    @objc func stopTapped(sender: UIBarButtonItem) {
 
-        self.toggleCellsInteractivity(
-            of: self.listRecordings,
-            to: true)
+        switch sender.title {
 
-        if self.audioRecorder?.isRecording == true {
+            case Controls.StopLabel.finishRecording.rawValue:
 
-            self.stopRecorder()
+                self.toggleCellsInteractivity(
+                    of: self.listRecordings,
+                    to: true)
 
-            /* `ListRecordings` is updated in `self.concatChunks` as temporary
-               files are deleted there asynchronously, and calling `reloadData`
-               here would result in runtime crash.
-            */
-            self.concatChunks()
+                /* In case of "Start Recording" -> "Pause" -> "Finish",
+                   becuase `pauseTapped` already invokes `stopRecorder`.
+                */
+                if self.audioRecorder != nil {
+                    self.stopRecorder()
+                }
 
-            self.setUI([
-                .navLeftButton:
-                    [ "type":   Controls.ControlUINavButton.profile
-                    , "status": true
+                /* `ListRecordings` is updated in `self.concatChunks` as temporary
+                 files are deleted there asynchronously, and calling `reloadData`
+                 here would result in runtime crash.
+                 */
+                self.concatChunks()
+
+                self.setUI([
+                    .navLeftButton:
+                        [ "type":   Controls.ControlUINavButton.profile
+                        , "status": true
+                        ],
+                    .navRightButton:
+                        [ "type":   Controls.ControlUINavButton.edit
+                        , "status": true
+                        ],
+                    .controlStatus:
+                        [ "title":  "Finished recording article"
+                        , "colour": UIColor.red
+                        ],
                     ],
-                .navRightButton:
-                    [ "type":   Controls.ControlUINavButton.edit
-                    , "status": true
-                    ],
-                .controlStatus:
-                    [ "title":  "Finished recording article"
-                    , "colour": UIColor.red
-                    ],
-                ],
-                controls:
-                    [ (.record, Controls.RecordLabel.new.rawValue, true)
-                    , (.submit, "Submit",                          true)
-                    ]
-            )
-        } else {
-            self.stopPlayer()
-            status = ("Playback stopped.", .green)
-            //            self.updateControlsAndStatus(
-            //                activeControls: [.record, .play, .submit],
-            //                controlStatus: nil)
+                    controls:
+                        [ (.record, Controls.RecordLabel.new.rawValue, true)
+                        , (.submit, "Submit",                          true)
+                        ]
+                )
+
+            case Controls.StopLabel.stopPlayback.rawValue:
+
+                self.stopPlayer()
+
+            default:
+                break
         }
     }
 
