@@ -29,6 +29,7 @@ class RecordViewController: UIViewController {
     @IBOutlet weak var publicationStatus: UILabel!
     @IBOutlet weak var articleStatus:     UILabel!
     @IBOutlet weak var controlStatus:     UILabel!
+    @IBOutlet weak var recTimer:          UILabel!
 
     var isRecordEnabled: Bool {
         get {
@@ -399,8 +400,6 @@ class RecordViewController: UIViewController {
             NSLog("Unable to init audio recorder.")
         }
     }
-
-    @IBOutlet weak var recTimer: UILabel!
 
     func startRecTimer() {
         Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.updateRecTimerLabel), userInfo: nil, repeats: true)
