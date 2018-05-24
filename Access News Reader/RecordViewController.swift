@@ -385,14 +385,51 @@ class RecordViewController: UIViewController {
         let url = self.createNewRecordingURL()
 
         do {
+
             self.audioRecorder =
                 try AVAudioRecorder.init(url: url, settings: settings)
             self.audioRecorder?.record()
+
             // TODO: add audio recorder delegate? Interruptions (e.g., calls)
             //       are handled elsewhere anyway
+
+            self.startRecTimer()
+
         } catch {
             NSLog("Unable to init audio recorder.")
         }
+    }
+
+    @IBOutlet weak var recTimer: UILabel!
+
+    func startRecTimer() {
+        Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.updateRecTimerLabel), userInfo: nil, repeats: true)
+    }
+
+    @objc func updateRecTimerLabel(_ t: Timer) {
+
+        func addOneSecToPart(_ s: Substring) -> String {
+            /* So why is Swift 4.1 still missing function composition again? */
+            return String(format: "%02u", Int(String(s))!+1)
+        }
+
+        func addOneSec(_ label: String) -> String {
+            let parts = label.split(separator: ":")
+            switch (parts[0], parts[1]) {
+
+                case (let p, "59"):
+                    return [addOneSecToPart(p), "00"].joined(separator: ":")
+
+                case ("59", "59"):
+                    return "00:00"
+
+                case (let p1, let p2):
+                    return [String(p1), addOneSecToPart(p2)].joined(separator: ":")
+            }
+        }
+
+        let oldValue = self.recTimer.text!
+        self.recTimer.text = addOneSec(oldValue)
     }
 
     func stopRecorder() {
