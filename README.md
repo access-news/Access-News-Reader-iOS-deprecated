@@ -1,3 +1,12 @@
+**ABANDONED** (?)  
+
+This was my first iOS project, cleaned up and redesigned several times and after the last testing, when it became clear that another redesign is needed, I thought best to start a new one with a clean slate. ([Wrote about the lessons learned on Medium.](https://medium.com/scientific-breakthrough-of-the-afternoon/have-your-end-users-test-your-app-product-often-31ffca211c2f))
+
+The new repo is at:  
+https://github.com/society-for-the-blind/Access-News-iOS
+
+---  
+
 `restore-point` git tag:  
 Commits with this tag seemed to be useful to fall back to when things go awry. Learned that seemingly simple things such as `pod update` can mess up the entire project, making me bogged down for days with troubleshooting. (Not kidding.) Put on the list of priorities to ditch Firebase with a custom backend because Cocoapods seems to break with every update. Or just get rid of Cocoapods?
 
