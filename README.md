@@ -3,7 +3,7 @@
 This was my first iOS project, cleaned up and redesigned several times and after the last testing, when it became clear that another redesign is needed, I thought best to start a new one with a clean slate. ([Wrote about the lessons learned on Medium.](https://medium.com/scientific-breakthrough-of-the-afternoon/have-your-end-users-test-your-app-product-often-31ffca211c2f))
 
 The new repo is at:  
-https://github.com/society-for-the-blind/Access-News-iOS
+https://github.com/society-for-the-blind/Access-News-Reader_iOS
 
 ---  
 
